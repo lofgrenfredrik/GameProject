@@ -5,13 +5,25 @@
     <title>Game</title>
     <link rel="stylesheet" href="css/style.css" charset="utf-8">
 </head>
-<body onload="init()">
+<body>
 <div id="main-container">
     <div id="canvasContainer">
-        <canvas id="myCanvas" width="800" height="650"></canvas>
+        <canvas id="playField" width="800" height="500"></canvas>
     </div>
+    <div id="gameInfoContainer">
+        <div class="col_3">
+            <div id="startGame" class="button">Starta spel</div>
+        </div>
+        <div class="col_3">
+            <div id="moreBalls" class="button">Fler bollar</div>
+        </div>
+        <div class="col_3">
+            <div>Bollarna har kolliderat <span id="collisionCounter">0</span> gånger</div>
+        </div>
+    </div>
+
 </div>
 </body>
 <!-- <script src="js/game.js" charset="utf-8"></script> -->
-<script src="js/gameF.js" charset="utf-8"></script>
+<script src="js/main.js" charset="utf-8"></script>
 </html>

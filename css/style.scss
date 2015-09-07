@@ -1,3 +1,5 @@
+$darkBlue: #34495E;
+
 #main-container
 {
   width: 100%;
@@ -5,10 +7,46 @@
 #canvasContainer
 {
   margin: 0 auto;
-  width: 800px;
-  height:300px;
+  width: 960px;
+  height: 100%;
 }
-#myCanvas
+#playField
 {
-  background-color: yellow;
+  background-color: #ff545d;
+  color: #79ff85;
+}
+#gameInfoContainer
+{
+    margin: 0 auto;
+    max-width: 960px;
+    width: 90%;
+   // background-color: blue;
+}
+.col_3
+  {
+    width: 32%;
+    margin: 0 auto;
+    display: inline-block;
+
+  }
+.button
+{
+  transition: all 0.3s ease;
+  display: flex;
+  justify-content: center;
+  align-items:center;
+  height: 50px;
+  width: 200px;
+  text-align: center;
+  color: $darkBlue;
+  border: 1px solid $darkBlue;
+}
+.button:hover
+{
+  background-color: lighten($darkBlue,10%);
+  color: white;
+  cursor: pointer;
+}
+.button:active{
+  background-color: $darkBlue;
 }
