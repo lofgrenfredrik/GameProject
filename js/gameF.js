@@ -1,3 +1,7 @@
+
+
+
+
 function init() {
 
   var canvas = document.getElementById('myCanvas').getContext('2d');
