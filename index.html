@@ -1,15 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Game</title>
-  <link rel="stylesheet" href="css/style.css" charset="utf-8">
+    <meta charset="UTF-8">
+    <title>Game</title>
+    <link rel="stylesheet" href="css/style.css" charset="utf-8">
 </head>
-<body>
-<div class="canvas-container">
-  <canvas id="demoCanvas"></canvas>
+<body onload="init()">
+<div id="main-container">
+    <div id="canvasContainer">
+        <canvas id="myCanvas" width="800" height="650"></canvas>
+    </div>
 </div>
-  <script src="https://code.createjs.com/easeljs-0.8.1.min.js"></script>
-  <script src="js/game.js" charset="utf-8"></script>
 </body>
+<!-- <script src="js/game.js" charset="utf-8"></script> -->
+<script src="js/gameF.js" charset="utf-8"></script>
 </html>
