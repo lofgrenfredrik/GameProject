@@ -1,5 +1,12 @@
-.canvas-container {
-  width: 100%;
-  height: 500px; }
+#main-container {
+  width: 100%; }
+
+#canvasContainer {
+  margin: 0 auto;
+  width: 800px;
+  height: 300px; }
+
+#myCanvas {
+  background-color: yellow; }
 
 /*# sourceMappingURL=style.css.map */
