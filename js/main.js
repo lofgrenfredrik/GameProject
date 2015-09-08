@@ -17,13 +17,16 @@ var bigBallRadius = 60;
 var mediumBallRadius = 40;
 var smallBallRadius = 20;
 
-
 var collisionCounter = document.getElementById("collisionCounter");
+var ammoCounter = document.getElementById("ammoCounter");
+var ammoLeft = 5;
+
+
 var numberOfCollisions = 0;
 
 var ballColors = ["#C0392B", "#E4F1FE", "#336E7B", "#4ECDC4", "#3D4A5D", "#26A65B","#79FF85"];
-
 //document.getElementById("startGame").addEventListener("click", startGame);
+var speed = 5;
 
 function startGame() {
 
@@ -80,15 +83,24 @@ function startGame() {
     }
     if (ball.PositionValueY < ball.ballRadius || ball.PositionValueY > playfieldHeight - ball.ballRadius) {
       ball.speedYAxis = -ball.speedYAxis;
-    }
-  }
+    function bouncingBall(ballSize, startX, startY,speedX) {
 
-  /* var solidPoint = {
-  PositionValueY:playfieldHeight/2,
-  PositionValueX:playfieldWidth/2,
-  name:'Träffa mig!'
-};*/
+        this.ballRadius = ballSize;
+        this.PositionValueX = startX;
+        this.PositionValueY = startY;
+        this.speedXAxis = speedX;
+        this.speedYAxis =  Math.floor((Math.random() * speed) + 1);
+        /*this.speedXAxis = xSpeed;
+        this.speedYAxis = ySpeed;*/
+        this.hexColorCode = ballColors[ Math.floor((Math.random() * ballColors.length) + 1)];
 
+
+       // this.ballRadius = Math.ceil((Math.random() * 50) + 10); //
+      /*  this.PositionValueX = Math.floor(Math.random() * ((playfieldWidth-this.ballRadius*2) - this.ballRadius*2 + 1)) + this.ballRadius*2;
+        this.PositionValueY = Math.floor(Math.random() * ((playfieldHeight-playerSafetyDistanceY-this.ballRadius*2) - this.ballRadius*2 + 1)) + this.ballRadius*2;
+        this.speedXAxis = Math.floor((Math.random() * 6) + 1);
+        this.speedYAxis =  Math.floor((Math.random() * 6) + 1);
+        this.hexColorCode = ballColors[ Math.floor((Math.random() * ballColors.length) + 1)];*/
 
 
 var player = {
@@ -100,7 +112,17 @@ var player = {
   left: false,
   right: false
 };
+   // console.log(bouncingBalls);
+    var i = 0;
+    function addBalls(sizeofHitBall, startX, startY, speedX)
+    {
+        bouncingBalls["ball"+i] = new bouncingBall(sizeofHitBall, startX, startY,speedX);
+        i++;
+    }
 
+    var firstBallSpeed = Math.floor((Math.random() * 6) + 1);
+
+    addBalls(bigBallRadius, 100, 100, firstBallSpeed); // Skapar den första bollen så att spelet kommer igång!
 
 // Tar emot tangent input och förflyttar spelaren****************************
 document.onkeydown = function(keyPress) {
@@ -182,6 +204,20 @@ function animateShots(object){
 
   object.PositionValueY -= 5; //fart på skotten
 }
+    /* var solidPoint = {
+        PositionValueY:playfieldHeight/2,
+        PositionValueX:playfieldWidth/2,
+        name:'Träffa mig!'
+    };*/
+    var player = {
+        width: 50,
+        height: 50,
+        PositionValueX: 100,
+        PositionValueY: playfieldHeight-50, // Sätt fasta färdet här på samma höjd som spelaren.
+        color: "#fff",
+        left: false,
+        right: false
+    };
 
 function update() {
 
@@ -194,6 +230,77 @@ function update() {
   playerPosition(); //updaterar spelaren
   // drawObjects(player); //ritar ut spelaren
   drawPlayer(player);
+// Tar emot tangent input och förflyttar spelaren****************************
+    document.onkeydown = function(keyPress) {
+        if(keyPress.keyCode === 37){
+            // Move left
+            player.left = true;
+        }
+        if(keyPress.keyCode === 39){
+            // Move right
+            player.right = true;
+        }
+        // Shoot
+        if(keyPress.keyCode === 32){
+            generateShot(player.PositionValueX);
+
+            if(ammoLeft>0)
+            {
+            generateShot(player.x);
+            ammoLeft--;
+            }
+        }
+    };
+    document.onkeyup = function(keyPress) {
+        if(keyPress.keyCode === 37){
+            // Move left
+            player.left = false;
+        }
+        if(keyPress.keyCode === 39){
+            // Move right
+            player.right = false;
+        }
+    };
+    function playerPosition(){
+        if(player.left){
+            player.PositionValueX -=10; //fart på spelaren
+        }
+        if(player.right){
+            player.PositionValueX +=10; //fart på spelaren
+        }
+        // Spelaren kan inte röra sig utanför spelplane
+        if(player.PositionValueX < 0){
+            player.PositionValueX = 0;
+        }
+        if(player.PositionValueX > playfieldWidth - player.width){
+            player.PositionValueX = playfieldWidth - player.width;
+        }
+    }
+// END ****Tar emot tangent input och förflyttar spelaren****************************
+
+    function drawPlayer(object)
+    {
+        playField.fillStyle = object.color;
+        playField.fillRect(object.PositionValueX,object.PositionValueY,object.width,object.height);
+    }
+
+    var shotNr = 0;
+// Skapar ett nytt skott och pushar in det i en array
+    function generateShot(playerX){
+        var shot = {
+            PositionValueX: playerX + 20,
+            PositionValueY: playfieldHeight-60,
+            width: 10,
+            height: 10,
+            color: "black"
+            };
+        shotList["shot"+shotNr] = shot;
+        shotNr++;
+
+//        shot.ammo--;
+
+
+    }
 
 
   //uppdaterar skottposition för varje skott i listan
@@ -236,6 +343,67 @@ function update() {
       {
         delete shotList[k]; // Tar bort bollen som träffar texten!
       }
+    function update() {
+
+        //generateShot.shot.ammo -1;
+
+        playField.clearRect(0, 0, playfieldWidth, playfieldHeight);
+       // document.getElementById("shotLocation").innerHTML = shotList[key];
+       // drawEntity(solidPoint);
+
+        collisionCounter.innerHTML = numberOfCollisions;
+        ammoCounter.innerHTML = ammoLeft;
+
+
+
+
+        playerPosition(); //updaterar spelaren
+       // drawObjects(player); //ritar ut spelaren
+        drawPlayer(player);
+
+        //uppdaterar skottposition för varje skott i listan
+        for(var key in shotList){
+            animateShots(shotList[key])
+        };
+        // Ritar ut varje skott i listan
+        for(var key in shotList){
+            drawShots(shotList[key])
+        };
+
+        for (var key in bouncingBalls) {
+            updateEntity(bouncingBalls[key]);
+            var touchPlayer = testCollisionEntity(player,bouncingBalls[key]);
+              if(touchPlayer){
+                console.log("TRÄFF!!");
+              }
+            for(var k in shotList)
+            {
+                var isColliding = testCollisionEntity(shotList[k],bouncingBalls[key]);
+                if(isColliding){
+                    if(bouncingBalls[key].ballRadius == 60)
+                    {
+                        addBalls(mediumBallRadius, bouncingBalls[key].PositionValueX+15,bouncingBalls[key].PositionValueY,bouncingBalls[key].speedXAxis);
+                        addBalls(mediumBallRadius, bouncingBalls[key].PositionValueX-15,bouncingBalls[key].PositionValueY, (bouncingBalls[key].speedXAxis)*-1);
+
+                    }
+                    if(bouncingBalls[key].ballRadius == 40)
+                    {
+                        addBalls(smallBallRadius, bouncingBalls[key].PositionValueX+10,bouncingBalls[key].PositionValueY,bouncingBalls[key].speedXAxis);
+                        addBalls(smallBallRadius, bouncingBalls[key].PositionValueX-10,bouncingBalls[key].PositionValueY,(bouncingBalls[key].speedXAxis)*-1);
+
+                    }
+                    delete bouncingBalls[key]; // Tar bort bollen som träffar texten!
+
+                   // addBalls(mediumBallRadius);
+                    delete shotList[k]; // Tar bort bollen som träffar texten!
+                    numberOfCollisions++;
+                }
+                else if (shotList[k].PositionValueY < 0)
+                {
+                    delete shotList[k]; // Tar bort bollen som träffar texten!
+                }
+            }
+        }
     }
   }
 }
