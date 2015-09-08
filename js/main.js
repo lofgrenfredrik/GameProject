@@ -16,10 +16,26 @@ var playerSafetyDistanceY = 300; // Marginalen på Y axeln som bollarna kommer g
 var bigBallRadius = 60;
 var mediumBallRadius = 40;
 var smallBallRadius = 20;
+var firstBallSpeed = Math.floor((Math.random() * 6) + 1);
+
 
 var collisionCounter = document.getElementById("collisionCounter");
 var ammoCounter = document.getElementById("ammoCounter");
-var ammoLeft = 5;
+var ammoLeft = 10;
+var time = 1;
+
+
+
+function updateTime()
+{
+    time++;
+    document.getElementById("timer").innerHTML = time;
+    if(time%10==0)
+    {
+        ammoLeft++;
+    }
+    return time;
+}
 
 
 var numberOfCollisions = 0;
@@ -27,7 +43,6 @@ var numberOfCollisions = 0;
 var ballColors = ["#C0392B", "#E4F1FE", "#336E7B", "#4ECDC4", "#3D4A5D", "#26A65B","#79FF85"];
 //document.getElementById("startGame").addEventListener("click", startGame);
 var speed = 5;
-
 function startGame() {
 
     function bouncingBall(ballSize, startX, startY,speedX) {
@@ -61,9 +76,12 @@ function startGame() {
         i++;
     }
 
-    var firstBallSpeed = Math.floor((Math.random() * 6) + 1);
 
     addBalls(bigBallRadius, 100, 100, firstBallSpeed); // Skapar den första bollen så att spelet kommer igång!
+   // console.log(updateTime)
+
+
+
 
     function getDistanceBetweenEntity(shot,ball){     //return distance (number)
         var vx = shot.PositionValueX - ball.PositionValueX;
@@ -123,12 +141,11 @@ function startGame() {
         }
         // Shoot
         if(keyPress.keyCode === 32){
-            generateShot(player.PositionValueX);
 
             if(ammoLeft>0)
             {
-            generateShot(player.x);
-            ammoLeft--;
+                generateShot(player.PositionValueX);
+            ammoLeft--
             }
         }
     };
@@ -199,7 +216,7 @@ function startGame() {
         // if(object.height < -900){
         // // skott som en punkt
 
-        object.PositionValueY -= 5; //fart på skotten
+        object.PositionValueY -= 10; //fart på skotten
     }
 
     function update() {
@@ -265,6 +282,14 @@ function startGame() {
         }
     }
     //drawEntity(solidPoint);
-    setInterval(update, 20)
+    setInterval(update, 20);
+
+    setInterval(function(){
+        //updateTime()
+        if(updateTime() % 10 == 0)
+        {
+            addBalls(bigBallRadius, 100, 100, firstBallSpeed);
+        }
+    },1000);
 }
 startGame();
