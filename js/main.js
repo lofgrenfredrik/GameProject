@@ -17,41 +17,49 @@ var bigBallRadius = 60;
 var mediumBallRadius = 40;
 var smallBallRadius = 20;
 
-
 var collisionCounter = document.getElementById("collisionCounter");
 var numberOfCollisions = 0;
 
 var ballColors = ["#C0392B", "#E4F1FE", "#336E7B", "#4ECDC4", "#3D4A5D", "#26A65B","#79FF85"];
-
 //document.getElementById("startGame").addEventListener("click", startGame);
+var speed = 5;
 
 function startGame() {
 
-    function bouncingBall(ballSize) {
+    function bouncingBall(ballSize, startX, startY,speedX) {
 
         this.ballRadius = ballSize;
+        this.PositionValueX = startX;
+        this.PositionValueY = startY;
+        this.speedXAxis = speedX;
+        this.speedYAxis =  Math.floor((Math.random() * speed) + 1);
+        /*this.speedXAxis = xSpeed;
+        this.speedYAxis = ySpeed;*/
+        this.hexColorCode = ballColors[ Math.floor((Math.random() * ballColors.length) + 1)];
+
+
        // this.ballRadius = Math.ceil((Math.random() * 50) + 10); //
-        this.PositionValueX = Math.floor(Math.random() * ((playfieldWidth-this.ballRadius*2) - this.ballRadius*2 + 1)) + this.ballRadius*2;
+      /*  this.PositionValueX = Math.floor(Math.random() * ((playfieldWidth-this.ballRadius*2) - this.ballRadius*2 + 1)) + this.ballRadius*2;
         this.PositionValueY = Math.floor(Math.random() * ((playfieldHeight-playerSafetyDistanceY-this.ballRadius*2) - this.ballRadius*2 + 1)) + this.ballRadius*2;
         this.speedXAxis = Math.floor((Math.random() * 6) + 1);
         this.speedYAxis =  Math.floor((Math.random() * 6) + 1);
-        this.hexColorCode = ballColors[ Math.floor((Math.random() * ballColors.length) + 1)];
+        this.hexColorCode = ballColors[ Math.floor((Math.random() * ballColors.length) + 1)];*/
     }
     var bouncingBalls = {};
 
     document.getElementById("moreBalls").addEventListener("click", addBalls);
 
    // console.log(bouncingBalls);
-
     var i = 0;
-    function addBalls(sizeofHitBall)
+    function addBalls(sizeofHitBall, startX, startY, speedX)
     {
-        bouncingBalls["ball"+i] = new bouncingBall(sizeofHitBall);
+        bouncingBalls["ball"+i] = new bouncingBall(sizeofHitBall, startX, startY,speedX);
         i++;
     }
 
-    addBalls(bigBallRadius);
+    var firstBallSpeed = Math.floor((Math.random() * 6) + 1);
 
+    addBalls(bigBallRadius, 100, 100, firstBallSpeed); // Skapar den första bollen så att spelet kommer igång!
 
     function getDistanceBetweenEntity(shot,ball){     //return distance (number)
         var vx = shot.PositionValueX - ball.PositionValueX;
@@ -83,14 +91,11 @@ function startGame() {
         }
     }
 
-  /* var solidPoint = {
+    /* var solidPoint = {
         PositionValueY:playfieldHeight/2,
         PositionValueX:playfieldWidth/2,
         name:'Träffa mig!'
     };*/
-
-
-
     var player = {
         width: 50,
         height: 50,
@@ -195,7 +200,6 @@ function startGame() {
        // drawObjects(player); //ritar ut spelaren
         drawPlayer(player);
 
-
         //uppdaterar skottposition för varje skott i listan
         for(var key in shotList){
             animateShots(shotList[key])
@@ -212,21 +216,19 @@ function startGame() {
             {
                 var isColliding = testCollisionEntity(shotList[k],bouncingBalls[key]);
                 if(isColliding){
-                    addBalls();
-
                     if(bouncingBalls[key].ballRadius == 60)
                     {
-                        addBalls(mediumBallRadius);
-                        addBalls(mediumBallRadius);
+                        addBalls(mediumBallRadius, bouncingBalls[key].PositionValueX+15,bouncingBalls[key].PositionValueY,bouncingBalls[key].speedXAxis);
+                        addBalls(mediumBallRadius, bouncingBalls[key].PositionValueX-15,bouncingBalls[key].PositionValueY, (bouncingBalls[key].speedXAxis)*-1);
+
                     }
                     if(bouncingBalls[key].ballRadius == 40)
                     {
-                        addBalls(smallBallRadius);
-                        addBalls(smallBallRadius);
+                        addBalls(smallBallRadius, bouncingBalls[key].PositionValueX+10,bouncingBalls[key].PositionValueY,bouncingBalls[key].speedXAxis);
+                        addBalls(smallBallRadius, bouncingBalls[key].PositionValueX-10,bouncingBalls[key].PositionValueY,(bouncingBalls[key].speedXAxis)*-1);
+
                     }
-
                     delete bouncingBalls[key]; // Tar bort bollen som träffar texten!
-
 
                    // addBalls(mediumBallRadius);
                     delete shotList[k]; // Tar bort bollen som träffar texten!
