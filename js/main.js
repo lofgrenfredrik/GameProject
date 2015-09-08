@@ -18,6 +18,10 @@ var mediumBallRadius = 40;
 var smallBallRadius = 20;
 
 var collisionCounter = document.getElementById("collisionCounter");
+var ammoCounter = document.getElementById("ammoCounter");
+var ammoLeft = 5;
+
+
 var numberOfCollisions = 0;
 
 var ballColors = ["#C0392B", "#E4F1FE", "#336E7B", "#4ECDC4", "#3D4A5D", "#26A65B","#79FF85"];
@@ -119,7 +123,12 @@ function startGame() {
         }
         // Shoot
         if(keyPress.keyCode === 32){
+
+            if(ammoLeft>0)
+            {
             generateShot(player.x);
+            ammoLeft--;
+            }
         }
     };
     document.onkeyup = function(keyPress) {
@@ -167,6 +176,10 @@ function startGame() {
             };
         shotList["shot"+shotNr] = shot;
         shotNr++;
+
+//        shot.ammo--;
+
+
     }
 
 
@@ -190,11 +203,17 @@ function startGame() {
 
     function update() {
 
+        //generateShot.shot.ammo -1;
+
         playField.clearRect(0, 0, playfieldWidth, playfieldHeight);
        // document.getElementById("shotLocation").innerHTML = shotList[key];
        // drawEntity(solidPoint);
 
         collisionCounter.innerHTML = numberOfCollisions;
+        ammoCounter.innerHTML = ammoLeft;
+
+
+
 
         playerPosition(); //updaterar spelaren
        // drawObjects(player); //ritar ut spelaren
