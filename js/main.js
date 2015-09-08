@@ -103,8 +103,8 @@ function startGame() {
     var player = {
         width: 50,
         height: 50,
-        x: 100,
-        y: playfieldHeight-50, // Sätt fasta färdet här på samma höjd som spelaren.
+        PositionValueX: 100,
+        PositionValueY: playfieldHeight-50, // Sätt fasta färdet här på samma höjd som spelaren.
         color: "#fff",
         left: false,
         right: false
@@ -123,6 +123,7 @@ function startGame() {
         }
         // Shoot
         if(keyPress.keyCode === 32){
+            generateShot(player.PositionValueX);
 
             if(ammoLeft>0)
             {
@@ -143,17 +144,17 @@ function startGame() {
     };
     function playerPosition(){
         if(player.left){
-            player.x -=10; //fart på spelaren
+            player.PositionValueX -=10; //fart på spelaren
         }
         if(player.right){
-            player.x +=10; //fart på spelaren
+            player.PositionValueX +=10; //fart på spelaren
         }
         // Spelaren kan inte röra sig utanför spelplane
-        if(player.x < 0){
-            player.x = 0;
+        if(player.PositionValueX < 0){
+            player.PositionValueX = 0;
         }
-        if(player.x > playfieldWidth - player.width){
-            player.x = playfieldWidth - player.width;
+        if(player.PositionValueX > playfieldWidth - player.width){
+            player.PositionValueX = playfieldWidth - player.width;
         }
     }
 // END ****Tar emot tangent input och förflyttar spelaren****************************
@@ -161,7 +162,7 @@ function startGame() {
     function drawPlayer(object)
     {
         playField.fillStyle = object.color;
-        playField.fillRect(object.x,object.y,object.width,object.height);
+        playField.fillRect(object.PositionValueX,object.PositionValueY,object.width,object.height);
     }
 
     var shotNr = 0;
@@ -230,7 +231,10 @@ function startGame() {
 
         for (var key in bouncingBalls) {
             updateEntity(bouncingBalls[key]);
-
+            var touchPlayer = testCollisionEntity(player,bouncingBalls[key]);
+              if(touchPlayer){
+                console.log("TRÄFF!!");
+              }
             for(var k in shotList)
             {
                 var isColliding = testCollisionEntity(shotList[k],bouncingBalls[key]);
