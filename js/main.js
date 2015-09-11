@@ -52,15 +52,11 @@ function startGame() {
         frameCount++;
         return frameCount;
     }
-
-
-
 /**
  *
  *<======= ALLTING SOM HAR MED SPELAREN ATT GÖRA =======>
  *
  */
-
     var player = new Image();
     player.src = "images/spriteDemo.png";
     player.left = false;
@@ -74,9 +70,7 @@ function startGame() {
     player.animateY = player.height;
    // var ship_x = player.PositionValueX, ship_y =player.PositionValueY, ship_w = 65, ship_h = 85,
      var strafeX = 0;
-
    // playField.drawImage(player,srcX,srcY,player.width,player.height,player.PositionValueX,player.PositionValueY,player.width,player.height);
-
 
    // playField.drawImage(player,strafeX,0,player.width,player.height,player.PositionValueX,player.PositionValueY,player.width,player.height);
 
