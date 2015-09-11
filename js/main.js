@@ -5,6 +5,8 @@ var playfieldHeight = document.getElementById("playField").height;
 var playfieldWidth = document.getElementById("playField").width;
 
 var shotList = {};
+var powerShotList = {};
+var powerShotAvailabe = 0;
 // intervall som uppdateringsfunktionen körs
 
 var playerSafetyDistanceY = 300; // Marginalen på Y axeln som bollarna kommer generas ovanför.
@@ -30,7 +32,6 @@ var guy = new Image();
 guy.src = "images/ships2.png"; // WTF?! Varför utgår man från vart html-filen ligger och inte JS filen?
 
 function startGame() {
-
     /**
      *
      *<======= STARTA TIMERS! =======>
@@ -76,23 +77,6 @@ function startGame() {
 
     // ship_x = (width / 2) - 25, ship_y = height - 85, ship_w = 65, ship_h = 85,
 
-
-
-
-        /*player = {
-            width: 50,
-            height: 50,
-            PositionValueX: 100,
-            health: 100,
-            PositionValueY: playfieldHeight-50, // Sätt fasta färdet här på samma höjd som spelaren.
-            color: "#fff",
-            left: false,
-            right: false,
-            //src: "images/dude.png"
-        };*/
-
-
-
 /* KOLLAR OM SPELAREN BLIR TRÄFFAD */
 
 setInterval(function () {hit = false; player.color = "#fff";}, 400);
@@ -100,7 +84,6 @@ function playerHit(hit){
     if(hit){
         player.color = "red";
         player.health--;
-        //console.log(player.health);
     }
     if(player.health == 0){
         alert("GAME OVER!!")
@@ -132,6 +115,11 @@ document.onkeydown = function(keyPress) {
         {
             generateShot(player.PositionValueX);
             ammoLeft--
+        }
+        if(powerShotAvailabe>0)
+        {
+            generatePowerShot(player.PositionValueX);
+            powerShotAvailabe--
         }
     }
 };
@@ -294,10 +282,71 @@ function playerPosition(){
         shotList["shot"+shotNr] = shot;
         shotNr++;
     }
+    var PowershotNr = 0;
+    // Skapar ett nytt skott och pushar in det i ett objekt
+    function generatePowerShot(playerX){
+        var powerShot1 = {
+            id: 1,
+            PositionValueX: playerX,
+            PositionValueY: playfieldHeight-60,
+            width: 10,
+            height: 10,
+            color: "black"
+        };
+        var powerShot2 = {
+            id: 2,
+            PositionValueX: playerX + 40,
+            PositionValueY: playfieldHeight-60,
+            width: 10,
+            height: 10,
+            color: "black"
+        };
+        powerShotList["PowerShot"+PowershotNr] = powerShot1;
+        PowershotNr++;
+        powerShotList["PowerShot"+PowershotNr] = powerShot2;
+        PowershotNr++;
+    }
 
     // Förflyttar skotten i y-axeln och om det går utanför y axeln så tas de bort ur arrayen
     function animateShots(object){
         object.PositionValueY -= 10; //fart på skotten
+        if(object.id == 1){
+          object.PositionValueX -= 5;
+        }
+        if(object.id == 2){
+          object.PositionValueX += 5;
+        }
+    }
+
+    function TestShotHits(list,object){
+      for (var key in object) {
+          updateEntity(object[key]);
+
+          // KOLLAR OM SKOTTEN TRÄFFAR
+          for(var k in list)
+          {
+              var isColliding = testCollisionEntity(list[k],object[key]);
+              if(isColliding){
+                  if(object[key].ballRadius == 60)
+                  {
+                      addBalls(mediumBallRadius, object[key].PositionValueX+15,object[key].PositionValueY,object[key].speedXAxis);
+                      addBalls(mediumBallRadius, object[key].PositionValueX-15,object[key].PositionValueY, (object[key].speedXAxis)*-1);
+                  }
+                  if(object[key].ballRadius == 40)
+                  {
+                      addBalls(smallBallRadius, object[key].PositionValueX+10,object[key].PositionValueY,object[key].speedXAxis);
+                      addBalls(smallBallRadius, object[key].PositionValueX-10,object[key].PositionValueY,(object[key].speedXAxis)*-1);
+                  }
+                  delete object[key]; // Tar bort bollen som träffar texten!
+                  delete list[k]; // Tar bort bollen som träffar texten!
+                  numberOfCollisions++;
+                  }
+                  else if (list[k].PositionValueY < 0)
+                  {
+                      delete list[k]; // Tar bort bollen som träffas!
+                  }
+          }
+      }
     }
     /**
      *
@@ -411,6 +460,12 @@ function playerPosition(){
                 player.health += 20;
                 delete upgrades[item]
             }
+            else if(distanceBetweenPlayerAndUpgrade>-marginal && distanceBetweenPlayerAndUpgrade<marginal && upgrades[item].type === "PowerSot")
+            {
+                console.log("PowerShot!");
+                powerShotAvailabe += 3;
+                delete upgrades[item]
+            }
         }
         //UPPDATERAR SKOTTPOSITIONEN FÖR VARJE SKOTT I OBJEKTET
         for(var shot in shotList){
@@ -420,35 +475,17 @@ function playerPosition(){
         for(var key in shotList){
             drawObject(shotList[key])
         }
-        // RITA UT BOLLARNA
-        for (var key in bouncingBalls) {
-            updateEntity(bouncingBalls[key]);
-
-            // KOLLAR OM SKOTTEN TRÄFFAR
-            for(var k in shotList)
-            {
-                var isColliding = testCollisionEntity(shotList[k],bouncingBalls[key]);
-                if(isColliding){
-                    if(bouncingBalls[key].ballRadius == 60)
-                    {
-                        addBalls(mediumBallRadius, bouncingBalls[key].PositionValueX+15,bouncingBalls[key].PositionValueY,bouncingBalls[key].speedXAxis);
-                        addBalls(mediumBallRadius, bouncingBalls[key].PositionValueX-15,bouncingBalls[key].PositionValueY, (bouncingBalls[key].speedXAxis)*-1);
-                    }
-                    if(bouncingBalls[key].ballRadius == 40)
-                    {
-                        addBalls(smallBallRadius, bouncingBalls[key].PositionValueX+10,bouncingBalls[key].PositionValueY,bouncingBalls[key].speedXAxis);
-                        addBalls(smallBallRadius, bouncingBalls[key].PositionValueX-10,bouncingBalls[key].PositionValueY,(bouncingBalls[key].speedXAxis)*-1);
-                    }
-                    delete bouncingBalls[key]; // Tar bort bollen som träffar texten!
-                    delete shotList[k]; // Tar bort bollen som träffar texten!
-                    numberOfCollisions++;
-                    }
-                    else if (shotList[k].PositionValueY < 0)
-                    {
-                        delete shotList[k]; // Tar bort bollen som träffas!
-                    }
-            }
+        for(var power in powerShotList){
+            animateShots(powerShotList[power])
         }
+        // RITA UT SKOTTEN
+        for(var powerS in powerShotList){
+            drawObject(powerShotList[powerS])
+        }
+        // RITA UT BOLLARNA SAMT KOLLAR OM SKOTTEN TRÄFFAR
+        TestShotHits(shotList,bouncingBalls);
+        TestShotHits(powerShotList,bouncingBalls);
+
     }
     setInterval(update, 20);
     setInterval(function(){
@@ -466,6 +503,10 @@ function playerPosition(){
         {
             addUpgrades(50, 50, "Health", "#A2DED0");
         }
+        else if(timer.innerHTML % 31 == 0)
+        {
+            addUpgrades(50, 50, "PowerSot", "#cfe25b");
+        }
         else if(timer.innerHTML % 5 == 0)
         {
 
@@ -477,8 +518,5 @@ function playerPosition(){
     setInterval(function(){
         updateFrameCount()
     },200);
-
-
-
 }
 startGame();
