@@ -196,7 +196,7 @@ function playerPosition(){
     var numberOfCollisions = 0;
     var ballColors = ["#C0392B", "#E4F1FE", "#336E7B", "#4ECDC4", "#3D4A5D", "#26A65B","#79FF85"];
 //document.getElementById("startGame").addEventListener("click", startGame);
-    var speed = 5;
+    var speed = 3;
 
     function bouncingBall(ballSize, startX, startY,speedX) {
 
