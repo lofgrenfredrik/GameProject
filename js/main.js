@@ -1,4 +1,3 @@
-
 var playField = document.getElementById("playField").getContext("2d");
 playField.font = '30px Arial';
 
@@ -26,11 +25,16 @@ var ammoCounter = document.getElementById("ammoCounter");
 var ammoLeft = 10;
 var time = 0;
 var healthCounter = document.getElementById("health");
+var frameCount = 0;
+
+
+var guy = new Image();
+guy.src = "images/ships2.png"; // WTF?! Varför utgår man från vart html-filen ligger och inte JS filen?
 
 function startGame() {
     /**
      *
-     *<======= STARTA TIMER! =======>
+     *<======= STARTA TIMERS! =======>
      *
      */
     function updateTime()
@@ -43,22 +47,35 @@ function startGame() {
         }
         return time;
     }
+
+    function updateFrameCount()
+    {
+        frameCount++;
+        return frameCount;
+    }
 /**
  *
  *<======= ALLTING SOM HAR MED SPELAREN ATT GÖRA =======>
  *
  */
+    var player = new Image();
+    player.src = "images/spriteDemo.png";
+    player.left = false;
+    player.right = false;
+    player.health = 100;
+    player.height = 75;
+    player.width = 65; //
+    player.PositionValueX = 100;
+    player.PositionValueY = playfieldHeight-80;
+    player.animateX = (player.width)-25;
+    player.animateY = player.height;
+   // var ship_x = player.PositionValueX, ship_y =player.PositionValueY, ship_w = 65, ship_h = 85,
+     var strafeX = 0;
+   // playField.drawImage(player,srcX,srcY,player.width,player.height,player.PositionValueX,player.PositionValueY,player.width,player.height);
 
-var player = {
-    width: 50,
-    height: 50,
-    PositionValueX: 100,
-    health: 100,
-    PositionValueY: playfieldHeight-50, // Sätt fasta färdet här på samma höjd som spelaren.
-    color: "#fff",
-    left: false,
-    right: false
-};
+   // playField.drawImage(player,strafeX,0,player.width,player.height,player.PositionValueX,player.PositionValueY,player.width,player.height);
+
+    // ship_x = (width / 2) - 25, ship_y = height - 85, ship_w = 65, ship_h = 85,
 
 /* KOLLAR OM SPELAREN BLIR TRÄFFAD */
 
@@ -67,7 +84,6 @@ function playerHit(hit){
     if(hit){
         player.color = "red";
         player.health--;
-        // console.log(player.health);
     }
     if(player.health == 0){
         alert("GAME OVER!!")
@@ -78,11 +94,20 @@ document.onkeydown = function(keyPress) {
     if(keyPress.keyCode === 37){
         // Move left
         player.left = true;
+
     }
     if(keyPress.keyCode === 39){
         // Move right
         player.right = true;
+
     }
+    if( player.right == false && player.left == false)
+    {
+        strafeX = 0;
+    }
+
+
+
     // Shoot
     if(keyPress.keyCode === 32){
 
@@ -98,22 +123,62 @@ document.onkeydown = function(keyPress) {
         }
     }
 };
+    /*
+     function drawShip() {
+     if (rightKey) {
+     ship_x += 5;
+     srcX = 83;
+     } else if (leftKey) {
+     ship_x -= 5;
+     srcX = 156;
+     }
+     ctx.drawImage(sprites,srcX,srcY,ship_w,ship_h,ship_x,ship_y,ship_w,ship_h);
+     if (rightKey == false || leftKey == false) {
+     srcX = 10;
+     }
+     */
 document.onkeyup = function(keyPress) {
     if(keyPress.keyCode === 37){
         // Move left
         player.left = false;
+        strafeX = 0;
+
     }
     if(keyPress.keyCode === 39){
         // Move right
         player.right = false;
+        strafeX = 0;
+
     }
 };
 function playerPosition(){
-    if(player.left){
-        player.PositionValueX -=10; //fart på spelaren
+    if(player.left) {
+        player.PositionValueX -= 10; //fart på spelaren
+
+        if(frameCount%2==0)
+        {
+        strafeX = 65;
+        }
+        else
+        {
+          strafeX = 65*2;
+        }
+
     }
     if(player.right){
         player.PositionValueX +=10; //fart på spelaren
+        strafeX = 195;
+        if(frameCount%2==0)
+        {
+            strafeX = 65*3;
+        }
+        else
+        {
+            strafeX = 65*4;
+        }
+
+
+
     }
     // Spelaren kan inte röra sig utanför spelplane
     if(player.PositionValueX < 0){
@@ -325,12 +390,21 @@ function playerPosition(){
         playField.fillRect(object.PositionValueX,object.PositionValueY,object.width,object.height);
     }
 
+   /* function drawPlayer(player)
+    {
+        playField.drawImage(player, player.PositionValueX,player.PositionValueY);
+    }*/
+
+
+
+
+
+
     /**
      *
      *<======= UPPDATERING SOM KÖRS VAR 20 millisekund =======>
      *
      */
-
     function update() {
         playField.clearRect(0, 0, playfieldWidth, playfieldHeight);
         collisionCounter.innerHTML = numberOfCollisions;
@@ -341,12 +415,39 @@ function playerPosition(){
             drawObject(upgrades[item]);
         }
         playerPosition(); //updaterar spelaren
-        drawObject(player);
+
+        //drawPlayer(player);
+
+        /*
+         var player = new Image();
+         player.src = "images/ships2.png";
+         player.left = false;
+         player.right = false;
+         player.health = 100;
+         player.height = 80;
+         player.width = 80; //
+         player.PositionValueX = 100;
+         player.PositionValueY = playfieldHeight-80;
+         player.animateX = (player.width)-25;
+         player.animateY = player.height;
+         */
+
+        playField.drawImage(player,strafeX,0,player.width,player.height,player.PositionValueX,player.PositionValueY,player.width,player.height);
+
+        // playField.drawImage(player,srcX,srcY,player.width,player.height,player.PositionValueX,player.PositionValueY,player.width,player.height);
+       // playField.drawImage(player,srcX,srcY,ship_w,ship_h,player.PositionValueX,player.PositionValueY,ship_w,ship_h);
+        /*
+         ship_x = (width / 2) - 25, ship_y = height - 85, ship_w = 65, ship_h = 85,
+         srcX = 10, srcY = 0;
+         */
+        //   ctx.drawImage(sprites,srcX,srcY,ship_w,ship_h,ship_x,ship_y,ship_w,ship_h);
+
+
 
         for(var item in upgrades) {
 
             var distanceBetweenPlayerAndUpgrade = (playfieldWidth-player.PositionValueX)-(playfieldWidth-upgrades[item].PositionValueX);
-            var marginal = 5; //
+            var marginal = 10; //
             if(distanceBetweenPlayerAndUpgrade>-marginal && distanceBetweenPlayerAndUpgrade<marginal && upgrades[item].type === "Ammo")
             {
                 console.log("AMMO!");
@@ -387,7 +488,6 @@ function playerPosition(){
 
     }
     setInterval(update, 20);
-
     setInterval(function(){
         //updateTime()
         if(updateTime() % 10 == 0)
@@ -413,9 +513,10 @@ function playerPosition(){
            deleteUpgrades();
 
         }
-
-
-
     },1000);
+
+    setInterval(function(){
+        updateFrameCount()
+    },200);
 }
 startGame();
