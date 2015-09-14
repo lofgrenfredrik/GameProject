@@ -29,7 +29,7 @@ var frameCount = 0;
 var groundHeight = 32; // Höjden på marken i bilden.
 var ballCounter = document.getElementById("ballCounter");
 var accuracy = document.getElementById("accuracy");
-
+var healthBar = document.getElementById("health-bar");
 
 
 var shotsFired = document.getElementById("shotsFired");
@@ -58,7 +58,7 @@ function startGame() {
 
     player.left = false;
     player.right = false;
-    player.health = 5;
+    player.health = 100;
     player.height = 75;
     player.width = 65; //
     player.PositionValueX = 100;
@@ -112,7 +112,6 @@ function startGame() {
         if (keyPress.keyCode === 37) {
             // Move left
             player.left = true;
-
         }
         if (keyPress.keyCode === 39) {
             // Move right
@@ -124,7 +123,6 @@ function startGame() {
         }
         // Shoot
         if (keyPress.keyCode === 32) {
-
             if (ammoLeft > 0) {
                 generateShot(player.PositionValueX);
                 ammoLeft--
@@ -213,7 +211,7 @@ function startGame() {
 
     var bouncingBalls = {};
 
-    document.getElementById("moreBalls").addEventListener("click", addBalls);
+    // document.getElementById("moreBalls").addEventListener("click", addBalls);
 
     // console.log(bouncingBalls);
     var i = 0;
@@ -415,7 +413,10 @@ function startGame() {
         ballCounter.innerHTML = Object.keys(bouncingBalls).length; // Kollar hur många bollar som är på planen för att avgöra när man klarat en bana!
 
         playField.clearRect(0, 0, playfieldWidth, playfieldHeight);
-
+        if(player.health > 100){
+          player.health = 100;
+        }
+        healthBar.style.width = player.health + "%"
 
 
 
@@ -512,7 +513,7 @@ function startGame() {
         {
             addUpgrades(50, 50, "Ammo", "#336E7B");
         }
-        else if(timer.innerHTML % 13 == 0)
+        else if(timer.innerHTML % 13 == 0 && player.health < 100)
         {
             addUpgrades(50, 50, "Health", "#A2DED0");
         }
