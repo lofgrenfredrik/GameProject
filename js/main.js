@@ -45,6 +45,8 @@ var reload = new Audio();
 reload.src = "sound/reload.wav";
 var healthSound = new Audio();
 healthSound.src = "sound/yes.wav"
+var backgroundSound = new Audio();
+backgroundSound.src = "sound/retro.mp3"
 
 function startGame() {
 
@@ -405,17 +407,19 @@ function startGame() {
      */
    // var ballCounter = 0;
 
-
-
+// Bakgrundsmusik****************************************
+// backgroundSound.play();
 
     function update() {
 
         ballCounter.innerHTML = Object.keys(bouncingBalls).length; // Kollar hur många bollar som är på planen för att avgöra när man klarat en bana!
 
         playField.clearRect(0, 0, playfieldWidth, playfieldHeight);
+        //Kontrolerar så att hälsan inte kan bli mer än 100
         if(player.health > 100){
           player.health = 100;
         }
+        //Uppdaterar hälsan
         healthBar.style.width = player.health + "%"
 
 
