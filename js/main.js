@@ -34,6 +34,17 @@ var accuracy = document.getElementById("accuracy");
 
 var shotsFired = document.getElementById("shotsFired");
 
+// Sounds ********************
+var pop = new Audio();
+pop.src = "sound/pop.wav";
+var shotSound = new Audio();
+shotSound.src = "sound/bang.wav";
+var specialShotSound = new Audio();
+specialShotSound.src = "sound/loudgun.wav";
+var reload = new Audio();
+reload.src = "sound/reload.wav";
+var healthSound = new Audio();
+healthSound.src = "sound/yes.wav"
 
 function startGame() {
 
@@ -117,10 +128,15 @@ function startGame() {
             if (ammoLeft > 0) {
                 generateShot(player.PositionValueX);
                 ammoLeft--
+                shotSound.play();
+                shotSound.currentTime=0;
+
             }
             if (powerShotAvailabe > 0) {
                 generatePowerShot(player.PositionValueX);
                 powerShotAvailabe--
+                specialShotSound.play();
+                specialShotSound.currentTime=0;
             }
         }
     };
@@ -312,6 +328,8 @@ function startGame() {
             for (var k in list) {
                 var isColliding = testCollisionEntity(list[k], object[key]);
                 if (isColliding) {
+                  pop.play();
+                  pop.currentTime=0
                     if (object[key].ballRadius == 60) {
                         addBalls(mediumBallRadius, object[key].PositionValueX + 15, object[key].PositionValueY, object[key].speedXAxis);
                         addBalls(mediumBallRadius, object[key].PositionValueX - 15, object[key].PositionValueY, (object[key].speedXAxis) * -1);
@@ -432,12 +450,16 @@ function startGame() {
             {
                 console.log("AMMO!");
                 ammoLeft += 10;
+                reload.play();
+                reload.currentTime=0;
                 delete upgrades[item]
             }
             else if(distanceBetweenPlayerAndUpgrade>-marginal && distanceBetweenPlayerAndUpgrade<marginal && upgrades[item].type === "Health")
             {
                 console.log("Health!");
                 player.health += 20;
+                healthSound.play();
+                healthSound.currentTime=0;
                 delete upgrades[item]
             }
             else if(distanceBetweenPlayerAndUpgrade>-marginal && distanceBetweenPlayerAndUpgrade<marginal && upgrades[item].type === "PowerSot")
@@ -509,7 +531,3 @@ function startGame() {
     },200);
 }
 startGame();
-
-
-
-
