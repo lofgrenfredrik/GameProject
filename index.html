@@ -12,19 +12,22 @@
     </div>
     <div id="gameInfoContainer">
         <div class="col_3">
-            <div id="startGame" class="button">Starta spel</div>
+            <div class="health-bar-container">
+              <div id="health-bar"></div>
+            </div>
         </div>
         <div class="col_3">
-            <div id="moreBalls" class="button">Fler bollar</div>
+          <div>Bollar i omlopp: <span id="ballCounter"></span></div>
+          <div>Träffsäkerhet: <span id="accuracy"></span>%</div>
+          <div>Skjutna skott: <span id="shotsFired">0</span></div>
+            <!-- <div id="moreBalls" class="button">Fler bollar</div> -->
         </div>
         <div class="col_3">
             <div>Skotten har träffat bollarna <span id="collisionCounter"></span> gånger</div>
             <div>Ammunition: <span id="ammoCounter"></span></div>
             <div>Timer: <span id="timer">0</span></div>
             <div>Hälsa: <span id="health">0</span></div>
-            <div>Bollar i omlopp: <span id="ballCounter"></span></div>
-            <div>Träffsäkerhet: <span id="accuracy"></span>%</div>
-            <div>Skjutna skott: <span id="shotsFired">0</span></div>
+
 
         </div>
     </div>

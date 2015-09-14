@@ -29,11 +29,24 @@ var frameCount = 0;
 var groundHeight = 32; // Höjden på marken i bilden.
 var ballCounter = document.getElementById("ballCounter");
 var accuracy = document.getElementById("accuracy");
-
+var healthBar = document.getElementById("health-bar");
 
 
 var shotsFired = document.getElementById("shotsFired");
 
+// Sounds ********************
+var pop = new Audio();
+pop.src = "sound/pop.wav";
+var shotSound = new Audio();
+shotSound.src = "sound/bang.wav";
+var specialShotSound = new Audio();
+specialShotSound.src = "sound/loudgun.wav";
+var reload = new Audio();
+reload.src = "sound/reload.wav";
+var healthSound = new Audio();
+healthSound.src = "sound/yes.wav"
+var backgroundSound = new Audio();
+backgroundSound.src = "sound/retro.mp3"
 
 function startGame() {
 
@@ -47,7 +60,7 @@ function startGame() {
 
     player.left = false;
     player.right = false;
-    player.health = 5;
+    player.health = 100;
     player.height = 75;
     player.width = 65; //
     player.PositionValueX = 100;
@@ -101,7 +114,6 @@ function startGame() {
         if (keyPress.keyCode === 37) {
             // Move left
             player.left = true;
-
         }
         if (keyPress.keyCode === 39) {
             // Move right
@@ -113,14 +125,18 @@ function startGame() {
         }
         // Shoot
         if (keyPress.keyCode === 32) {
-
             if (ammoLeft > 0) {
                 generateShot(player.PositionValueX);
                 ammoLeft--
+                shotSound.play();
+                shotSound.currentTime=0;
+
             }
             if (powerShotAvailabe > 0) {
                 generatePowerShot(player.PositionValueX);
                 powerShotAvailabe--
+                specialShotSound.play();
+                specialShotSound.currentTime=0;
             }
         }
     };
@@ -197,7 +213,7 @@ function startGame() {
 
     var bouncingBalls = {};
 
-    document.getElementById("moreBalls").addEventListener("click", addBalls);
+    // document.getElementById("moreBalls").addEventListener("click", addBalls);
 
     // console.log(bouncingBalls);
     var i = 0;
@@ -312,6 +328,8 @@ function startGame() {
             for (var k in list) {
                 var isColliding = testCollisionEntity(list[k], object[key]);
                 if (isColliding) {
+                  pop.play();
+                  pop.currentTime=0
                     if (object[key].ballRadius == 60) {
                         addBalls(mediumBallRadius, object[key].PositionValueX + 15, object[key].PositionValueY, object[key].speedXAxis);
                         addBalls(mediumBallRadius, object[key].PositionValueX - 15, object[key].PositionValueY, (object[key].speedXAxis) * -1);
@@ -389,15 +407,20 @@ function startGame() {
      */
    // var ballCounter = 0;
 
-
-
+// Bakgrundsmusik****************************************
+// backgroundSound.play();
 
     function update() {
 
         ballCounter.innerHTML = Object.keys(bouncingBalls).length; // Kollar hur många bollar som är på planen för att avgöra när man klarat en bana!
 
         playField.clearRect(0, 0, playfieldWidth, playfieldHeight);
-
+        //Kontrolerar så att hälsan inte kan bli mer än 100
+        if(player.health > 100){
+          player.health = 100;
+        }
+        //Uppdaterar hälsan
+        healthBar.style.width = player.health + "%"
 
 
 
@@ -432,12 +455,16 @@ function startGame() {
             {
                 console.log("AMMO!");
                 ammoLeft += 10;
+                reload.play();
+                reload.currentTime=0;
                 delete upgrades[item]
             }
             else if(distanceBetweenPlayerAndUpgrade>-marginal && distanceBetweenPlayerAndUpgrade<marginal && upgrades[item].type === "Health")
             {
                 console.log("Health!");
                 player.health += 20;
+                healthSound.play();
+                healthSound.currentTime=0;
                 delete upgrades[item]
             }
             else if(distanceBetweenPlayerAndUpgrade>-marginal && distanceBetweenPlayerAndUpgrade<marginal && upgrades[item].type === "PowerSot")
@@ -490,7 +517,7 @@ function startGame() {
         {
             addUpgrades(50, 50, "Ammo", "#336E7B");
         }
-        else if(timer.innerHTML % 13 == 0)
+        else if(timer.innerHTML % 13 == 0 && player.health < 100)
         {
             addUpgrades(50, 50, "Health", "#A2DED0");
         }
@@ -509,7 +536,3 @@ function startGame() {
     },200);
 }
 startGame();
-
-
-
-
