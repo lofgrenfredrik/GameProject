@@ -407,7 +407,7 @@ function startGame() {
      */
    // var ballCounter = 0;
 
-// Bakgrundsmusik****************************************
+
 // backgroundSound.play();
 
     function update() {
