@@ -4,6 +4,8 @@ playField.font = '30px Arial';
 var playfieldHeight = document.getElementById("playField").height;
 var playfieldWidth = document.getElementById("playField").width;
 
+var obstacleCount = 0;
+
 var shotList = {};
 var powerShotList = {};
 var powerShotAvailabe = 200;
@@ -17,8 +19,8 @@ var playerSafetyDistanceY = 300; // Marginalen på Y axeln som bollarna kommer g
 var bigBallRadius = 60;
 var mediumBallRadius = 40;
 var smallBallRadius = 20;
-var firstBallSpeed = Math.floor((Math.random() * 6) + 1);
-//var firstBallSpeed = 1;
+//var firstBallSpeed = Math.floor((Math.random() * 6) + 1);
+var firstBallSpeed = 1;
 
 var collisionCounter = document.getElementById("collisionCounter");
 var ammoCounter = document.getElementById("ammoCounter");
@@ -29,53 +31,20 @@ var frameCount = 0;
 var groundHeight = 32; // Höjden på marken i bilden.
 var ballCounter = document.getElementById("ballCounter");
 var accuracy = document.getElementById("accuracy");
-var healthBar = document.getElementById("health-bar");
-var bana = document.getElementById("bana");
-var level = 1;
 
 var shotsFired = document.getElementById("shotsFired");
-var backGrounds = ["pixelBG2.jpg", "fantasy.png", "forest.png", "desert.png"];
-// Sounds ********************
-var pop = new Audio();
-pop.src = "sound/pop.wav";
-var shotSound = new Audio();
-shotSound.src = "sound/bang.wav";
-var specialShotSound = new Audio();
-specialShotSound.src = "sound/loudgun.wav";
-var reload = new Audio();
-reload.src = "sound/reload.wav";
-var healthSound = new Audio();
-healthSound.src = "sound/yes.wav"
-var backgroundSound = new Audio();
-backgroundSound.src = "sound/retro.mp3"
-var playFieldBackground = document.getElementById("playField");
-var numberOfCollisions = 0;
-var ballColors = ["#C0392B", "#E4F1FE", "#336E7B", "#4ECDC4", "#3D4A5D", "#26A65B", "#79FF85"];
-//document.getElementById("startGame").addEventListener("click", startGame);
+
+var ammoImage = document.getElementById("ammoImage");
+var healthImage = document.getElementById("healthImage");
+
+ammoImage.style.display ="none";
+healthImage.style.display ="none";
 
 
-var bouncingBalls = {};
 
-var speed = 5;
 
-function bouncingBall(ballSize, startX, startY, speedX) {
 
-    this.ballRadius = ballSize;
-    this.PositionValueX = startX;
-    this.PositionValueY = startY;
-    this.speedXAxis = speedX;
-    this.speedYAxis = Math.floor((Math.random() * speed) + 1);
-    this.hexColorCode = ballColors[Math.floor((Math.random() * ballColors.length) + 1)];
-
-    // this.ballRadius = Math.ceil((Math.random() * 50) + 10); //
-    /*  this.PositionValueX = Math.floor(Math.random() * ((playfieldWidth-this.ballRadius*2) - this.ballRadius*2 + 1)) + this.ballRadius*2;
-     this.PositionValueY = Math.floor(Math.random() * ((playfieldHeight-playerSafetyDistanceY-this.ballRadius*2) - this.ballRadius*2 + 1)) + this.ballRadius*2;
-     this.speedXAxis = Math.floor((Math.random() * 6) + 1);
-     this.speedYAxis =  Math.floor((Math.random() * 6) + 1);
-     this.hexColorCode = ballColors[ Math.floor((Math.random() * ballColors.length) + 1)];*/
-}
-function startGame() {
-    playFieldBackground.style.background = 'url("images/' + backGrounds[level-1] + '")';
+function startGame(level) {
     /**
      *
      *<======= ALLTING SOM HAR MED SPELAREN ATT GÖRA =======>
@@ -83,17 +52,15 @@ function startGame() {
      */
     var player = new Image();
     player.src = "images/villeSprite.png";  // WTF?! Varför utgår man från vart html-filen ligger och inte JS filen?
-
     player.left = false;
     player.right = false;
     player.health = 100;
     player.height = 75;
     player.width = 65; //
     player.PositionValueX = 100;
-    player.PositionValueY = playfieldHeight - 80 - groundHeight;
+    player.PositionValueY = playfieldHeight - 75 - groundHeight;
     player.animateX = (player.width) - 25;
     player.animateY = player.height;
-// var ship_x = player.PositionValueX, ship_y =player.PositionValueY, ship_w = 65, ship_h = 85,
     var strafeX = 0;
 
     /**
@@ -101,6 +68,7 @@ function startGame() {
      *<======= STARTA TIMERS! =======>
      *
      */
+
     function updateTime() {
         time++;
         document.getElementById("timer").innerHTML = time;
@@ -116,11 +84,8 @@ function startGame() {
     }
 
     // playField.drawImage(player,srcX,srcY,player.width,player.height,player.PositionValueX,player.PositionValueY,player.width,player.height);
-
     // playField.drawImage(player,strafeX,0,player.width,player.height,player.PositionValueX,player.PositionValueY,player.width,player.height);
-
     // ship_x = (width / 2) - 25, ship_y = height - 85, ship_w = 65, ship_h = 85,
-
     /* KOLLAR OM SPELAREN BLIR TRÄFFAD */
 
     setInterval(function () {
@@ -134,7 +99,6 @@ function startGame() {
             checkHealth(player.health)
         }
     }
-
     /* FLYTTAR PÅ SPELAREN */
     document.onkeydown = function (keyPress) {
         if (keyPress.keyCode === 37) {
@@ -218,9 +182,31 @@ function startGame() {
      *<======= ALLTING SOM HAR MED BOLLARNA ATT GÖRA =======>
      *
      */
+    var numberOfCollisions = 0;
+    var ballColors = ["#000", "#E4F1FE", "#336E7B", "#4ECDC4", "#3D4A5D", "#26A65B", "#79FF85"];
+    //document.getElementById("startGame").addEventListener("click", startGame);
+    var speed = 4;
 
+    function bouncingBall(ballSize, startX, startY, speedX) {
 
-    // document.getElementById("moreBalls").addEventListener("click", addBalls);
+        this.ballRadius = ballSize;
+        this.PositionValueX = startX;
+        this.PositionValueY = startY;
+        this.speedXAxis = speedX;
+        this.speedYAxis = Math.floor((Math.random() * speed) + 1);
+        this.hexColorCode = ballColors[Math.floor((Math.random() * ballColors.length) + 1)];
+       // this.hypo = Math.sqrt(Math.pow(ballSize,2)*2);
+        this.isStuck = false;
+        // this.ballRadius = Math.ceil((Math.random() * 50) + 10); //
+        /*  this.PositionValueX = Math.floor(Math.random() * ((playfieldWidth-this.ballRadius*2) - this.ballRadius*2 + 1)) + this.ballRadius*2;
+         this.PositionValueY = Math.floor(Math.random() * ((playfieldHeight-playerSafetyDistanceY-this.ballRadius*2) - this.ballRadius*2 + 1)) + this.ballRadius*2;
+         this.speedXAxis = Math.floor((Math.random() * 6) + 1);
+         this.speedYAxis =  Math.floor((Math.random() * 6) + 1);
+         this.hexColorCode = ballColors[ Math.floor((Math.random() * ballColors.length) + 1)];*/
+    }
+    var bouncingBalls = {};
+
+    //document.getElementById("moreBalls").addEventListener("click", addBalls);
 
     // console.log(bouncingBalls);
     var i = 0;
@@ -232,28 +218,120 @@ function startGame() {
 
     addBalls(bigBallRadius, (Math.floor(Math.random() * 9) + 1) *100, 100, firstBallSpeed); // Skapar den första bollen så att spelet kommer igång!
 
-    function updateEntity(ball) {
+    function updateEntity(ball,hinder) {
         ball.PositionValueX += ball.speedXAxis;
         ball.PositionValueY += ball.speedYAxis;
-
         playField.beginPath();
         playField.fillStyle = ball.hexColorCode;
-        playField.arc(ball.PositionValueX, ball.PositionValueY, ball.ballRadius, 0, Math.PI * 2, true);
+       // playField.arc(ball.PositionValueX, ball.PositionValueY, ball.ballRadius, 0, Math.PI * 2, true);
+
+        playField.arc(ball.PositionValueX, ball.PositionValueY, ball.ballRadius,0,2*Math.PI);
         playField.closePath();
         playField.fill();
 
-        if (ball.PositionValueX < ball.ballRadius || ball.PositionValueX > playfieldWidth - ball.ballRadius) {
-            ball.speedXAxis = -ball.speedXAxis;
+        if(obstacleCount === 0){
+            hinder.PositionValueY += hinder.speedYAxis;
+            //console.log(hinder.speedXAxis
         }
-        if (ball.PositionValueY < ball.ballRadius + groundHeight || ball.PositionValueY > playfieldHeight - ball.ballRadius - groundHeight) {
-            ball.speedYAxis = -ball.speedYAxis;
+        playField.fillStyle = hinder.color;
+        playField.fillRect(hinder.PositionValueX, hinder.PositionValueY, hinder.width, hinder.height);
+        obstacleCount++;
+
+        if(obstacleCount === (ballCounter.innerHTML = Object.keys(bouncingBalls).length))
+        {
+            obstacleCount = 0;
         }
-        if (ball.PositionValueY > playfieldHeight - player.height - ball.ballRadius && ((player.PositionValueX + player.width / 2) > ball.PositionValueX - ball.ballRadius && (player.PositionValueX + player.width / 2) < ball.PositionValueX + ball.ballRadius)) {
-            hit = true;
-            playerHit(hit);
+
+        var bounceBordersX = ball.PositionValueX < ball.ballRadius || ball.PositionValueX > playfieldWidth - ball.ballRadius;
+        var bounceBordersY = ball.PositionValueY < ball.ballRadius || ball.PositionValueY > playfieldHeight - ball.ballRadius - groundHeight;
+        var playerGetsHit = (ball.PositionValueY > playfieldHeight - player.height - ball.ballRadius && ((player.PositionValueX + player.width / 2) > ball.PositionValueX - ball.ballRadius && (player.PositionValueX + player.width / 2) < ball.PositionValueX + ball.ballRadius))
+        var moveObstacle =  hinder.PositionValueY < 0 || hinder.PositionValueY > hinder.maxValue;
+
+       // var collidewithObs = testCollisionEntityObstacle(hinders,ball);
+
+      //  var hypo = Math.sqrt(Math.pow(ball.ballRadius,2)*2);
+        //console.log(ball.ballRadius);
+       // console.log(hypo);
+
+            if(typeof hinder == "undefined")
+            {
+              //  console.log("DET STÄMMER");
+            if (bounceBordersX) {
+                ball.speedXAxis = -ball.speedXAxis;
+            }
+
+            if (bounceBordersY) {
+                ball.speedYAxis = -ball.speedYAxis;
+            }
+
+                if(playerGetsHit)
+                {
+                    hit = true;
+                    playerHit(hit);
+                }
+        }
+        else
+        {
+
+            if(moveObstacle)
+            {
+                console.log("DET STÄMMER!");
+                hinder.speedYAxis = -hinder.speedYAxis;
+
+            }
+            if (bounceBordersX)
+            {
+                ball.speedXAxis = -ball.speedXAxis;
+            }
+
+            if ((ball.PositionValueY > hinder.PositionValueY && ball.PositionValueY < hinder.PositionValueY+hinder.height))
+            {
+
+                // Studsa på vänster sida
+                if((ball.PositionValueX+ball.ballRadius>=hinder.PositionValueX) && (ball.PositionValueX<=hinder.PositionValueX ) )
+                {
+                    ball.speedXAxis = -ball.speedXAxis;
+                }
+                 //Studsa på höger sida
+                if((ball.PositionValueX-ball.ballRadius<=hinder.PositionValueX+hinders.width) && (ball.PositionValueX >= hinders.PositionValueX+hinder.width ) )
+                {
+                    ball.speedXAxis = -ball.speedXAxis;
+                }
+            }
+            if ((ball.PositionValueX+ball.ballRadius > hinder.PositionValueX && ball.PositionValueX-ball.ballRadius < hinder.PositionValueX+hinder.width))
+            {
+                if((ball.PositionValueY-ball.ballRadius+5 < hinder.PositionValueY+hinder.height) && (ball.PositionValueY-ball.ballRadius+5>hinder.PositionValueY))
+                {
+                    ball.isStuck = true;
+                  //  delete ball;
+                   // console.log("Boll fastnat!")
+                }
+                if((ball.PositionValueY+ball.ballRadius-5 > hinder.PositionValueY) && (ball.PositionValueY+ball.ballRadius-5<hinder.PositionValueY+hinder.height))
+                {
+                    ball.isStuck = true;
+                    console.log()
+                }
+                // console.log("innanför på X!");
+               if((ball.PositionValueY+ball.ballRadius>=hinder.PositionValueY) && (ball.PositionValueY<=hinder.PositionValueY ) )
+                {
+                    ball.speedYAxis = -ball.speedYAxis;
+                }
+                if((ball.PositionValueY-ball.ballRadius<=hinders.PositionValueY+hinder.height) && (ball.PositionValueY>=hinder.PositionValueY ) )
+                {
+                    ball.speedYAxis = -ball.speedYAxis;
+                }
+            }
+            if(bounceBordersY)
+            {
+                ball.speedYAxis = -ball.speedYAxis;
+            }
+            if(playerGetsHit)
+            {
+                hit = true;
+                playerHit(hit);
+            }
         }
     }
-
     function getDistanceBetweenEntity(shot, ball) {     //return distance (number)
         var vx = shot.PositionValueX - ball.PositionValueX;
         var vy = shot.PositionValueY - ball.PositionValueY;
@@ -264,6 +342,39 @@ function startGame() {
         var distance = getDistanceBetweenEntity(shot, ball);
         return distance < ball.ballRadius;
     }
+
+
+    /**
+     *
+     *<======= ALLTING SOM HAR MED HINDREN ATT GÖRA =======>
+     *
+     */
+
+    function createHinder(startX, startY, width, height, moving, speedY, max) {
+        this.PositionValueX = startX;
+        this.PositionValueY = startY;
+        this.width = width;
+        this.height = height;
+        this.speedYAxis = speedY;
+        this.moving = moving;
+        this.maxValue = max; // Max hur långt den kan gå ner på x-axeln
+        this.color = "#000";
+    }
+    var hinders = {};
+
+    //document.getElementById("moreBalls").addEventListener("click", addBalls);
+
+    // console.log(bouncingBalls);
+    var hinderCounter = 0;
+    function addHinder(startX, startY, width, height, moving, speedY, max) {
+        hinders["hinder" + hinderCounter] = new createHinder(startX, startY, width, height, moving, speedY, max);
+        hinderCounter++;
+    }
+
+    addHinder(0,0,0,0,true,0,playfieldHeight-200);
+   // addHinder(400,300,220,10,true,2,playfieldHeight-300);
+
+    console.log(hinders);
 
     /**
      *
@@ -279,7 +390,8 @@ function startGame() {
             PositionValueY: playfieldHeight - groundHeight-player.height,
             width: 10,
             height: 10,
-            color: "black"
+            color: "black",
+            img: ammoImage
         };
         shotList["shot" + shotNr] = shot;
         if(player.health>0)
@@ -299,7 +411,8 @@ function startGame() {
             PositionValueY: playfieldHeight - groundHeight-player.height,
             width: 10,
             height: 10,
-            color: "black"
+            //color: "black"
+            img: ammoImage
         };
         var powerShot2 = {
             id: 2,
@@ -315,7 +428,9 @@ function startGame() {
             PositionValueY: playfieldHeight - groundHeight-player.height,
             width: 10,
             height: 10,
-            color: "black"
+            //color: "black"
+            img: ammoImage
+
         };
         powerShotList["PowerShot" + PowershotNr] = powerShot1;
         PowershotNr++;
@@ -337,9 +452,19 @@ function startGame() {
 
     }
 
-    function TestShotHits(list, object) {
+    function TestShotHits(list, object, obstacles) {
         for (var key in object) {
-            updateEntity(object[key]);
+
+            for(var thing in obstacles)
+            {
+            updateEntity(object[key],obstacles[thing]);
+
+            if(object[key].isStuck == true)
+            {
+                //  delete object[key];
+               // object[key].PositionValueY = object[key].PositionValueY+100;
+              //  object[key].PositionValueY
+            }
 
             // KOLLAR OM SKOTTEN TRÄFFAR
             for (var k in list) {
@@ -358,24 +483,26 @@ function startGame() {
                     delete object[key]; // Tar bort bollen som träffar texten!
                     delete list[k]; // Tar bort bollen som träffar texten!
                     numberOfCollisions++;
+
                 }
                 else if (list[k].PositionValueY < 0) {
                     delete list[k]; // Tar bort bollen som träffas!
                 }
             }
+            }
         }
     }
-
     /**
      *
      *<======= ALLTING SOM HAR MED UPPGRADERINGAR ATT GÖRA =======>
      *
      */
-    function upgrade(width, height, type, color) {
+    function upgrade(width, height, type,/* color,*/img) {
         this.width = width;
         this.height = height;
         this.type = type;
-        this.color = color;
+        //this.color = color;
+        this.img = img;
         this.PositionValueX = Math.floor(Math.random() * ((playfieldWidth - this.width) - this.width)) + this.width;
         this.PositionValueY = playfieldHeight - this.height - groundHeight;
     }
@@ -384,8 +511,8 @@ function startGame() {
 
     var upgradeCounter = 0;
 
-    function addUpgrades(width, height, type, color) {
-        upgrades["upgrade" + upgradeCounter] = new upgrade(width, height, type, color);
+    function addUpgrades(width, height, type, img) {
+        upgrades["upgrade" + upgradeCounter] = new upgrade(width, height, type, img);
         upgradeCounter++;
     }
 
@@ -393,7 +520,6 @@ function startGame() {
         upgrades = {};
         // console.log(upgrades)
     }
-
     /**
      *
      *<======= RITA UT SKOTT, PLAYER & UPPGRADERING =======>
@@ -404,28 +530,18 @@ function startGame() {
         playField.fillRect(object.PositionValueX, object.PositionValueY, object.width, object.height);
     }
 
-    /* function drawPlayer(player)
+     function drawImages(item)
      {
-     playField.drawImage(player, player.PositionValueX,player.PositionValueY);
-     }*/
+     playField.drawImage(item.img, item.PositionValueX,item.PositionValueY);
+     }
+
+
 
     /**
      *
      *<======= UPPDATERING SOM KÖRS VAR 20 millisekund =======>
      *
      */
-
-
-    /*
-
-     var ballCounter = document.getElementById("ballCounter");
-
-     var ballsInAction = 0;
-     */
-   // var ballCounter = 0;
-
-
-// backgroundSound.play();
 
     function update() {
 
@@ -439,7 +555,10 @@ function startGame() {
         //Uppdaterar hälsan
         healthBar.style.width = player.health + "%"
 
-
+     /*   for (var hinder in hinders)
+        {
+        drawObject(hinders[hinder]);
+        }*/
 
         collisionCounter.innerHTML = numberOfCollisions;
 
@@ -455,12 +574,14 @@ function startGame() {
         healthCounter.innerHTML = player.health;
         bana.innerHTML = level;
 
-        for (var item in upgrades)
+        for (var upgrade in upgrades)
         {
-            drawObject(upgrades[item]);
+            drawImages(upgrades[upgrade]);
         }
-        playerPosition(); //updaterar spelaren
 
+       // drawImages(shot);
+
+        playerPosition(); //updaterar spelaren
 
         playField.drawImage(player,strafeX,0,player.width,player.height,player.PositionValueX,player.PositionValueY,player.width,player.height);
 
@@ -550,15 +671,15 @@ function startGame() {
         }
         else if(timer.innerHTML % 7 == 0)
         {
-            addUpgrades(50, 50, "Ammo", "#336E7B");
+            addUpgrades(50, 50, "Ammo", ammoImage);
         }
         else if(timer.innerHTML % 13 == 0 && player.health < 100)
         {
-            addUpgrades(50, 50, "Health", "#A2DED0");
+            addUpgrades(50, 50, "Health", healthImage);
         }
         else if(timer.innerHTML % 31 == 0)
         {
-            addUpgrades(50, 50, "PowerSot", "#cfe25b");
+            addUpgrades(50, 50, "PowerSot", ammoImage);
         }
         else if(timer.innerHTML % 5 == 0)
         {
