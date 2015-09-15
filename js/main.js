@@ -6,7 +6,7 @@ var playfieldWidth = document.getElementById("playField").width;
 
 var shotList = {};
 var powerShotList = {};
-var powerShotAvailabe = 20;
+var powerShotAvailabe = 200;
 // intervall som uppdateringsfunktionen körs
 
 var playerSafetyDistanceY = 300; // Marginalen på Y axeln som bollarna kommer generas ovanför.
@@ -30,6 +30,7 @@ var groundHeight = 32; // Höjden på marken i bilden.
 var ballCounter = document.getElementById("ballCounter");
 var accuracy = document.getElementById("accuracy");
 var healthBar = document.getElementById("health-bar");
+var bana = document.getElementById("bana");
 var level = 1;
 
 var shotsFired = document.getElementById("shotsFired");
@@ -49,7 +50,7 @@ var backgroundSound = new Audio();
 backgroundSound.src = "sound/retro.mp3"
 var playFieldBackground = document.getElementById("playField");
 function startGame() {
-    playFieldBackground.style.background = 'url("images/' + backGrounds[1] + '")';
+    playFieldBackground.style.background = 'url("images/' + backGrounds[level-1] + '")';
     /**
      *
      *<======= ALLTING SOM HAR MED SPELAREN ATT GÖRA =======>
@@ -449,7 +450,7 @@ function startGame() {
         }
         ammoCounter.innerHTML = ammoLeft;
         healthCounter.innerHTML = player.health;
-
+        bana.innerHTML = level;
 
         for (var item in upgrades)
         {
@@ -514,6 +515,14 @@ function startGame() {
           playField.font = "bold 56px Arial";
           playField.textAlign = "center";
           playField.fillText("Winning!!!", playfieldWidth/2, playfieldHeight/2);
+          var next = document.getElementById('moreBalls');
+          next.style.display = "flex";
+          next.addEventListener("click", function(){
+            level++;
+            next.style.display = "none";
+            startGame();
+          })
+
         }
     }
     function checkHealth(health)
