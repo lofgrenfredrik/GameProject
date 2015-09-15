@@ -7,8 +7,7 @@
   height: 100%; }
 
 #playField {
-  color: #79ff85;
-  background: url("../images/pixelBG2.jpg"); }
+  color: #79ff85; }
 
 #gameInfoContainer {
   margin: 0 auto;
@@ -22,7 +21,7 @@
 
 .button {
   transition: all 0.3s ease;
-  display: flex;
+  display: none;
   justify-content: center;
   align-items: center;
   height: 50px;

@@ -6,7 +6,7 @@ var playfieldWidth = document.getElementById("playField").width;
 
 var shotList = {};
 var powerShotList = {};
-var powerShotAvailabe = 0;
+var powerShotAvailabe = 200;
 // intervall som uppdateringsfunktionen körs
 
 var playerSafetyDistanceY = 300; // Marginalen på Y axeln som bollarna kommer generas ovanför.
@@ -30,10 +30,11 @@ var groundHeight = 32; // Höjden på marken i bilden.
 var ballCounter = document.getElementById("ballCounter");
 var accuracy = document.getElementById("accuracy");
 var healthBar = document.getElementById("health-bar");
-
+var bana = document.getElementById("bana");
+var level = 1;
 
 var shotsFired = document.getElementById("shotsFired");
-
+var backGrounds = ["pixelBG2.jpg", "fantasy.png", "forest.png", "desert.png"];
 // Sounds ********************
 var pop = new Audio();
 pop.src = "sound/pop.wav";
@@ -47,9 +48,9 @@ var healthSound = new Audio();
 healthSound.src = "sound/yes.wav"
 var backgroundSound = new Audio();
 backgroundSound.src = "sound/retro.mp3"
-
+var playFieldBackground = document.getElementById("playField");
 function startGame() {
-
+    playFieldBackground.style.background = 'url("images/' + backGrounds[level-1] + '")';
     /**
      *
      *<======= ALLTING SOM HAR MED SPELAREN ATT GÖRA =======>
@@ -123,8 +124,8 @@ function startGame() {
         if (player.right == false && player.left == false) {
             strafeX = 0;
         }
-        // Shoot
-        if (keyPress.keyCode === 32) {
+        // Shoot knapp S
+        if (keyPress.keyCode === 83) {
             if (ammoLeft > 0) {
                 generateShot(player.PositionValueX);
                 ammoLeft--
@@ -132,12 +133,15 @@ function startGame() {
                 shotSound.currentTime=0;
 
             }
-            if (powerShotAvailabe > 0) {
-                generatePowerShot(player.PositionValueX);
-                powerShotAvailabe--
-                specialShotSound.play();
-                specialShotSound.currentTime=0;
-            }
+        }
+        // Power shot Knapp A
+        if (keyPress.keyCode === 65) {
+          if (powerShotAvailabe > 0) {
+              generatePowerShot(player.PositionValueX);
+              powerShotAvailabe--
+              specialShotSound.play();
+              specialShotSound.currentTime=0;
+          }
         }
     };
     document.onkeyup = function (keyPress) {
@@ -223,7 +227,7 @@ function startGame() {
         i++;
     }
 
-    addBalls(bigBallRadius, 100, 100, firstBallSpeed); // Skapar den första bollen så att spelet kommer igång!
+    addBalls(bigBallRadius, (Math.floor(Math.random() * 9) + 1) *100, 100, firstBallSpeed); // Skapar den första bollen så att spelet kommer igång!
 
     function updateEntity(ball) {
         ball.PositionValueX += ball.speedXAxis;
@@ -288,7 +292,7 @@ function startGame() {
     function generatePowerShot(playerX) {
         var powerShot1 = {
             id: 1,
-            PositionValueX: playerX,
+            PositionValueX: playerX + 10,
             PositionValueY: playfieldHeight - groundHeight-player.height,
             width: 10,
             height: 10,
@@ -296,7 +300,15 @@ function startGame() {
         };
         var powerShot2 = {
             id: 2,
-            PositionValueX: playerX + 40,
+            PositionValueX: playerX,
+            PositionValueY: playfieldHeight - groundHeight-player.height,
+            width: 10,
+            height: 10,
+            color: "black"
+        };
+        var powerShot3 = {
+            id: 3,
+            PositionValueX: playerX + 10,
             PositionValueY: playfieldHeight - groundHeight-player.height,
             width: 10,
             height: 10,
@@ -305,6 +317,8 @@ function startGame() {
         powerShotList["PowerShot" + PowershotNr] = powerShot1;
         PowershotNr++;
         powerShotList["PowerShot" + PowershotNr] = powerShot2;
+        PowershotNr++;
+        powerShotList["PowerShot" + PowershotNr] = powerShot3;
         PowershotNr++;
     }
 
@@ -407,7 +421,7 @@ function startGame() {
      */
    // var ballCounter = 0;
 
-// Bakgrundsmusik****************************************
+
 // backgroundSound.play();
 
     function update() {
@@ -436,7 +450,7 @@ function startGame() {
         }
         ammoCounter.innerHTML = ammoLeft;
         healthCounter.innerHTML = player.health;
-
+        bana.innerHTML = level;
 
         for (var item in upgrades)
         {
@@ -492,6 +506,24 @@ function startGame() {
         // RITA UT BOLLARNA SAMT KOLLAR OM SKOTTEN TRÄFFAR
         TestShotHits(shotList,bouncingBalls);
         TestShotHits(powerShotList,bouncingBalls);
+        if(Object.keys(bouncingBalls).length === 0){
+          clearInterval(startUpdate);
+          clearInterval(startTime);
+          playField.fillStyle = "green";
+          playField.fillRect((playfieldWidth/2) - 150, (playfieldHeight/2) - 80, 300, 130);
+          playField.fillStyle = "#fff";
+          playField.font = "bold 56px Arial";
+          playField.textAlign = "center";
+          playField.fillText("Winning!!!", playfieldWidth/2, playfieldHeight/2);
+          var next = document.getElementById('moreBalls');
+          next.style.display = "flex";
+          next.addEventListener("click", function(){
+            level++;
+            next.style.display = "none";
+            startGame();
+          })
+
+        }
     }
     function checkHealth(health)
     {
@@ -506,12 +538,12 @@ function startGame() {
         }
     }
     var startUpdate = setInterval(update, 20);
-
+    var j = 0; //variabel för att begränsa hur många bollar som genereras per bana
     var startTime = setInterval(function(){
-        if(updateTime() % 10 == 0)
+        if(updateTime() % 10 == 0 && j <= level)
         {
-            addBalls(bigBallRadius, 100, 100, firstBallSpeed);
-
+            addBalls(bigBallRadius, (Math.floor(Math.random() * 9) + 1) *100, 100, firstBallSpeed);
+            j++;
         }
         else if(timer.innerHTML % 7 == 0)
         {
