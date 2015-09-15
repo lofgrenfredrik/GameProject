@@ -50,14 +50,6 @@ var reload = new Audio();
 var healthSound = new Audio();
 //healthSound.src = "sound/yes.wav";
 var backgroundSound = new Audio();
-<<<<<<< HEAD
-backgroundSound.src = "sound/retro.mp3"
-var playFieldBackground = document.getElementById("playField");
-function startGame() {
-    playFieldBackground.style.background = 'url("images/' + backGrounds[level-1] + '")';
-    ammoImage.style.display ="none";
-    healthImage.style.display ="none";
-=======
 //backgroundSound.src = "sound/retro.mp3";
 
 var playFieldBackground = document.getElementById("playField");
@@ -89,7 +81,6 @@ var bouncingBalls = {};
 document.getElementById("startGame").addEventListener("click",startGame);
 
 function startGame(numberOfBalls) {
->>>>>>> fd0ea4b037dc676024859891491944e7bc8ee75e
     /**
      *
      *<======= ALLTING SOM HAR MED SPELAREN ATT GÖRA =======>
@@ -236,12 +227,9 @@ function startGame(numberOfBalls) {
          this.hexColorCode = ballColors[ Math.floor((Math.random() * ballColors.length) + 1)];*/
     }
 
-<<<<<<< HEAD
-=======
     // document.getElementById("moreBalls").addEventListener("click", addBalls);
     //document.getElementById("moreBalls").addEventListener("click", addBalls);
 
->>>>>>> fd0ea4b037dc676024859891491944e7bc8ee75e
     // console.log(bouncingBalls);
     var i = 0;
 
@@ -251,14 +239,11 @@ function startGame(numberOfBalls) {
     }
 
     addBalls(bigBallRadius, (Math.floor(Math.random() * 9) + 1) *100, 100, firstBallSpeed); // Skapar den första bollen så att spelet kommer igång!
-<<<<<<< HEAD
-=======
 
    for(var s=0;s<numberOfBalls;s++)
     {
         addBalls(bigBallRadius, 200, 100, firstBallSpeed); // Skapar den första bollen så att spelet kommer igång!
     }
->>>>>>> fd0ea4b037dc676024859891491944e7bc8ee75e
 
     function updateEntity(ball,hinder) {
         ball.PositionValueX += ball.speedXAxis;
@@ -583,8 +568,6 @@ function startGame(numberOfBalls) {
      *<======= UPPDATERING SOM KÖRS VAR 20 millisekund =======>
      *
      */
-<<<<<<< HEAD
-=======
 
     /*
 
@@ -598,7 +581,6 @@ function startGame(numberOfBalls) {
 // backgroundSound.play();
 
 
->>>>>>> fd0ea4b037dc676024859891491944e7bc8ee75e
     function update() {
 
         ballCounter.innerHTML = Object.keys(bouncingBalls).length; // Kollar hur många bollar som är på planen för att avgöra när man klarat en bana!
@@ -714,12 +696,8 @@ function startGame(numberOfBalls) {
           })
         }*/
 
-<<<<<<< HEAD
-        }
-=======
         TestShotHits(shotList,bouncingBalls, hinders);
         TestShotHits(powerShotList,bouncingBalls,hinders);
->>>>>>> fd0ea4b037dc676024859891491944e7bc8ee75e
     }
     function checkHealth(health)
     {
@@ -763,9 +741,4 @@ function startGame(numberOfBalls) {
         updateFrameCount()
     },200);
 }
-<<<<<<< HEAD
-startGame();
-=======
 startGame(1);
-
->>>>>>> fd0ea4b037dc676024859891491944e7bc8ee75e
