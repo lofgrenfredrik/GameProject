@@ -31,8 +31,9 @@ var frameCount = 0;
 var groundHeight = 32; // Höjden på marken i bilden.
 var ballCounter = document.getElementById("ballCounter");
 var accuracy = document.getElementById("accuracy");
+<<<<<<< HEAD
 var healthBar = document.getElementById("health-bar");
-var bana = document.getElementById("level");
+var bana = document.getElementById("bana");
 var level = 1;
 
 var shotsFired = document.getElementById("shotsFired");
@@ -53,6 +54,22 @@ backgroundSound.src = "sound/retro.mp3"
 var playFieldBackground = document.getElementById("playField");
 function startGame() {
     playFieldBackground.style.background = 'url("images/' + backGrounds[level-1] + '")';
+=======
+
+var shotsFired = document.getElementById("shotsFired");
+
+var ammoImage = document.getElementById("ammoImage");
+var healthImage = document.getElementById("healthImage");
+
+ammoImage.style.display ="none";
+healthImage.style.display ="none";
+
+
+
+
+
+function startGame(level) {
+>>>>>>> Ville
     /**
      *
      *<======= ALLTING SOM HAR MED SPELAREN ATT GÖRA =======>
@@ -214,6 +231,12 @@ function startGame() {
     }
     var bouncingBalls = {};
 
+<<<<<<< HEAD
+    // document.getElementById("moreBalls").addEventListener("click", addBalls);
+=======
+    //document.getElementById("moreBalls").addEventListener("click", addBalls);
+>>>>>>> Ville
+
     // console.log(bouncingBalls);
     var i = 0;
 
@@ -222,7 +245,11 @@ function startGame() {
         i++;
     }
 
+<<<<<<< HEAD
     addBalls(bigBallRadius, (Math.floor(Math.random() * 9) + 1) *100, 100, firstBallSpeed); // Skapar den första bollen så att spelet kommer igång!
+=======
+    addBalls(bigBallRadius, 200, 100, firstBallSpeed); // Skapar den första bollen så att spelet kommer igång!
+>>>>>>> Ville
 
     function updateEntity(ball,hinder) {
         ball.PositionValueX += ball.speedXAxis;
@@ -548,6 +575,22 @@ function startGame() {
      *<======= UPPDATERING SOM KÖRS VAR 20 millisekund =======>
      *
      */
+
+<<<<<<< HEAD
+
+    /*
+
+     var ballCounter = document.getElementById("ballCounter");
+
+     var ballsInAction = 0;
+     */
+   // var ballCounter = 0;
+
+
+// backgroundSound.play();
+
+=======
+>>>>>>> Ville
     function update() {
 
         ballCounter.innerHTML = Object.keys(bouncingBalls).length; // Kollar hur många bollar som är på planen för att avgöra när man klarat en bana!
@@ -633,6 +676,7 @@ function startGame() {
             drawObject(powerShotList[powerS])
         }
         // RITA UT BOLLARNA SAMT KOLLAR OM SKOTTEN TRÄFFAR
+<<<<<<< HEAD
         TestShotHits(shotList,bouncingBalls);
         TestShotHits(powerShotList,bouncingBalls);
         if(Object.keys(bouncingBalls).length === 0){
@@ -653,6 +697,10 @@ function startGame() {
           })
 
         }
+=======
+        TestShotHits(shotList,bouncingBalls, hinders);
+        TestShotHits(powerShotList,bouncingBalls,hinders);
+>>>>>>> Ville
     }
     function checkHealth(health)
     {
@@ -696,4 +744,12 @@ function startGame() {
         updateFrameCount()
     },200);
 }
+<<<<<<< HEAD
 startGame();
+=======
+startGame(1);
+
+
+
+
+>>>>>>> Ville
