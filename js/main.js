@@ -49,6 +49,31 @@ healthSound.src = "sound/yes.wav"
 var backgroundSound = new Audio();
 backgroundSound.src = "sound/retro.mp3"
 var playFieldBackground = document.getElementById("playField");
+var numberOfCollisions = 0;
+var ballColors = ["#C0392B", "#E4F1FE", "#336E7B", "#4ECDC4", "#3D4A5D", "#26A65B", "#79FF85"];
+//document.getElementById("startGame").addEventListener("click", startGame);
+
+
+var bouncingBalls = {};
+
+var speed = 5;
+
+function bouncingBall(ballSize, startX, startY, speedX) {
+
+    this.ballRadius = ballSize;
+    this.PositionValueX = startX;
+    this.PositionValueY = startY;
+    this.speedXAxis = speedX;
+    this.speedYAxis = Math.floor((Math.random() * speed) + 1);
+    this.hexColorCode = ballColors[Math.floor((Math.random() * ballColors.length) + 1)];
+
+    // this.ballRadius = Math.ceil((Math.random() * 50) + 10); //
+    /*  this.PositionValueX = Math.floor(Math.random() * ((playfieldWidth-this.ballRadius*2) - this.ballRadius*2 + 1)) + this.ballRadius*2;
+     this.PositionValueY = Math.floor(Math.random() * ((playfieldHeight-playerSafetyDistanceY-this.ballRadius*2) - this.ballRadius*2 + 1)) + this.ballRadius*2;
+     this.speedXAxis = Math.floor((Math.random() * 6) + 1);
+     this.speedYAxis =  Math.floor((Math.random() * 6) + 1);
+     this.hexColorCode = ballColors[ Math.floor((Math.random() * ballColors.length) + 1)];*/
+}
 function startGame() {
     playFieldBackground.style.background = 'url("images/' + backGrounds[level-1] + '")';
     /**
@@ -193,29 +218,7 @@ function startGame() {
      *<======= ALLTING SOM HAR MED BOLLARNA ATT GÖRA =======>
      *
      */
-    var numberOfCollisions = 0;
-    var ballColors = ["#C0392B", "#E4F1FE", "#336E7B", "#4ECDC4", "#3D4A5D", "#26A65B", "#79FF85"];
-//document.getElementById("startGame").addEventListener("click", startGame);
-    var speed = 5;
 
-    function bouncingBall(ballSize, startX, startY, speedX) {
-
-        this.ballRadius = ballSize;
-        this.PositionValueX = startX;
-        this.PositionValueY = startY;
-        this.speedXAxis = speedX;
-        this.speedYAxis = Math.floor((Math.random() * speed) + 1);
-        this.hexColorCode = ballColors[Math.floor((Math.random() * ballColors.length) + 1)];
-
-        // this.ballRadius = Math.ceil((Math.random() * 50) + 10); //
-        /*  this.PositionValueX = Math.floor(Math.random() * ((playfieldWidth-this.ballRadius*2) - this.ballRadius*2 + 1)) + this.ballRadius*2;
-         this.PositionValueY = Math.floor(Math.random() * ((playfieldHeight-playerSafetyDistanceY-this.ballRadius*2) - this.ballRadius*2 + 1)) + this.ballRadius*2;
-         this.speedXAxis = Math.floor((Math.random() * 6) + 1);
-         this.speedYAxis =  Math.floor((Math.random() * 6) + 1);
-         this.hexColorCode = ballColors[ Math.floor((Math.random() * ballColors.length) + 1)];*/
-    }
-
-    var bouncingBalls = {};
 
     // document.getElementById("moreBalls").addEventListener("click", addBalls);
 
