@@ -1,9 +1,8 @@
 @import "normalize.scss";
 
 $darkBlue: #34495E;
-
-
-
+$red: #E74C3C;
+$green: #1BBC9B;
 #main-container
 {
   width: 100%;
@@ -11,7 +10,7 @@ $darkBlue: #34495E;
 #canvasContainer
 {
   margin: 0 auto;
-  width: 960px;
+  width: 1000px;
   height: 100%;
 }
 #playField
@@ -19,14 +18,13 @@ $darkBlue: #34495E;
   //background-color: #ff545d;
   color: #79ff85;
   // background:url("../images/pixelBG2.jpg")
-
-
 }
 #gameInfoContainer
 {
+
     margin: 0 auto;
-    max-width: 960px;
-    width: 90%;
+    max-width: 1000px;
+    width: 100%;
    // background-color: blue;
 }
 .col_3
@@ -34,12 +32,17 @@ $darkBlue: #34495E;
     width: 32%;
     margin: 0 auto;
     display: inline-block;
-
   }
+.col_12
+{
+  width: 100%;
+  margin: 0 auto;
+  display: inline-block;
+}
 .button
 {
   transition: all 0.3s ease;
-  display: none;
+ // display: none;
   justify-content: center;
   align-items:center;
   height: 50px;
@@ -59,10 +62,10 @@ $darkBlue: #34495E;
 }
 .health-bar-container{
   width: 100%;
-  border: 2px solid #000;
-  height: 50px;
+  border: 1px solid $green;
+  height: 15px;
 }
 #health-bar{
-  background-color: #ee2424;
-  height: 50px;
+  background-color: $red;
+  height: 15px;
 }
