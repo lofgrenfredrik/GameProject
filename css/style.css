@@ -361,7 +361,7 @@ th {
 
 #canvasContainer {
   margin: 0 auto;
-  width: 960px;
+  width: 1000px;
   height: 100%; }
 
 #playField {
@@ -369,17 +369,21 @@ th {
 
 #gameInfoContainer {
   margin: 0 auto;
-  max-width: 960px;
-  width: 90%; }
+  max-width: 1000px;
+  width: 100%; }
 
 .col_3 {
   width: 32%;
   margin: 0 auto;
   display: inline-block; }
 
+.col_12 {
+  width: 100%;
+  margin: 0 auto;
+  display: inline-block; }
+
 .button {
   transition: all 0.3s ease;
-  display: none;
   justify-content: center;
   align-items: center;
   height: 50px;
@@ -398,11 +402,11 @@ th {
 
 .health-bar-container {
   width: 100%;
-  border: 2px solid #000;
-  height: 50px; }
+  border: 1px solid #1BBC9B;
+  height: 15px; }
 
 #health-bar {
-  background-color: #ee2424;
-  height: 50px; }
+  background-color: #E74C3C;
+  height: 15px; }
 
 /*# sourceMappingURL=style.css.map */
