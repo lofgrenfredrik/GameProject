@@ -375,7 +375,8 @@ th {
 .col_3 {
   width: 32%;
   margin: 0 auto;
-  display: inline-block; }
+  display: inline-block;
+  vertical-align: top; }
 
 .col_12 {
   width: 100%;

@@ -58,10 +58,12 @@ var shotsFired = document.getElementById("shotsFired");
 
 
 var ammoImage = document.getElementById("ammoImage");
+var powerAmmoImage = document.getElementById("powerAmmoImage");
 var healthImage = document.getElementById("healthImage");
 
 ammoImage.style.display ="none";
 healthImage.style.display ="none";
+powerAmmoImage.style.display ="none";
 
 var player = new Image();
 player.src = "images/villeSprite.png";  // WTF?! Varför utgår man från vart html-filen ligger och inte JS filen?
@@ -729,7 +731,7 @@ function startGame(numberOfBalls) {
         }
         else if(timer.innerHTML % 31 == 0)
         {
-            addUpgrades(50, 50, "PowerSot", ammoImage);
+            addUpgrades(50, 50, "PowerSot", powerAmmoImage);
         }
         else if(timer.innerHTML % 5 == 0)
         {
