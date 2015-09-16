@@ -58,6 +58,9 @@ var totalShotsFired = document.getElementById("totalShotsFired");
 var ammoImage = document.getElementById("ammoImage");
 var powerAmmoImage = document.getElementById("powerAmmoImage");
 var healthImage = document.getElementById("healthImage");
+var shotImage = document.getElementById("shotImage");
+//var bigBallImage = document.getElementById("bigBallImage");
+
 
 // ammoImage.style.display ="none";
 healthImage.style.display ="none";
@@ -80,10 +83,7 @@ var bouncingBalls = {};
 
 //document.getElementById("changeLevel").addEventListener("click",changeLevel);
 
-
-
-
-function startGame(numberOfBalls) {
+function startGame() {
 
 
     /**
@@ -207,7 +207,7 @@ function startGame(numberOfBalls) {
     var numberOfCollisions = 0;
     var ballColors = ["#000", "#E4F1FE", "#336E7B", "#4ECDC4", "#3D4A5D", "#26A65B", "#79FF85"];
     //document.getElementById("startGame").addEventListener("click", startGame);
-    var speed = 4;
+    var speed = 2;
 
     function bouncingBall(ballSize, startX, startY, speedX) {
 
@@ -218,19 +218,10 @@ function startGame(numberOfBalls) {
         this.speedYAxis = Math.floor((Math.random() * speed) + 1);
         this.hexColorCode = ballColors[Math.floor((Math.random() * ballColors.length) + 1)];
        // this.hypo = Math.sqrt(Math.pow(ballSize,2)*2);
-        this.isStuck = false;
-        // this.ballRadius = Math.ceil((Math.random() * 50) + 10); //
-        /*  this.PositionValueX = Math.floor(Math.random() * ((playfieldWidth-this.ballRadius*2) - this.ballRadius*2 + 1)) + this.ballRadius*2;
-         this.PositionValueY = Math.floor(Math.random() * ((playfieldHeight-playerSafetyDistanceY-this.ballRadius*2) - this.ballRadius*2 + 1)) + this.ballRadius*2;
-         this.speedXAxis = Math.floor((Math.random() * 6) + 1);
-         this.speedYAxis =  Math.floor((Math.random() * 6) + 1);
-         this.hexColorCode = ballColors[ Math.floor((Math.random() * ballColors.length) + 1)];*/
+      //  this.img = image;
+       // this.isStuck = false;
     }
 
-    // document.getElementById("moreBalls").addEventListener("click", addBalls);
-    //document.getElementById("moreBalls").addEventListener("click", addBalls);
-
-    // console.log(bouncingBalls);
     var i = 0;
 
     function addBalls(sizeofHitBall, startX, startY, speedX) {
@@ -242,57 +233,30 @@ function startGame(numberOfBalls) {
 
   //  for(var s=0;s<numberOfBalls;s++)
   //   {
-  //       addBalls(bigBallRadius, 200, 100, firstBallSpeed); // Skapar den första bollen så att spelet kommer igång!
+        addBalls(bigBallRadius, 200, 100, firstBallSpeed); // Skapar den första bollen så att spelet kommer igång!
   //   }
 
-    function updateEntity(ball,hinder) {
+    function updateEntity(ball) {
         ball.PositionValueX += ball.speedXAxis;
         ball.PositionValueY += ball.speedYAxis;
+
         playField.beginPath();
+
         playField.fillStyle = ball.hexColorCode;
 
-      //  playField.fillStyle = playField.arc(ball.PositionValueX, ball.PositionValueY, ball.ballRadius, 0, Math.PI * 2, true);
 
-       // playField.arc(ball.PositionValueX, ball.PositionValueY, ball.ballRadius, 0, Math.PI * 2, true);
-
+        playField.arc(ball.PositionValueX, ball.PositionValueY, ball.ballRadius, 0, Math.PI * 2, true);
 
 
-       // playField.fillRect(ball.PositionValueX, ball.PositionValueY, ball.ballRadius,ball.ballRadius);
-
-
-
-        playField.arc(ball.PositionValueX, ball.PositionValueY, ball.ballRadius,0,2*Math.PI);
         playField.closePath();
         playField.fill();
 
-       /* if(obstacleCount === 0){
-            hinder.PositionValueY += hinder.speedYAxis;
-            //console.log(hinder.speedXAxis
-        }*/
 
-        playField.fillStyle = hinder.color;
-        playField.fillRect(hinder.PositionValueX, hinder.PositionValueY, hinder.width, hinder.height);
-        obstacleCount++;
-
-        if(obstacleCount === (ballCounter.innerHTML = Object.keys(bouncingBalls).length))
-        {
-            obstacleCount = 0;
-        }
 
         var bounceBordersX = ball.PositionValueX < ball.ballRadius || ball.PositionValueX > playfieldWidth - ball.ballRadius;
         var bounceBordersY = ball.PositionValueY < ball.ballRadius || ball.PositionValueY > playfieldHeight - ball.ballRadius - groundHeight;
         var playerGetsHit = (ball.PositionValueY > playfieldHeight - player.height - ball.ballRadius && ((player.PositionValueX + player.width / 2) > ball.PositionValueX - ball.ballRadius && (player.PositionValueX + player.width / 2) < ball.PositionValueX + ball.ballRadius));
-        var moveObstacle =  hinder.PositionValueY < 0 || hinder.PositionValueY > hinder.maxValue;
 
-       // var collidewithObs = testCollisionEntityObstacle(hinders,ball);
-
-      //  var hypo = Math.sqrt(Math.pow(ball.ballRadius,2)*2);
-        //console.log(ball.ballRadius);
-       // console.log(hypo);
-
-            if(typeof hinder == "undefined")
-            {
-              //  console.log("DET STÄMMER");
             if (bounceBordersX) {
                 ball.speedXAxis = -ball.speedXAxis;
             }
@@ -306,92 +270,8 @@ function startGame(numberOfBalls) {
                     hit = true;
                     playerHit(hit);
                 }
-        }
-        else
-        {
-            /*
-             if (hinder.PositionValueX < ball.PositionValueX + ball.ballRadius &&
-             hinder.PositionValueX + hinder.width > ball.PositionValueX &&
-             hinder.PositionValueY < ball.PositionValueY + ball.ballRadius &&
-             hinder.height + hinder.PositionValueY > ball.PositionValueY)
-             */
-            if (hinder.PositionValueX < ball.PositionValueX + ball.ballRadius &&
-                hinder.PositionValueX + hinder.width > ball.PositionValueX+ball.ballRadius &&
-                hinder.PositionValueY < ball.PositionValueY + ball.ballRadius &&
-                hinder.height + hinder.PositionValueY > ball.PositionValueY-ball.ballRadius) {
-                // Kollision påträffad!
-
-                ball.speedXAxis = -ball.speedXAxis;
-                ball.speedYAxis = -ball.speedYAxis;
-            }
 
 
-
-
-            if(moveObstacle)
-            {
-               // console.log("DET STÄMMER!");
-                hinder.speedYAxis = -hinder.speedYAxis;
-            }
-            if (bounceBordersX)
-            {
-                ball.speedXAxis = -ball.speedXAxis;
-            }
-
-
-
-
-        /*   if ((ball.PositionValueY > hinder.PositionValueY && ball.PositionValueY < hinder.PositionValueY+hinder.height))
-            {
-
-                // Studsa på vänster sida
-                if((ball.PositionValueX+ball.ballRadius>=hinder.PositionValueX) && (ball.PositionValueX<=hinder.PositionValueX ) )
-                {
-                    ball.speedXAxis = -ball.speedXAxis;
-                }
-                 //Studsa på höger sida
-                if((ball.PositionValueX-ball.ballRadius<=hinder.PositionValueX+hinders.width) && (ball.PositionValueX >= hinders.PositionValueX+hinder.width ) )
-                {
-                    ball.speedXAxis = -ball.speedXAxis;
-                }
-            }
-          if ((ball.PositionValueX+ball.ballRadius > hinder.PositionValueX && ball.PositionValueX-ball.ballRadius < hinder.PositionValueX+hinder.width))
-            {
-                if((ball.PositionValueY-ball.ballRadius+5 < hinder.PositionValueY+hinder.height) && (ball.PositionValueY-ball.ballRadius+5>hinder.PositionValueY))
-                {
-                    ball.isStuck = true;
-                  //  delete ball;
-                   // console.log("Boll fastnat!")
-                }
-                if((ball.PositionValueY+ball.ballRadius-5 > hinder.PositionValueY) && (ball.PositionValueY+ball.ballRadius-5<hinder.PositionValueY+hinder.height))
-                {
-                    ball.isStuck = true;
-                    // console.log();
-                }
-                // console.log("innanför på X!");
-               if((ball.PositionValueY+ball.ballRadius>=hinder.PositionValueY) && (ball.PositionValueY<=hinder.PositionValueY ) )
-                {
-                    ball.speedYAxis = -ball.speedYAxis;
-                }
-                if((ball.PositionValueY-ball.ballRadius<=hinders.PositionValueY+hinder.height) && (ball.PositionValueY>=hinder.PositionValueY ) )
-                {
-                    ball.speedYAxis = -ball.speedYAxis;
-                }
-            }*/
-
-
-
-
-            if(bounceBordersY)
-            {
-                ball.speedYAxis = -ball.speedYAxis;
-            }
-            if(playerGetsHit)
-            {
-                hit = true;
-                playerHit(hit);
-            }
-        }
     }
     function getDistanceBetweenEntity(shot, ball) {     //return distance (number)
         var vx = shot.PositionValueX - ball.PositionValueX;
@@ -411,32 +291,6 @@ function startGame(numberOfBalls) {
      *
      */
 
-    function createHinder(startX, startY, width, height, moving, speedY, max) {
-        this.PositionValueX = startX;
-        this.PositionValueY = startY;
-        this.width = width;
-        this.height = height;
-        this.speedYAxis = speedY;
-        this.moving = moving;
-        this.maxValue = max; // Max hur långt den kan gå ner på x-axeln
-        this.color = "#000";
-    }
-    var hinders = {};
-
-    //document.getElementById("moreBalls").addEventListener("click", addBalls);
-
-    // console.log(bouncingBalls);
-    var hinderCounter = 0;
-    function addHinder(startX, startY, width, height, moving, speedY, max) {
-        hinders["hinder" + hinderCounter] = new createHinder(startX, startY, width, height, moving, speedY, max);
-        hinderCounter++;
-    }
-
-    //addHinder(0,0,0,0,true,0,playfieldHeight-200);
-    addHinder(400,300,220,50,true,2,playfieldHeight-300);
-
-    console.log(hinders);
-
     /**
      *
      *<======= ALLTING SOM HAR MED SKOTTEN ATT GÖRA =======>
@@ -449,10 +303,10 @@ function startGame(numberOfBalls) {
         {
             PositionValueX: playerX + 10,
             PositionValueY: playfieldHeight - groundHeight-player.height,
-            width: 10,
-            height: 10,
+            width: 12,
+            height: 20,
             color: "black",
-            img: ammoImage
+            img: shotImage
         };
         shotList["shot" + shotNr] = shot;
 
@@ -465,7 +319,6 @@ function startGame(numberOfBalls) {
     }
 
     var PowershotNr = 0;
-    // Skapar ett nytt skott och pushar in det i ett objekt
     function generatePowerShot(playerX) {
         var powerShot1 = {
             id: 1,
@@ -525,19 +378,10 @@ function startGame(numberOfBalls) {
 
     }
 
-    function TestShotHits(list, object, obstacles) {
+    function TestShotHits(list, object) {
         for (var key in object) {
 
-            for(var thing in obstacles)
-            {
-            updateEntity(object[key],obstacles[thing]);
-
-            if(object[key].isStuck === true)
-            {
-                //  delete object[key];
-               // object[key].PositionValueY = object[key].PositionValueY+100;
-              //  object[key].PositionValueY
-            }
+            updateEntity(object[key]);
 
             // KOLLAR OM SKOTTEN TRÄFFAR
             for (var k in list) {
@@ -562,7 +406,7 @@ function startGame(numberOfBalls) {
                     delete list[k]; // Tar bort bollen som träffas!
                 }
             }
-            }
+
         }
     }
     /**
@@ -574,7 +418,6 @@ function startGame(numberOfBalls) {
         this.width = width;
         this.height = height;
         this.type = type;
-        //this.color = color;
         this.img = img;
         this.PositionValueX = Math.floor(Math.random() * ((playfieldWidth - this.width) - this.width)) + this.width;
         this.PositionValueY = playfieldHeight - this.height - groundHeight;
@@ -605,6 +448,11 @@ function startGame(numberOfBalls) {
      playField.drawImage(item.img, item.PositionValueX,item.PositionValueY);
      }
 
+  /* function drawBalls(ball)
+    {
+        playField.drawImage(ball.img,ball.PositionValueX,ball.PositionValueY);
+    }*/
+
     /**
      *
      *<======= UPPDATERING SOM KÖRS VAR 20 millisekund =======>
@@ -613,11 +461,8 @@ function startGame(numberOfBalls) {
 
 
     function update() {
-
         playFieldBackground.style.background = 'url("images/' + backGrounds[level-1] + '")';
-
         ballCounter.innerHTML = Object.keys(bouncingBalls).length; // Kollar hur många bollar som är på planen för att avgöra när man klarat en bana!
-
         playField.clearRect(0, 0, playfieldWidth, playfieldHeight);
         //Kontrolerar så att hälsan inte kan bli mer än 100
         if(player.health > 100){
@@ -628,12 +473,8 @@ function startGame(numberOfBalls) {
 
         healthBar.style.width = player.health + "%";
 
-        console.log(player.health)
+        console.log(player.health);
 
-     /*   for (var hinder in hinders)
-        {
-        drawObject(hinders[hinder]);
-        }*/
 
         collisionCounter.innerHTML = numberOfCollisions;
 
@@ -664,6 +505,15 @@ function startGame(numberOfBalls) {
         {
             drawImages(upgrades[upgrade]);
         }
+
+       /* for (var ball in bouncingBalls)
+        {
+            drawBalls(bouncingBalls[ball]);
+        }*/
+
+
+
+
 
        // drawImages(shot);
 
@@ -703,10 +553,14 @@ function startGame(numberOfBalls) {
         for(var shot in shotList){
             animateShots(shotList[shot]);
         }
+
+
+
         // RITA UT SKOTTEN
         for(var key in shotList){
-            drawObject(shotList[key]);
+            drawImages(shotList[key]);
         }
+
         for(var power in powerShotList){
             animateShots(powerShotList[power]);
         }
@@ -730,8 +584,8 @@ function startGame(numberOfBalls) {
             // time = 0;
           }
 
-        TestShotHits(shotList,bouncingBalls, hinders);
-        TestShotHits(powerShotList,bouncingBalls,hinders);
+        TestShotHits(shotList,bouncingBalls);
+        TestShotHits(powerShotList,bouncingBalls);
     }
     function checkHealth(health)
     {

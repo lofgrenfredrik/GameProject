@@ -29,12 +29,22 @@ $green: #1BBC9B;
 }
 .col_3
   {
-    width: 32%;
+    width: 33%;
     margin: 0 auto;
     display: inline-block;
-
     vertical-align: top;
+ // background-color: blue;
   }
+.center
+{
+  display:flex;justify-content:center;align-items:center;
+  width: 210px;
+  margin: 0 auto;
+  text-align: center;
+ // background-color: red;
+}
+
+
 .col_12
 {
   width: 100%;
@@ -78,8 +88,6 @@ $green: #1BBC9B;
 {
   transition: all  1s ease;
 }
-
-
 #health
 {
  // padding-top: 2px;
