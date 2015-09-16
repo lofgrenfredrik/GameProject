@@ -413,12 +413,15 @@ th {
 .left-corner {
   position: absolute;
   top: 20px;
-  left: 20px; }
+  left: 160px; }
 
 .info {
   display: inline-block;
   color: #1BBC9B;
   font-size: 30px;
   margin: 0; }
+
+#nextLevel {
+  display: none; }
 
 /*# sourceMappingURL=style.css.map */

@@ -73,11 +73,14 @@ $green: #1BBC9B;
 .left-corner{
   position: absolute;
   top: 20px;
-  left: 20px;
+  left: 160px;
 }
 .info{
   display: inline-block;
   color: $green;
   font-size: 30px;
   margin: 0;
+}
+#nextLevel{
+  display: none;
 }
