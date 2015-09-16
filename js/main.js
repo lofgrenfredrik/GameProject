@@ -9,7 +9,7 @@ var obstacleCount = 0;
 var shotList = {};
 var powerShotList = {};
 var powerShotAvailabe = 20;
-
+var powerUp = false;
 
 var bigBallRadius = 60;
 var mediumBallRadius = 40;
@@ -284,12 +284,6 @@ function startGame() {
         return distance < ball.ballRadius;
     }
 
-
-    /**
-     *
-     *<======= ALLTING SOM HAR MED HINDREN ATT GÖRA =======>
-     *
-     */
 
     /**
      *
@@ -573,7 +567,7 @@ function startGame() {
         TestShotHits(powerShotList,bouncingBalls);
 
           // Kontrolerar om banan är avklarad
-          if(Object.keys(bouncingBalls).length === 0 && timer.innerHTML < 60 && levelComplete === true){
+          if(Object.keys(bouncingBalls).length === 0 && levelComplete === true){
             playField.fillStyle = "green";
             playField.fillRect((playfieldWidth/2) - 150, (playfieldHeight/2) - 80, 300, 130);
             playField.fillStyle = "#fff";
@@ -581,7 +575,6 @@ function startGame() {
             playField.textAlign = "center";
             playField.fillText("Winning!!!", playfieldWidth/2, playfieldHeight/2);
             next.style.display = "block";
-            // time = 0;
           }
 
         TestShotHits(shotList,bouncingBalls);
@@ -599,22 +592,29 @@ function startGame() {
             playField.fillText("Game Over :(", playfieldWidth/2, playfieldHeight/2);
         }
     }
+    var powerup = false;
     var startUpdate = setInterval(update, 20);
     var startTime = setInterval(function(){
-        if(updateTime() % 10 === 0 && j <= level)
+        if(updateTime() === 1)
+        {
+          for(var l = 0; l < level; l++){
+            addBalls(bigBallRadius, (Math.floor(Math.random() * 9) + 1) *100, 100, firstBallSpeed);
+          }
+        }
+        if(timer.innerHTML % 10 === 0 && j <= level)
         {
             addBalls(bigBallRadius, (Math.floor(Math.random() * 9) + 1) *100, 100, firstBallSpeed);
             j++;
         }
-        else if(timer.innerHTML % 7 === 0)
+        else if(timer.innerHTML % 7 === 0 && levelComplete != true)
         {
             addUpgrades(50, 50, "Ammo", ammoImage);
         }
-        else if(timer.innerHTML % 13 === 0 && player.health < 100)
+        else if(timer.innerHTML % 13 === 0 && player.health < 100 && levelComplete != true)
         {
             addUpgrades(50, 50, "Health", healthImage);
         }
-        else if(timer.innerHTML % 31 === 0)
+        if(timer.innerHTML % 8 === 0 && levelComplete != true)
         {
             addUpgrades(50, 50, "PowerSot", powerAmmoImage);
         }
@@ -622,9 +622,10 @@ function startGame() {
         {
            deleteUpgrades();
         }
-        else if(j === level){
+        else if(j === level + 1 && Object.keys(bouncingBalls).length === 0){
           levelComplete = true;
         }
+
     },1000);
 
     setInterval(function(){
@@ -641,3 +642,7 @@ next.addEventListener("click", function(){
   levelComplete = false;
   next.style.display = "none";
 });
+
+function generatePowerUp(){
+
+}
