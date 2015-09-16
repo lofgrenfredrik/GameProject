@@ -64,6 +64,8 @@ var shotImage = document.getElementById("shotImage");
 
 // ammoImage.style.display ="none";
 healthImage.style.display ="none";
+shotImage.style.display ="none";
+
 // powerAmmoImage.style.display ="none";
 
 var player = new Image();
