@@ -8,12 +8,8 @@ var obstacleCount = 0;
 
 var shotList = {};
 var powerShotList = {};
-var powerShotAvailabe = 200;
+var powerShotAvailabe = 20;
 
-
-// intervall som uppdateringsfunktionen körs
-
-var playerSafetyDistanceY = 300; // Marginalen på Y axeln som bollarna kommer generas ovanför.
 
 var bigBallRadius = 60;
 var mediumBallRadius = 40;
@@ -33,9 +29,10 @@ var groundHeight = 32; // Höjden på marken i bilden.
 var ballCounter = document.getElementById("ballCounter");
 var accuracy = document.getElementById("accuracy");
 var healthBar = document.getElementById("health-bar");
-var bana = document.getElementById("bana");
+//var bana = document.getElementById("bana");
 var level = 1;
 
+var levelCounter = 0;
 
 var backGrounds = ["pixelBG2.jpg", "fantasy.png", "forest.png", "desert.png"];
 // Sounds ********************
@@ -54,15 +51,19 @@ var backgroundSound = new Audio();
 
 var playFieldBackground = document.getElementById("playField");
 var shotsFired = document.getElementById("shotsFired");
-
-
+var specialShotsFired = document.getElementById("specialShotsFired");
+var totalShotsFired = document.getElementById("totalShotsFired");
 
 var ammoImage = document.getElementById("ammoImage");
 var healthImage = document.getElementById("healthImage");
 
 ammoImage.style.display ="none";
 healthImage.style.display ="none";
-
+/**
+ *
+ *<======= ALLTING SOM HAR MED SPELAREN ATT GÖRA =======>
+ *
+ */
 var player = new Image();
 player.src = "images/villeSprite.png";  // WTF?! Varför utgår man från vart html-filen ligger och inte JS filen?
 player.left = false;
@@ -78,15 +79,14 @@ var strafeX = 0;
 
 var bouncingBalls = {};
 
-document.getElementById("startGame").addEventListener("click",startGame);
+//document.getElementById("changeLevel").addEventListener("click",changeLevel);
+
+
+
 
 function startGame(numberOfBalls) {
-    /**
-     *
-     *<======= ALLTING SOM HAR MED SPELAREN ATT GÖRA =======>
-     *
-     */
-    playFieldBackground.style.background = 'url("images/' + backGrounds[level-1] + '")';
+
+
     /**
      *
      *<======= STARTA TIMERS! =======>
@@ -113,6 +113,7 @@ function startGame(numberOfBalls) {
     }, 400);
     function playerHit(hit) {
         if (hit) {
+            healthBar.className = "";
             player.color = "red";
             player.health--;
             checkHealth(player.health)
@@ -250,16 +251,26 @@ function startGame(numberOfBalls) {
         ball.PositionValueY += ball.speedYAxis;
         playField.beginPath();
         playField.fillStyle = ball.hexColorCode;
+
+      //  playField.fillStyle = playField.arc(ball.PositionValueX, ball.PositionValueY, ball.ballRadius, 0, Math.PI * 2, true);
+
        // playField.arc(ball.PositionValueX, ball.PositionValueY, ball.ballRadius, 0, Math.PI * 2, true);
+
+
+
+       // playField.fillRect(ball.PositionValueX, ball.PositionValueY, ball.ballRadius,ball.ballRadius);
+
+
 
         playField.arc(ball.PositionValueX, ball.PositionValueY, ball.ballRadius,0,2*Math.PI);
         playField.closePath();
         playField.fill();
 
-        if(obstacleCount === 0){
+       /* if(obstacleCount === 0){
             hinder.PositionValueY += hinder.speedYAxis;
             //console.log(hinder.speedXAxis
-        }
+        }*/
+
         playField.fillStyle = hinder.color;
         playField.fillRect(hinder.PositionValueX, hinder.PositionValueY, hinder.width, hinder.height);
         obstacleCount++;
@@ -299,19 +310,39 @@ function startGame(numberOfBalls) {
         }
         else
         {
+            /*
+             if (hinder.PositionValueX < ball.PositionValueX + ball.ballRadius &&
+             hinder.PositionValueX + hinder.width > ball.PositionValueX &&
+             hinder.PositionValueY < ball.PositionValueY + ball.ballRadius &&
+             hinder.height + hinder.PositionValueY > ball.PositionValueY)
+             */
+            if (hinder.PositionValueX < ball.PositionValueX + ball.ballRadius &&
+                hinder.PositionValueX + hinder.width > ball.PositionValueX+ball.ballRadius &&
+                hinder.PositionValueY < ball.PositionValueY + ball.ballRadius &&
+                hinder.height + hinder.PositionValueY > ball.PositionValueY-ball.ballRadius) {
+                // Kollision påträffad!
+
+                ball.speedXAxis = -ball.speedXAxis;
+                ball.speedYAxis = -ball.speedYAxis;
+            }
+
+
+
 
             if(moveObstacle)
             {
-                console.log("DET STÄMMER!");
+               // console.log("DET STÄMMER!");
                 hinder.speedYAxis = -hinder.speedYAxis;
-
             }
             if (bounceBordersX)
             {
                 ball.speedXAxis = -ball.speedXAxis;
             }
 
-            if ((ball.PositionValueY > hinder.PositionValueY && ball.PositionValueY < hinder.PositionValueY+hinder.height))
+
+
+
+        /*   if ((ball.PositionValueY > hinder.PositionValueY && ball.PositionValueY < hinder.PositionValueY+hinder.height))
             {
 
                 // Studsa på vänster sida
@@ -325,7 +356,7 @@ function startGame(numberOfBalls) {
                     ball.speedXAxis = -ball.speedXAxis;
                 }
             }
-            if ((ball.PositionValueX+ball.ballRadius > hinder.PositionValueX && ball.PositionValueX-ball.ballRadius < hinder.PositionValueX+hinder.width))
+          if ((ball.PositionValueX+ball.ballRadius > hinder.PositionValueX && ball.PositionValueX-ball.ballRadius < hinder.PositionValueX+hinder.width))
             {
                 if((ball.PositionValueY-ball.ballRadius+5 < hinder.PositionValueY+hinder.height) && (ball.PositionValueY-ball.ballRadius+5>hinder.PositionValueY))
                 {
@@ -347,7 +378,11 @@ function startGame(numberOfBalls) {
                 {
                     ball.speedYAxis = -ball.speedYAxis;
                 }
-            }
+            }*/
+
+
+
+
             if(bounceBordersY)
             {
                 ball.speedYAxis = -ball.speedYAxis;
@@ -398,8 +433,8 @@ function startGame(numberOfBalls) {
         hinderCounter++;
     }
 
-    addHinder(0,0,0,0,true,0,playfieldHeight-200);
-   // addHinder(400,300,220,10,true,2,playfieldHeight-300);
+    //addHinder(0,0,0,0,true,0,playfieldHeight-200);
+    addHinder(400,300,220,50,true,2,playfieldHeight-300);
 
     console.log(hinders);
 
@@ -409,7 +444,7 @@ function startGame(numberOfBalls) {
      *
      */
     var shotNr = 0;
-    // Skapar ett nytt skott och pushar in det i ett objekt
+
     function generateShot(playerX) {
         var shot =
         {
@@ -421,11 +456,13 @@ function startGame(numberOfBalls) {
             img: ammoImage
         };
         shotList["shot" + shotNr] = shot;
+
         if(player.health>0)
         {
         shotNr++;
+        shotsFired.innerHTML = shotNr;
         }
-
+        countTotal()
     }
 
     var PowershotNr = 0;
@@ -465,11 +502,17 @@ function startGame(numberOfBalls) {
         PowershotNr++;
         powerShotList["PowerShot" + PowershotNr] = powerShot3;
         PowershotNr++;
+        specialShotsFired.innerHTML = (PowershotNr/3);
 
-        shotsFired.innerHTML = shotNr;
-
-
+        countTotal()
     }
+
+    function countTotal()
+    {
+        totalShotsFired.innerHTML = parseInt(specialShotsFired.innerHTML)+parseInt(shotsFired.innerHTML);
+    }
+
+
 
     // Förflyttar skotten i y-axeln och om det går utanför y axeln så tas de bort ur arrayen
     function animateShots(object) {
@@ -583,6 +626,8 @@ function startGame(numberOfBalls) {
 
     function update() {
 
+        playFieldBackground.style.background = 'url("images/' + backGrounds[level-1] + '")';
+        
         ballCounter.innerHTML = Object.keys(bouncingBalls).length; // Kollar hur många bollar som är på planen för att avgöra när man klarat en bana!
 
         playField.clearRect(0, 0, playfieldWidth, playfieldHeight);
@@ -591,7 +636,10 @@ function startGame(numberOfBalls) {
           player.health = 100;
         }
         //Uppdaterar hälsan
+
+
         healthBar.style.width = player.health + "%";
+
 
      /*   for (var hinder in hinders)
         {
@@ -600,19 +648,26 @@ function startGame(numberOfBalls) {
 
         collisionCounter.innerHTML = numberOfCollisions;
 
-        if(shotNr == 0)
+        var accuracyCounter = ((collisionCounter.innerHTML)/(totalShotsFired.innerHTML)*100).toFixed(0);
+
+        if(shotNr == 0 && PowershotNr == 0)
         {
             accuracy.innerHTML = 0;
         }
-        else
+        else if(accuracyCounter<=100)
         {
-        accuracy.innerHTML = ((collisionCounter.innerHTML)/(shotsFired.innerHTML)*100).toFixed(0);
+        accuracy.innerHTML = accuracyCounter
         }
+        else if(accuracyCounter>100)
+        {
+            accuracy.innerHTML = 100;
+        }
+
         ammoCounter.innerHTML = ammoLeft;
         powerShotsCounter.innerHTML = powerShotAvailabe;
 
         healthCounter.innerHTML = player.health;
-        bana.innerHTML = level;
+      //  bana.innerHTML = level;
 
         for (var upgrade in upgrades)
         {
@@ -639,6 +694,7 @@ function startGame(numberOfBalls) {
             }
             else if(distanceBetweenPlayerAndUpgrade>-marginal && distanceBetweenPlayerAndUpgrade<marginal && upgrades[item].type === "Health")
             {
+                healthBar.className = "smoothTrans";
                 console.log("Health!");
                 player.health += 20;
                 healthSound.play();
@@ -671,8 +727,10 @@ function startGame(numberOfBalls) {
         TestShotHits(shotList,bouncingBalls);
         TestShotHits(powerShotList,bouncingBalls);
 
-      /*  if(Object.keys(bouncingBalls).length === 0){
-          clearInterval(startUpdate);
+        levelCounter = 0;
+
+
+            /* clearInterval(startUpdate);
           clearInterval(startTime);
 
          // Window.cancelAnimationFrame()
@@ -694,7 +752,8 @@ function startGame(numberOfBalls) {
             next.style.display = "none";
             startGame(level);
           })
-        }*/
+          }*/
+
 
         TestShotHits(shotList,bouncingBalls, hinders);
         TestShotHits(powerShotList,bouncingBalls,hinders);
@@ -741,5 +800,7 @@ function startGame(numberOfBalls) {
         updateFrameCount()
     },200);
 }
-startGame(1);
+
+
+startGame();
 

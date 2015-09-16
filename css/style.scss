@@ -32,6 +32,8 @@ $green: #1BBC9B;
     width: 32%;
     margin: 0 auto;
     display: inline-block;
+  //background-color: red;
+    vertical-align: top;
   }
 .col_12
 {
@@ -63,9 +65,22 @@ $green: #1BBC9B;
 .health-bar-container{
   width: 100%;
   border: 1px solid $green;
-  height: 15px;
+  height: 25px;
 }
 #health-bar{
+//  transition: all  1s ease;
   background-color: $red;
-  height: 15px;
+  height: 25px;
+  text-align: center;
+  display:flex;justify-content:center;align-items:center;
+}
+.smoothTrans
+{
+  transition: all  1s ease;
+}
+
+
+#health
+{
+ // padding-top: 2px;
 }
