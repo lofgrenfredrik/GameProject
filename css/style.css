@@ -373,10 +373,18 @@ th {
   width: 100%; }
 
 .col_3 {
-  width: 32%;
+  width: 33%;
   margin: 0 auto;
   display: inline-block;
   vertical-align: top; }
+
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 210px;
+  margin: 0 auto;
+  text-align: center; }
 
 .col_12 {
   width: 100%;
