@@ -636,20 +636,20 @@ function startGame(numberOfBalls) {
 
         collisionCounter.innerHTML = numberOfCollisions;
 
-        var accuracyCounter = ((collisionCounter.innerHTML)/(totalShotsFired.innerHTML)*100).toFixed(0);
-
-        if(shotNr == 0 && PowershotNr == 0)
-        {
-            accuracy.innerHTML = 0;
-        }
-        else if(accuracyCounter<=100)
-        {
-        accuracy.innerHTML = accuracyCounter
-        }
-        else if(accuracyCounter>100)
-        {
-            accuracy.innerHTML = 100;
-        }
+        // var accuracyCounter = ((collisionCounter.innerHTML)/(totalShotsFired.innerHTML)*100).toFixed(0);
+        //
+        // if(shotNr == 0 && PowershotNr == 0)
+        // {
+        //     accuracy.innerHTML = 0;
+        // }
+        // else if(accuracyCounter<=100)
+        // {
+        // accuracy.innerHTML = accuracyCounter
+        // }
+        // else if(accuracyCounter>100)
+        // {
+        //     accuracy.innerHTML = 100;
+        // }
 
         ammoCounter.innerHTML = ammoLeft;
         powerShotsCounter.innerHTML = powerShotAvailabe;
@@ -657,7 +657,7 @@ function startGame(numberOfBalls) {
         displayPowerAmmo.innerHTML = powerShotAvailabe;
 
         healthCounter.innerHTML = player.health;
-      //  bana.innerHTML = level;
+        levelCounter.innerHTML = level;
 
         for (var upgrade in upgrades)
         {
@@ -734,7 +734,7 @@ function startGame(numberOfBalls) {
     }
     function checkHealth(health)
     {
-        if(health<0 || Object.keys(bouncingBalls).length > 0 && timer.innerHTML < 40)
+        if(health < 0)
         {
             clearInterval(startUpdate);
             clearInterval(startTime);
