@@ -375,7 +375,8 @@ th {
 .col_3 {
   width: 32%;
   margin: 0 auto;
-  display: inline-block; }
+  display: inline-block;
+  vertical-align: top; }
 
 .col_12 {
   width: 100%;
@@ -403,10 +404,17 @@ th {
 .health-bar-container {
   width: 100%;
   border: 1px solid #1BBC9B;
-  height: 15px; }
+  height: 25px; }
 
 #health-bar {
   background-color: #E74C3C;
-  height: 15px; }
+  height: 25px;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center; }
+
+.smoothTrans {
+  transition: all  1s ease; }
 
 /*# sourceMappingURL=style.css.map */
