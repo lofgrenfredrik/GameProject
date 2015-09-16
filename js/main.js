@@ -30,7 +30,7 @@ var groundHeight = 32; // Höjden på marken i bilden.
 var ballCounter = document.getElementById("ballCounter");
 var accuracy = document.getElementById("accuracy");
 var healthBar = document.getElementById("health-bar");
-var bana = document.getElementById("level");
+var levelCounter = document.getElementById("level");
 var level = 1;
 var j = 0; //variabel för att begränsa hur många bollar som genereras per bana
 var next = document.getElementById('nextLevel');
@@ -628,6 +628,7 @@ function startGame(numberOfBalls) {
 
         healthBar.style.width = player.health + "%";
 
+        console.log(player.health)
 
      /*   for (var hinder in hinders)
         {
