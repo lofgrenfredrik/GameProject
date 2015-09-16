@@ -24,7 +24,8 @@ var firstBallSpeed = 1;
 var collisionCounter = document.getElementById("collisionCounter");
 var ammoCounter = document.getElementById("ammoCounter");
 var powerShotsCounter = document.getElementById("powerShotsCounter");
-
+var displayAmmo = document.getElementById("ammo-info");
+var displayPowerAmmo = document.getElementById("power-ammo-info");
 var ammoLeft = 10;
 var time = 0;
 var healthCounter = document.getElementById("health");
@@ -61,9 +62,9 @@ var ammoImage = document.getElementById("ammoImage");
 var powerAmmoImage = document.getElementById("powerAmmoImage");
 var healthImage = document.getElementById("healthImage");
 
-ammoImage.style.display ="none";
+// ammoImage.style.display ="none";
 healthImage.style.display ="none";
-powerAmmoImage.style.display ="none";
+// powerAmmoImage.style.display ="none";
 
 var player = new Image();
 player.src = "images/villeSprite.png";  // WTF?! Varför utgår man från vart html-filen ligger och inte JS filen?
@@ -612,6 +613,8 @@ function startGame(numberOfBalls) {
         }
         ammoCounter.innerHTML = ammoLeft;
         powerShotsCounter.innerHTML = powerShotAvailabe;
+        displayAmmo.innerHTML = ammoLeft;
+        displayPowerAmmo.innerHTML = powerShotAvailabe;
 
         healthCounter.innerHTML = player.health;
         bana.innerHTML = level;

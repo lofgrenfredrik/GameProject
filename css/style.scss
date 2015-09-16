@@ -70,3 +70,14 @@ $green: #1BBC9B;
   background-color: $red;
   height: 15px;
 }
+.left-corner{
+  position: absolute;
+  top: 20px;
+  left: 20px;
+}
+.info{
+  display: inline-block;
+  color: $green;
+  font-size: 30px;
+  margin: 0;
+}

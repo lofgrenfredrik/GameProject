@@ -1,51 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Game</title>
-    <link rel="stylesheet" href="css/style.css" charset="utf-8">
+  <meta charset="UTF-8">
+  <title>Game</title>
+  <link rel="stylesheet" href="css/style.css" charset="utf-8">
 </head>
 <body>
-<div id="main-container">
+  <div id="main-container">
     <div id="canvasContainer">
-        <canvas id="playField" width="1000" height="590"></canvas>
+      <canvas id="playField" width="1000" height="590"></canvas>
     </div>
 
     <div id="gameInfoContainer">
-        <div class="col_12">
-            <div class="health-bar-container">
-                <div id="health-bar"></div>
-            </div>
+      <div class="col_12">
+        <div class="health-bar-container">
+          <div id="health-bar"></div>
         </div>
+      </div>
 
-        <div class="col_3">
+      <div class="col_3">
+        <div id="startGame" class="button">Starta Spel</div>
+      </div>
+      <div class="col_3">
+        <img src="images/ammo2.png" id="ammoImage">
+        <p class="info">&nbsp;X&nbsp;<span id="ammo-info"></span></p>
+      </div>
+      <div class="col_3">
+        <img src="images/secialammo.png" id="powerAmmoImage">
+        <p class="info">&nbsp;X&nbsp;<span id="power-ammo-info"></span></p>
+      </div>
+      <div class="col_3 left-corner">
+        <div>Träffsäkerhet: <span id="accuracy"></span>%</div>
+        <div>Bollar i omlopp: <span id="ballCounter"></span></div>
+        <div>Skjutna skott: <span id="shotsFired">0</span></div>
+        <div>Du är på bana: <span id="level">0</span></div>
+        <div>Skotten har träffat bollarna <span id="collisionCounter"></span> gånger</div>
+        <div>Ammunition: <span id="ammoCounter"></span></div>
+        <div>Powershots: <span id="powerShotsCounter"></span></div>
+        <div>Timer: <span id="timer">0</span></div>
+        <div>Hälsa: <span id="health">0</span></div>
+        <div>Bana: <span id="bana">0</span></div>
+      </div>
+    </div>
+
+  </div>
 
 
-            <div id="startGame" class="button">Starta Spel</div>
-        </div>
-        <div class="col_3">
-          <div>Träffsäkerhet: <span id="accuracy"></span>%</div>
-            <div>Bollar i omlopp: <span id="ballCounter"></span></div>
-            <div>Skjutna skott: <span id="shotsFired">0</span></div>
-            <div>Du är på bana: <span id="level">0</span></div>
-        </div>
-        <div class="col_3">
-            <div>Skotten har träffat bollarna <span id="collisionCounter"></span> gånger</div>
-            <div>Ammunition: <span id="ammoCounter"></span></div>
-            <div>Powershots: <span id="powerShotsCounter"></span></div>
-            <div>Timer: <span id="timer">0</span></div>
-            <div>Hälsa: <span id="health">0</span></div>
-            <div>Bana: <span id="bana">0</span></div>
-        </div>
-        <div class="col_3">
-          <div id="shotLocation"></div>
-        </div>
-</div>
-
-</div>
-<img src="images/ammo2.png" id="ammoImage">
-<img src="images/health.png" id="healthImage">
-<img src="images/secialammo.png" id="powerAmmoImage">
+  <img src="images/health.png" id="healthImage">
 
 </body>
 <!-- <script src="js/game.js" charset="utf-8"></script> -->
