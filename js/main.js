@@ -9,7 +9,7 @@ var obstacleCount = 0;
 var shotList = {};
 var powerShotList = {};
 var powerShotAvailabe = 20;
-
+var powerUp = false;
 
 var bigBallRadius = 60;
 var mediumBallRadius = 40;
@@ -270,9 +270,9 @@ function startGame(numberOfBalls) {
             //console.log(hinder.speedXAxis
         }*/
 
-        playField.fillStyle = hinder.color;
-        playField.fillRect(hinder.PositionValueX, hinder.PositionValueY, hinder.width, hinder.height);
-        obstacleCount++;
+        // playField.fillStyle = hinder.color;
+        // playField.fillRect(hinder.PositionValueX, hinder.PositionValueY, hinder.width, hinder.height);
+        // obstacleCount++;
 
         if(obstacleCount === (ballCounter.innerHTML = Object.keys(bouncingBalls).length))
         {
@@ -404,38 +404,6 @@ function startGame(numberOfBalls) {
         return distance < ball.ballRadius;
     }
 
-
-    /**
-     *
-     *<======= ALLTING SOM HAR MED HINDREN ATT GÖRA =======>
-     *
-     */
-
-    function createHinder(startX, startY, width, height, moving, speedY, max) {
-        this.PositionValueX = startX;
-        this.PositionValueY = startY;
-        this.width = width;
-        this.height = height;
-        this.speedYAxis = speedY;
-        this.moving = moving;
-        this.maxValue = max; // Max hur långt den kan gå ner på x-axeln
-        this.color = "#000";
-    }
-    var hinders = {};
-
-    //document.getElementById("moreBalls").addEventListener("click", addBalls);
-
-    // console.log(bouncingBalls);
-    var hinderCounter = 0;
-    function addHinder(startX, startY, width, height, moving, speedY, max) {
-        hinders["hinder" + hinderCounter] = new createHinder(startX, startY, width, height, moving, speedY, max);
-        hinderCounter++;
-    }
-
-    //addHinder(0,0,0,0,true,0,playfieldHeight-200);
-    addHinder(400,300,220,50,true,2,playfieldHeight-300);
-
-    console.log(hinders);
 
     /**
      *
@@ -628,7 +596,7 @@ function startGame(numberOfBalls) {
 
         healthBar.style.width = player.health + "%";
 
-        console.log(player.health)
+        // console.log(player.health)
 
      /*   for (var hinder in hinders)
         {
@@ -719,7 +687,7 @@ function startGame(numberOfBalls) {
         TestShotHits(powerShotList,bouncingBalls);
 
           // Kontrolerar om banan är avklarad
-          if(Object.keys(bouncingBalls).length === 0 && timer.innerHTML < 60 && levelComplete === true){
+          if(Object.keys(bouncingBalls).length === 0 && levelComplete === true){
             playField.fillStyle = "green";
             playField.fillRect((playfieldWidth/2) - 150, (playfieldHeight/2) - 80, 300, 130);
             playField.fillStyle = "#fff";
@@ -727,7 +695,6 @@ function startGame(numberOfBalls) {
             playField.textAlign = "center";
             playField.fillText("Winning!!!", playfieldWidth/2, playfieldHeight/2);
             next.style.display = "block";
-            // time = 0;
           }
 
         TestShotHits(shotList,bouncingBalls, hinders);
@@ -745,22 +712,29 @@ function startGame(numberOfBalls) {
             playField.fillText("Game Over :(", playfieldWidth/2, playfieldHeight/2);
         }
     }
+    var powerup = false;
     var startUpdate = setInterval(update, 20);
     var startTime = setInterval(function(){
-        if(updateTime() % 10 === 0 && j <= level)
+        if(updateTime() === 1)
+        {
+          for(var l = 0; l < level; l++){
+            addBalls(bigBallRadius, (Math.floor(Math.random() * 9) + 1) *100, 100, firstBallSpeed);
+          }
+        }
+        if(timer.innerHTML % 10 === 0 && j <= level)
         {
             addBalls(bigBallRadius, (Math.floor(Math.random() * 9) + 1) *100, 100, firstBallSpeed);
             j++;
         }
-        else if(timer.innerHTML % 7 === 0)
+        else if(timer.innerHTML % 7 === 0 && levelComplete != true)
         {
             addUpgrades(50, 50, "Ammo", ammoImage);
         }
-        else if(timer.innerHTML % 13 === 0 && player.health < 100)
+        else if(timer.innerHTML % 13 === 0 && player.health < 100 && levelComplete != true)
         {
             addUpgrades(50, 50, "Health", healthImage);
         }
-        else if(timer.innerHTML % 31 === 0)
+        if(timer.innerHTML % 8 === 0 && levelComplete != true)
         {
             addUpgrades(50, 50, "PowerSot", powerAmmoImage);
         }
@@ -768,9 +742,10 @@ function startGame(numberOfBalls) {
         {
            deleteUpgrades();
         }
-        else if(j === level){
+        else if(j === level + 1 && Object.keys(bouncingBalls).length === 0){
           levelComplete = true;
         }
+
     },1000);
 
     setInterval(function(){
@@ -787,3 +762,7 @@ next.addEventListener("click", function(){
   levelComplete = false;
   next.style.display = "none";
 });
+
+function generatePowerUp(){
+
+}
