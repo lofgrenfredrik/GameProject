@@ -157,7 +157,6 @@ function startGame() {
             if (ammoLeft > 0) {
                 generateShot(player.PositionValueX);
                 strafeX = 260+(65*5);
-
                 ammoLeft--;
                 shotSound.play();
                 shotSound.currentTime=0;
