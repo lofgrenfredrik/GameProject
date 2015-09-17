@@ -4,6 +4,13 @@ playField.font = '30px Arial';
 var playfieldHeight = document.getElementById("playField").height;
 var playfieldWidth = document.getElementById("playField").width;
 
+var redColor = "#E74C3C";
+var greenColor = "#1BBC9B";
+
+var specialAmmoSelectColor = document.getElementById("specialAmmoSelectColor"); // Infon nedanför healthbar som säger hur mycket skott man har kvar
+var ammoSelectColor =   document.getElementById("ammoSelectColor"); // Infon nedanför healthbar som säger hur mycket skott man har kvar
+
+
 var shotList = {};
 var powerShotList = {};
 var powerShotAvailabe = 600;
@@ -78,7 +85,8 @@ var powerAmmoImage = document.getElementById("powerAmmoImage");
 var healthImage = document.getElementById("healthImage");
 var shotImage = document.getElementById("shotImage");
 var specialShotImage = document.getElementById("specialShotImage");
-ammoSelect.style.backgroundColor = "#93ee53";
+
+ammoSelect.style.backgroundColor = greenColor;
 // ammoImage.style.display ="none";
 healthImage.style.display ="none";
 shotImage.style.display ="none";
@@ -159,14 +167,40 @@ function startGame() {
         if (player.right === false && player.left === false) {
              strafeX = 260;
         }
+
+
         // Shoot spacebar
         if (keyPress.keyCode === 32) {
           shoot(typeOfShot);
         }
         // Shoot selector uparrow
         if (keyPress.keyCode === 38) {
-          typeOfShot === "pistol" ? (typeOfShot = "shotgun",ammoSelect.style.backgroundColor = "#fff",specialAmmoSelect.style.backgroundColor = "#93ee53", strafeX = 260+(65*6)) : (typeOfShot = "pistol",ammoSelect.style.backgroundColor = "#93ee53",specialAmmoSelect.style.backgroundColor = "#fff",strafeX = 260+(65*5));
+
+          typeOfShot === "pistol" ?
+
+          (typeOfShot = "shotgun",
+           ammoSelect.style.backgroundColor = "#fff",
+           ammoSelectColor.style.color =greenColor,
+           specialAmmoSelect.style.backgroundColor = greenColor,
+           specialAmmoSelectColor.style.color = "#fff",
+
+           strafeX = 260+(65*6))
+              :
+           (typeOfShot = "pistol",
+               ammoSelectColor.style.color = "#fff",
+
+               ammoSelect.style.backgroundColor = greenColor,
+            specialAmmoSelect.style.backgroundColor = "#fff",
+               specialAmmoSelectColor.style.color = greenColor,
+
+               strafeX = 260+(65*5));
+
+
+
+
+
         }
+
 
     };
 
@@ -336,8 +370,8 @@ function startGame() {
     function generateShot(playerX) {
         var shot =
         {
-            PositionValueX: playerX + 10,
-            PositionValueY: playfieldHeight - groundHeight-player.height,
+            PositionValueX: playerX + 11,
+            PositionValueY: playfieldHeight - groundHeight-player.height-10,
             width: 12,
             height: 20,
             color: "black",
@@ -357,16 +391,15 @@ function startGame() {
     function generatePowerShot(playerX) {
         var powerShot1 = {
             id: 1,
-            PositionValueX: playerX + 10,
+            PositionValueX: playerX+20,
             PositionValueY: playfieldHeight - groundHeight-player.height,
             width: 10,
             height: 10,
-            //color: "black"
             img: specialShotImage
         };
         var powerShot2 = {
             id: 2,
-            PositionValueX: playerX,
+            PositionValueX: playerX+10,
             PositionValueY: playfieldHeight - groundHeight-player.height,
             width: 10,
             height: 10,
@@ -374,7 +407,7 @@ function startGame() {
         };
         var powerShot3 = {
             id: 3,
-            PositionValueX: playerX + 10,
+            PositionValueX: playerX+15,
             PositionValueY: playfieldHeight - groundHeight-player.height,
             width: 10,
             height: 10,
@@ -614,8 +647,9 @@ function startGame() {
           // Kontrolerar om banan är avklarad
           if(Object.keys(bouncingBalls).length === 0 && levelComplete === true){
             levelInfo.style.display = "block";
-            statusText.innerHTML = "Level complete!"
-            levelInfo.style.backgroundColor = "#93ee53";
+
+            statusText.innerHTML = "Level complete!";
+            levelInfo.style.backgroundColor = greenColor;
             buttonText.innerHTML = "Next Level";
           }
 
@@ -629,8 +663,9 @@ function startGame() {
             clearInterval(startUpdate);
             clearInterval(startTime);
             levelInfo.style.display = "block";
-            statusText.innerHTML = "You died!"
-            levelInfo.style.backgroundColor = "#E74C3C";
+
+            statusText.innerHTML = "You died!";
+            levelInfo.style.backgroundColor = redColor;
             buttonText.innerHTML = "Restart";
             restart = true;
         }
