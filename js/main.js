@@ -4,18 +4,29 @@ playField.font = '30px Arial';
 var playfieldHeight = document.getElementById("playField").height;
 var playfieldWidth = document.getElementById("playField").width;
 
-var obstacleCount = 0;
-
 var shotList = {};
 var powerShotList = {};
-var powerShotAvailabe = 20;
+var powerShotAvailabe = 600;
 var powerUp = false;
 
 var bigBallRadius = 60;
 var mediumBallRadius = 40;
 var smallBallRadius = 20;
-//var firstBallSpeed = Math.floor((Math.random() * 6) + 1);
-var firstBallSpeed = 1;
+
+
+
+/**
+ *
+ *  Variabler som ändras när man klarar en bana!
+ *
+ **/
+var ballSpeed = 0.2;
+var healthGenerate = 12;
+var ammoGenerate = 11;
+var specialAmmoGenerate = 13;
+var ballSpawnInterval = 10;
+
+
 
 var collisionCounter = document.getElementById("collisionCounter");
 var ammoCounter = document.getElementById("ammoCounter");
@@ -43,9 +54,9 @@ var shotSound = new Audio();
 //shotSound.src = "sound/bang.wav";
 var specialShotSound = new Audio();
 //specialShotSound.src = "sound/loudgun.wav";
-var reload = new Audio();
+//var reload = new Audio();
 //reload.src = "sound/reload.wav";
-var healthSound = new Audio();
+//var healthSound = new Audio();
 //healthSound.src = "sound/yes.wav";
 var backgroundSound = new Audio();
 //backgroundSound.src = "sound/retro.mp3";
@@ -59,15 +70,22 @@ var ammoImage = document.getElementById("ammoImage");
 var powerAmmoImage = document.getElementById("powerAmmoImage");
 var healthImage = document.getElementById("healthImage");
 var shotImage = document.getElementById("shotImage");
-//var bigBallImage = document.getElementById("bigBallImage");
-
+var specialShotImage = document.getElementById("specialShotImage");
 
 // ammoImage.style.display ="none";
 healthImage.style.display ="none";
+shotImage.style.display ="none";
+specialShotImage.style.display ="none";
+
+var hitPerLevel = 0;
+var swag = document.getElementById("swag");
+
+var frame = document.getElementById("frame");
+
 // powerAmmoImage.style.display ="none";
 
 var player = new Image();
-player.src = "images/villeSprite.png";  // WTF?! Varför utgår man från vart html-filen ligger och inte JS filen?
+player.src = "images/villeSprite2.png";  // WTF?! Varför utgår man från vart html-filen ligger och inte JS filen?
 player.left = false;
 player.right = false;
 player.health = 100;
@@ -77,21 +95,19 @@ player.PositionValueX = 100;
 player.PositionValueY = playfieldHeight - 75 - groundHeight;
 player.animateX = (player.width) - 25;
 player.animateY = player.height;
-var strafeX = 0;
 
+var strafeX = 260;
 var bouncingBalls = {};
 
 //document.getElementById("changeLevel").addEventListener("click",changeLevel);
 
 function startGame() {
 
-
     /**
      *
      *<======= STARTA TIMERS! =======>
      *
      */
-
     function updateTime() {
         time++;
         document.getElementById("timer").innerHTML = time;
@@ -103,8 +119,12 @@ function startGame() {
 
     function updateFrameCount() {
         frameCount++;
+        frame.innerHTML = frameCount;
         return frameCount;
     }
+
+
+
 
     setInterval(function () {
         hit = false;
@@ -130,12 +150,14 @@ function startGame() {
 
         }
         if (player.right === false && player.left === false) {
-            strafeX = 0;
+             strafeX = 260;
         }
         // Shoot knapp S
         if (keyPress.keyCode === 83) {
             if (ammoLeft > 0) {
                 generateShot(player.PositionValueX);
+                strafeX = 260+(65*5);
+
                 ammoLeft--;
                 shotSound.play();
                 shotSound.currentTime=0;
@@ -147,7 +169,9 @@ function startGame() {
         // Power shot Knapp A
         if (keyPress.keyCode === 65) {
           if (powerShotAvailabe > 0) {
+              //player.PositionValueX = player.PositionValueX;
               generatePowerShot(player.PositionValueX);
+              strafeX = 260+(65*6);
               powerShotAvailabe--;
               specialShotSound.play();
               specialShotSound.currentTime=0;
@@ -159,13 +183,13 @@ function startGame() {
         if (keyPress.keyCode === 37) {
             // Move left
             player.left = false;
-            strafeX = 0;
+            strafeX = 260;
 
         }
         if (keyPress.keyCode === 39) {
             // Move right
             player.right = false;
-            strafeX = 0;
+            strafeX = 260;
 
         }
     };
@@ -173,21 +197,33 @@ function startGame() {
         if (player.left) {
             player.PositionValueX -= 10; //fart på spelaren
 
-            if (frameCount % 2 === 0) {
-                strafeX = 65;
+            strafeX = 65*frameCount;
+
+            if(frameCount>=4)
+            {
+                frameCount = 0;
             }
-            else {
-                strafeX = 65 * 2;
+
+            /*if(frameCount % 2 === 0) {
+                strafeX = 65*6;
             }
+            else
+            {
+                strafeX = 65*3;
+
+            }*/
+
+
+
         }
         if (player.right) {
             player.PositionValueX += 10; //fart på spelaren
-            strafeX = 195;
-            if (frameCount % 2 === 0) {
-                strafeX = 65 * 3;
-            }
-            else {
-                strafeX = 65 * 4;
+
+            strafeX = (65*frameCount)+260;
+
+            if(frameCount>=4)
+            {
+                frameCount = 0;
             }
         }
         // Spelaren kan inte röra sig utanför spelplane
@@ -207,15 +243,14 @@ function startGame() {
     var numberOfCollisions = 0;
     var ballColors = ["#000", "#E4F1FE", "#336E7B", "#4ECDC4", "#3D4A5D", "#26A65B", "#79FF85"];
     //document.getElementById("startGame").addEventListener("click", startGame);
-    var speed = 2;
 
-    function bouncingBall(ballSize, startX, startY, speedX) {
+    function bouncingBall(ballSize, startX, startY,speedX) {
 
         this.ballRadius = ballSize;
         this.PositionValueX = startX;
         this.PositionValueY = startY;
         this.speedXAxis = speedX;
-        this.speedYAxis = Math.floor((Math.random() * speed) + 1);
+        this.speedYAxis = Math.round((Math.random() * ballSpeed) + 1);
         this.hexColorCode = ballColors[Math.floor((Math.random() * ballColors.length) + 1)];
        // this.hypo = Math.sqrt(Math.pow(ballSize,2)*2);
       //  this.img = image;
@@ -224,8 +259,8 @@ function startGame() {
 
     var i = 0;
 
-    function addBalls(sizeofHitBall, startX, startY, speedX) {
-        bouncingBalls["ball" + i] = new bouncingBall(sizeofHitBall, startX, startY, speedX);
+    function addBalls(sizeofHitBall, startX, startY,speedX) {
+        bouncingBalls["ball" + i] = new bouncingBall(sizeofHitBall, startX, startY,speedX);
         i++;
     }
 
@@ -233,7 +268,7 @@ function startGame() {
 
   //  for(var s=0;s<numberOfBalls;s++)
   //   {
-        addBalls(bigBallRadius, 200, 100, firstBallSpeed); // Skapar den första bollen så att spelet kommer igång!
+        addBalls(bigBallRadius, 200, 100, ballSpeed); // Skapar den första bollen så att spelet kommer igång!
   //   }
 
     function updateEntity(ball) {
@@ -321,7 +356,7 @@ function startGame() {
             width: 10,
             height: 10,
             //color: "black"
-            img: ammoImage
+            img: specialShotImage
         };
         var powerShot2 = {
             id: 2,
@@ -329,7 +364,7 @@ function startGame() {
             PositionValueY: playfieldHeight - groundHeight-player.height,
             width: 10,
             height: 10,
-            color: "black"
+            img: specialShotImage
         };
         var powerShot3 = {
             id: 3,
@@ -338,7 +373,7 @@ function startGame() {
             width: 10,
             height: 10,
             //color: "black"
-            img: ammoImage
+            img: specialShotImage
 
         };
         powerShotList["PowerShot" + PowershotNr] = powerShot1;
@@ -369,9 +404,7 @@ function startGame() {
         if (object.id == 2) {
             object.PositionValueX += 5;
         }
-
     }
-
     function TestShotHits(list, object) {
         for (var key in object) {
 
@@ -384,23 +417,22 @@ function startGame() {
                   pop.play();
                   pop.currentTime=0;
                     if (object[key].ballRadius == 60) {
-                        addBalls(mediumBallRadius, object[key].PositionValueX + 15, object[key].PositionValueY, object[key].speedXAxis);
-                        addBalls(mediumBallRadius, object[key].PositionValueX - 15, object[key].PositionValueY, (object[key].speedXAxis) * -1);
+                        addBalls(mediumBallRadius, object[key].PositionValueX + 20, object[key].PositionValueY, (Math.random() * object[key].speedXAxis) + 1);
+                        addBalls(mediumBallRadius, object[key].PositionValueX - 20, object[key].PositionValueY, ((Math.random() * object[key].speedXAxis) + 1) * -1);
                     }
                     if (object[key].ballRadius == 40) {
-                        addBalls(smallBallRadius, object[key].PositionValueX + 10, object[key].PositionValueY, object[key].speedXAxis);
-                        addBalls(smallBallRadius, object[key].PositionValueX - 10, object[key].PositionValueY, (object[key].speedXAxis) * -1);
+                        addBalls(smallBallRadius, object[key].PositionValueX + 10, object[key].PositionValueY, (Math.random() * object[key].speedXAxis) + 1);
+                        addBalls(smallBallRadius, object[key].PositionValueX - 10, object[key].PositionValueY, ((Math.random() * object[key].speedXAxis) + 1)* -1);
                     }
                     delete object[key]; // Tar bort bollen som träffar texten!
                     delete list[k]; // Tar bort bollen som träffar texten!
                     numberOfCollisions++;
-
+                    hitPerLevel++;
                 }
                 else if (list[k].PositionValueY < 0) {
                     delete list[k]; // Tar bort bollen som träffas!
                 }
             }
-
         }
     }
     /**
@@ -418,7 +450,6 @@ function startGame() {
     }
 
     var upgrades = {};
-
     var upgradeCounter = 0;
 
     function addUpgrades(width, height, type, img) {
@@ -467,25 +498,28 @@ function startGame() {
 
         healthBar.style.width = player.health + "%";
 
-        console.log(player.health);
+       // console.log(player.health);
 
 
         collisionCounter.innerHTML = numberOfCollisions;
+        var accuracyCounter = ((collisionCounter.innerHTML)/(totalShotsFired.innerHTML)*100).toFixed(0);
 
-        // var accuracyCounter = ((collisionCounter.innerHTML)/(totalShotsFired.innerHTML)*100).toFixed(0);
-        //
-        // if(shotNr == 0 && PowershotNr == 0)
-        // {
-        //     accuracy.innerHTML = 0;
-        // }
-        // else if(accuracyCounter<=100)
-        // {
-        // accuracy.innerHTML = accuracyCounter
-        // }
-        // else if(accuracyCounter>100)
-        // {
-        //     accuracy.innerHTML = 100;
-        // }
+        if(shotNr == 0 && PowershotNr == 0)
+        {
+            accuracy.innerHTML = 0;
+        }
+        else if(accuracyCounter<=100)
+        {
+            accuracy.innerHTML = accuracyCounter
+        }
+        else if(accuracyCounter>100)
+        {
+            accuracy.innerHTML = 100;
+        }
+
+        swag.innerHTML = hitPerLevel;
+
+
 
         ammoCounter.innerHTML = ammoLeft;
         powerShotsCounter.innerHTML = powerShotAvailabe;
@@ -499,18 +533,7 @@ function startGame() {
         {
             drawImages(upgrades[upgrade]);
         }
-
-       /* for (var ball in bouncingBalls)
-        {
-            drawBalls(bouncingBalls[ball]);
-        }*/
-
-
-
-
-
        // drawImages(shot);
-
         playerPosition(); //updaterar spelaren
 
         playField.drawImage(player,strafeX,0,player.width,player.height,player.PositionValueX,player.PositionValueY,player.width,player.height);
@@ -523,8 +546,8 @@ function startGame() {
             {
                 console.log("AMMO!");
                 ammoLeft += 10;
-                reload.play();
-                reload.currentTime=0;
+              //  reload.play();
+               // reload.currentTime=0;
                 delete upgrades[item];
             }
             else if(distanceBetweenPlayerAndUpgrade>-marginal && distanceBetweenPlayerAndUpgrade<marginal && upgrades[item].type === "Health")
@@ -532,8 +555,8 @@ function startGame() {
                 healthBar.className = "smoothTrans";
                 console.log("Health!");
                 player.health += 20;
-                healthSound.play();
-                healthSound.currentTime=0;
+                //healthSound.play();
+                //healthSound.currentTime=0;
                 delete upgrades[item];
             }
             else if(distanceBetweenPlayerAndUpgrade>-marginal && distanceBetweenPlayerAndUpgrade<marginal && upgrades[item].type === "PowerSot")
@@ -541,6 +564,7 @@ function startGame() {
                 console.log("PowerShot!");
                 powerShotAvailabe += 8; // HUR MÅNGA POWERSHOTS MAN FÅR VID UPPGRADERING!
                 delete upgrades[item];
+                hitPerLevel = 0;
             }
         }
         //UPPDATERAR SKOTTPOSITIONEN FÖR VARJE SKOTT I OBJEKTET
@@ -555,12 +579,13 @@ function startGame() {
             drawImages(shotList[key]);
         }
 
+
         for(var power in powerShotList){
             animateShots(powerShotList[power]);
         }
         // RITA UT SKOTTEN
         for(var powerS in powerShotList){
-            drawObject(powerShotList[powerS]);
+            drawImages(powerShotList[powerS]);
         }
         // RITA UT BOLLARNA SAMT KOLLAR OM SKOTTEN TRÄFFAR
         TestShotHits(shotList,bouncingBalls);
@@ -592,29 +617,38 @@ function startGame() {
             playField.fillText("Game Over :(", playfieldWidth/2, playfieldHeight/2);
         }
     }
+
+    /*
+     var ballSpeed = 0.2;
+     var healthGenerate = 8;
+     var ammoGenerate = 5;
+     var specialAmmoGenerate = 6;
+
+     */
+
     var powerup = false;
     var startUpdate = setInterval(update, 20);
     var startTime = setInterval(function(){
         if(updateTime() === 1)
         {
           for(var l = 0; l < level; l++){
-            addBalls(bigBallRadius, (Math.floor(Math.random() * 9) + 1) *100, 100, firstBallSpeed);
+            addBalls(bigBallRadius, (Math.floor(Math.random() * 9) + 1) *100, 100, ballSpeed);
           }
         }
         if(timer.innerHTML % 10 === 0 && j <= level)
         {
-            addBalls(bigBallRadius, (Math.floor(Math.random() * 9) + 1) *100, 100, firstBallSpeed);
+            addBalls(bigBallRadius, (Math.floor(Math.random() * 9) + 1) *100, 100, ballSpeed);
             j++;
         }
-        else if(timer.innerHTML % 7 === 0 && levelComplete != true)
+        else if(timer.innerHTML % ammoGenerate === 0 && levelComplete != true)
         {
             addUpgrades(50, 50, "Ammo", ammoImage);
         }
-        else if(timer.innerHTML % 13 === 0 && player.health < 100 && levelComplete != true)
+        else if(timer.innerHTML % healthGenerate === 0 && player.health < 100 && levelComplete != true)
         {
             addUpgrades(50, 50, "Health", healthImage);
         }
-        if(timer.innerHTML % 8 === 0 && levelComplete != true)
+        if(timer.innerHTML % specialAmmoGenerate === 0 && levelComplete != true && hitPerLevel>10)
         {
             addUpgrades(50, 50, "PowerSot", powerAmmoImage);
         }
@@ -630,12 +664,20 @@ function startGame() {
 
     setInterval(function(){
         updateFrameCount();
-    },200);
+    },100);
 }
 startGame(1);
 next.addEventListener("click", function(){
+
   console.log("klick");
   level++;
+
+    ballSpeed +=1;
+    healthGenerate +=10;
+    ammoGenerate +=10;
+    specialAmmoGenerate +=10;
+
+
   bouncingBalls = {};
   time = 0;
   j = 0;
