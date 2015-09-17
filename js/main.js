@@ -24,7 +24,7 @@ var typeOfShot = "pistol";
 var ammoSelect = document.getElementById('ammoSelect');
 var SpecialAmmoSelect = document.getElementById('SpecialAmmoSelect');
 var restart = false;
-
+var lockPlayer = false;
 
 /**
  *
@@ -97,7 +97,6 @@ var swag = document.getElementById("swag");
 
 var frame = document.getElementById("frame");
 
-// powerAmmoImage.style.display ="none";
 var gameTime = document.getElementById('gameTime');
 var player = new Image();
 player.src = "images/villeSprite2.png";  // WTF?! Varför utgår man från vart html-filen ligger och inte JS filen?
@@ -114,10 +113,9 @@ player.animateY = player.height;
 var strafeX = 260;
 var bouncingBalls = {};
 
-//document.getElementById("changeLevel").addEventListener("click",changeLevel);
 
 function startGame() {
-
+playFieldBackground.style.background = 'url("images/' + backGrounds[level-1] + '")';
     /**
      *
      *<======= STARTA TIMERS! =======>
@@ -155,11 +153,11 @@ function startGame() {
     }
     /* FLYTTAR PÅ SPELAREN */
     document.onkeydown = function (keyPress) {
-        if (keyPress.keyCode === 37) {
+        if (keyPress.keyCode === 37 && lockPlayer === false) {
             // Move left
             player.left = true;
         }
-        if (keyPress.keyCode === 39) {
+        if (keyPress.keyCode === 39 && lockPlayer === false) {
             // Move right
             player.right = true;
 
@@ -170,8 +168,10 @@ function startGame() {
 
 
         // Shoot spacebar
-        if (keyPress.keyCode === 32) {
+        if (keyPress.keyCode === 32 && lockPlayer === false) {
           shoot(typeOfShot);
+          player.left = false;
+          player.right = false;
         }
         // Shoot selector uparrow
         if (keyPress.keyCode === 38) {
@@ -525,7 +525,7 @@ function startGame() {
 
 
     function update() {
-        playFieldBackground.style.background = 'url("images/' + backGrounds[level-1] + '")';
+
         ballCounter.innerHTML = Object.keys(bouncingBalls).length; // Kollar hur många bollar som är på planen för att avgöra när man klarat en bana!
         playField.clearRect(0, 0, playfieldWidth, playfieldHeight);
         //Kontrolerar så att hälsan inte kan bli mer än 100
@@ -651,10 +651,21 @@ function startGame() {
             statusText.innerHTML = "Level complete!";
             levelInfo.style.backgroundColor = greenColor;
             buttonText.innerHTML = "Next Level";
+            lockPlayer = true;
           }
 
         TestShotHits(shotList,bouncingBalls);
         TestShotHits(powerShotList,bouncingBalls);
+        if(level > 4){
+          clearInterval(startUpdate);
+          clearInterval(startTime);
+          levelInfo.style.display = "block";
+          statusText.innerHTML = "Game completed!"
+          levelInfo.style.backgroundColor = "#93ee53";
+          buttonText.innerHTML = "Play again";
+          lockPlayer = true;
+          restart = true;
+        }
     }
     function checkHealth(health)
     {
@@ -668,6 +679,7 @@ function startGame() {
             levelInfo.style.backgroundColor = redColor;
             buttonText.innerHTML = "Restart";
             restart = true;
+            lockPlayer = true;
         }
     }
     var startUpdate = setInterval(update, 20);
@@ -725,6 +737,8 @@ button.addEventListener("click", function(){
     healthGenerate +=10;
     ammoGenerate +=10;
     specialAmmoGenerate +=10;
+    lockPlayer = false;
+    playFieldBackground.style.background = 'url("images/' + backGrounds[level-1] + '")';
   }
 
 
