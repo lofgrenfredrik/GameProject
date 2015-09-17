@@ -5,18 +5,18 @@ var playfieldHeight = document.getElementById("playField").height;
 var playfieldWidth = document.getElementById("playField").width;
 
 var obstacleCount = 0;
-
+var typeOfShot = "pistol";
 var shotList = {};
 var powerShotList = {};
 var powerShotAvailabe = 20;
-var powerUp = false;
-
+var ammoSelect = document.getElementById('ammoSelect');
+var SpecialAmmoSelect = document.getElementById('SpecialAmmoSelect');
 var bigBallRadius = 60;
 var mediumBallRadius = 40;
 var smallBallRadius = 20;
 //var firstBallSpeed = Math.floor((Math.random() * 6) + 1);
 var firstBallSpeed = 1;
-
+var restart = false;
 var collisionCounter = document.getElementById("collisionCounter");
 var ammoCounter = document.getElementById("ammoCounter");
 var powerShotsCounter = document.getElementById("powerShotsCounter");
@@ -33,7 +33,10 @@ var healthBar = document.getElementById("health-bar");
 var levelCounter = document.getElementById("level");
 var level = 1;
 var j = 0; //variabel för att begränsa hur många bollar som genereras per bana
-var next = document.getElementById('nextLevel');
+var levelInfo = document.getElementById('levelInfo');
+var statusTetxt = document.getElementById('statusTetxt');
+var button = document.getElementById('buttonSelector');
+var buttonText = document.getElementById('buttonText');
 var levelComplete = false;
 var backGrounds = ["pixelBG2.jpg", "fantasy.png", "forest.png", "desert.png"];
 // Sounds ********************
@@ -60,8 +63,7 @@ var powerAmmoImage = document.getElementById("powerAmmoImage");
 var healthImage = document.getElementById("healthImage");
 var shotImage = document.getElementById("shotImage");
 //var bigBallImage = document.getElementById("bigBallImage");
-
-
+ammoSelect.style.backgroundColor = "#93ee53";
 // ammoImage.style.display ="none";
 healthImage.style.display ="none";
 // powerAmmoImage.style.display ="none";
@@ -132,29 +134,17 @@ function startGame() {
         if (player.right === false && player.left === false) {
             strafeX = 0;
         }
-        // Shoot knapp S
-        if (keyPress.keyCode === 83) {
-            if (ammoLeft > 0) {
-                generateShot(player.PositionValueX);
-                ammoLeft--;
-                shotSound.play();
-                shotSound.currentTime=0;
-
-            }
+        // Shoot spacebar
+        if (keyPress.keyCode === 32) {
+          shoot(typeOfShot);
         }
-       // powerShotsCounter.innerHTML = powerShotAvailabe;
-
-        // Power shot Knapp A
-        if (keyPress.keyCode === 65) {
-          if (powerShotAvailabe > 0) {
-              generatePowerShot(player.PositionValueX);
-              powerShotAvailabe--;
-              specialShotSound.play();
-              specialShotSound.currentTime=0;
-             // powerShotsCounter.innerHTML = powerShotAvailabe;
-          }
+        // Shoot selector uparrow
+        if (keyPress.keyCode === 38) {
+          typeOfShot === "pistol" ? (typeOfShot = "shotgun",ammoSelect.style.backgroundColor = "#fff",specialAmmoSelect.style.backgroundColor = "#93ee53") : (typeOfShot = "pistol",ammoSelect.style.backgroundColor = "#93ee53",specialAmmoSelect.style.backgroundColor = "#fff");
         }
+
     };
+
     document.onkeyup = function (keyPress) {
         if (keyPress.keyCode === 37) {
             // Move left
@@ -229,12 +219,6 @@ function startGame() {
         i++;
     }
 
-    // addBalls(bigBallRadius, (Math.floor(Math.random() * 9) + 1) *100, 100, firstBallSpeed); // Skapar den första bollen så att spelet kommer igång!
-
-  //  for(var s=0;s<numberOfBalls;s++)
-  //   {
-        addBalls(bigBallRadius, 200, 100, firstBallSpeed); // Skapar den första bollen så att spelet kommer igång!
-  //   }
 
     function updateEntity(ball) {
         ball.PositionValueX += ball.speedXAxis;
@@ -290,6 +274,25 @@ function startGame() {
      *<======= ALLTING SOM HAR MED SKOTTEN ATT GÖRA =======>
      *
      */
+     function shoot(type){
+       if(type === "pistol"){
+         if (ammoLeft > 0) {
+             generateShot(player.PositionValueX);
+             ammoLeft--;
+             shotSound.play();
+             shotSound.currentTime=0;
+         }
+       }
+       else if(type === "shotgun"){
+         if (powerShotAvailabe > 0) {
+             generatePowerShot(player.PositionValueX);
+             powerShotAvailabe--;
+             specialShotSound.play();
+             specialShotSound.currentTime=0;
+            // powerShotsCounter.innerHTML = powerShotAvailabe;
+         }
+       }
+     }
     var shotNr = 0;
 
     function generateShot(playerX) {
@@ -467,25 +470,25 @@ function startGame() {
 
         healthBar.style.width = player.health + "%";
 
-        console.log(player.health);
+        // console.log(player.health);
 
 
         collisionCounter.innerHTML = numberOfCollisions;
 
-        // var accuracyCounter = ((collisionCounter.innerHTML)/(totalShotsFired.innerHTML)*100).toFixed(0);
-        //
-        // if(shotNr == 0 && PowershotNr == 0)
-        // {
-        //     accuracy.innerHTML = 0;
-        // }
-        // else if(accuracyCounter<=100)
-        // {
-        // accuracy.innerHTML = accuracyCounter
-        // }
-        // else if(accuracyCounter>100)
-        // {
-        //     accuracy.innerHTML = 100;
-        // }
+        var accuracyCounter = ((collisionCounter.innerHTML)/(totalShotsFired.innerHTML)*100).toFixed(0);
+
+        if(shotNr == 0 && PowershotNr == 0)
+        {
+            accuracy.innerHTML = 0;
+        }
+        else if(accuracyCounter<=100)
+        {
+        accuracy.innerHTML = accuracyCounter
+        }
+        else if(accuracyCounter>100)
+        {
+            accuracy.innerHTML = 100;
+        }
 
         ammoCounter.innerHTML = ammoLeft;
         powerShotsCounter.innerHTML = powerShotAvailabe;
@@ -536,7 +539,7 @@ function startGame() {
                 healthSound.currentTime=0;
                 delete upgrades[item];
             }
-            else if(distanceBetweenPlayerAndUpgrade>-marginal && distanceBetweenPlayerAndUpgrade<marginal && upgrades[item].type === "PowerSot")
+            else if(distanceBetweenPlayerAndUpgrade>-marginal && distanceBetweenPlayerAndUpgrade<marginal && upgrades[item].type === "PowerShot")
             {
                 console.log("PowerShot!");
                 powerShotAvailabe += 8; // HUR MÅNGA POWERSHOTS MAN FÅR VID UPPGRADERING!
@@ -568,13 +571,10 @@ function startGame() {
 
           // Kontrolerar om banan är avklarad
           if(Object.keys(bouncingBalls).length === 0 && levelComplete === true){
-            playField.fillStyle = "green";
-            playField.fillRect((playfieldWidth/2) - 150, (playfieldHeight/2) - 80, 300, 130);
-            playField.fillStyle = "#fff";
-            playField.font = "bold 56px Arial";
-            playField.textAlign = "center";
-            playField.fillText("Winning!!!", playfieldWidth/2, playfieldHeight/2);
-            next.style.display = "block";
+            levelInfo.style.display = "block";
+            statusText.innerHTML = "Level complete!"
+            levelInfo.style.backgroundColor = "#93ee53";
+            buttonText.innerHTML = "Next Level";
           }
 
         TestShotHits(shotList,bouncingBalls);
@@ -586,13 +586,13 @@ function startGame() {
         {
             clearInterval(startUpdate);
             clearInterval(startTime);
-            playField.fillStyle = "Red";
-            playField.font = "bold 56px Arial";
-            playField.textAlign = "center";
-            playField.fillText("Game Over :(", playfieldWidth/2, playfieldHeight/2);
+            levelInfo.style.display = "block";
+            statusText.innerHTML = "You died!"
+            levelInfo.style.backgroundColor = "#E74C3C";
+            buttonText.innerHTML = "Restart";
+            restart = true;
         }
     }
-    var powerup = false;
     var startUpdate = setInterval(update, 20);
     var startTime = setInterval(function(){
         if(updateTime() === 1)
@@ -614,9 +614,9 @@ function startGame() {
         {
             addUpgrades(50, 50, "Health", healthImage);
         }
-        if(timer.innerHTML % 8 === 0 && levelComplete != true)
+        else if(timer.innerHTML % 8 === 0 && levelComplete != true)
         {
-            addUpgrades(50, 50, "PowerSot", powerAmmoImage);
+            addUpgrades(50, 50, "PowerShot", powerAmmoImage);
         }
         else if(timer.innerHTML % 5 === 0)
         {
@@ -633,16 +633,16 @@ function startGame() {
     },200);
 }
 startGame(1);
-next.addEventListener("click", function(){
-  console.log("klick");
-  level++;
-  bouncingBalls = {};
-  time = 0;
-  j = 0;
-  levelComplete = false;
-  next.style.display = "none";
+button.addEventListener("click", function(){
+  if(restart === true){
+    location.reload();
+  }
+  else{
+    level++;
+    bouncingBalls = {};
+    time = 0;
+    j = 0;
+    levelComplete = false;
+    levelInfo.style.display = "none";
+  }
 });
-
-function generatePowerUp(){
-
-}

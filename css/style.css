@@ -360,6 +360,7 @@ th {
   width: 100%; }
 
 #canvasContainer {
+  position: relative;
   margin: 0 auto;
   width: 1000px;
   height: 100%; }
@@ -399,7 +400,16 @@ th {
   width: 200px;
   text-align: center;
   color: #34495E;
-  border: 1px solid #34495E; }
+  border: 1px solid #34495E;
+  margin: 0 auto; }
+
+#buttonText {
+  color: #fff;
+  justify-content: center;
+  align-items: center;
+  height: 50px;
+  width: 200px;
+  text-align: center; }
 
 .button:hover {
   background-color: #46627f;
@@ -437,6 +447,24 @@ th {
   margin: 0; }
 
 #nextLevel {
+  display: none; }
+
+#levelInfo {
+  position: absolute;
+  width: 800px;
+  height: 450px;
+  top: 30px;
+  left: 100px;
+  display: none;
+  border-radius: 10px; }
+
+p {
+  font-size: 30px;
+  color: #fff;
+  text-align: center;
+  padding: 0; }
+
+#shotImage {
   display: none; }
 
 /*# sourceMappingURL=style.css.map */

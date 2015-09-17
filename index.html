@@ -9,6 +9,14 @@
   <div id="main-container">
     <div id="canvasContainer">
       <canvas id="playField" width="1000" height="590"></canvas>
+      <div id="levelInfo">
+        <p class="header"><span id="statusText"></span></p>
+        <p class="header">LEVEL:<span id="level">1</span></p>
+        <p>Accuracy: <span id="accuracy"></span>%</p>
+        <p>Shots fired: <span id="totalShotsFired">0</span></p>
+        <p>Balls destroyed: <span id="collisionCounter">0</span></p>
+        <div id="buttonSelector" class="button"><span id="buttonText"></span></div>
+      </div>
     </div>
 
     <div id="gameInfoContainer">
@@ -20,30 +28,30 @@
 
       <div class="col_3">
           <div class="center">
-          <div id="nextLevel" class="button">Next level</div>
+          <!-- <div id="nextLevel" class="button">Next level</div> -->
           </div>
       </div>
       <div class="col_3">
-          <div class="center">
+          <div id="ammoSelect" class="center">
           <img src="images/ammo2.png" id="ammoImage">
         <p class="info">&nbsp;X&nbsp;<span id="ammo-info"></span></p>
           </div>
 
       </div>
       <div class="col_3">
-          <div class="center">
+          <div id="specialAmmoSelect" class="center">
         <img src="images/secialammo.png" id="powerAmmoImage">
         <p class="info">&nbsp;X&nbsp;<span id="power-ammo-info"></span></p>
           </div>
       </div>
       <div class="col_3 left-corner">
-        <div>Träffsäkerhet: <span id="accuracy"></span>%</div>
+        <!-- <div>Träffsäkerhet: <span id="accuracy"></span>%</div> -->
         <div>Bollar i omlopp: <span id="ballCounter"></span></div>
         <div>Skjutna skott: <span id="shotsFired">0</span></div>
-        <div>Du är på bana: <span id="level">1</span></div>
-        <div>Totalt antal skott: <span id="totalShotsFired">0</span></div>
+        <!-- <div>Du är på bana: <span id="level">1</span></div> -->
+        <!-- <div>Totalt antal skott: <span id="totalShotsFired">0</span></div> -->
         <div>Powerskott skjutna <span id="specialShotsFired">0</span></div>
-        <div>Skotten har träffat bollarna <span id="collisionCounter"></span> gånger</div>
+        <!-- <div>Skotten har träffat bollarna <span id="collisionCounter"></span> gånger</div> -->
         <div>Ammunition: <span id="ammoCounter"></span></div>
         <div>Powershots: <span id="powerShotsCounter"></span></div>
         <div>Timer: <span id="timer">0</span></div>
