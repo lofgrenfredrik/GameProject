@@ -67,7 +67,7 @@ ammoSelect.style.backgroundColor = "#93ee53";
 // ammoImage.style.display ="none";
 healthImage.style.display ="none";
 // powerAmmoImage.style.display ="none";
-
+var gameTime = document.getElementById('gameTime');
 var player = new Image();
 player.src = "images/villeSprite.png";  // WTF?! Varför utgår man från vart html-filen ligger och inte JS filen?
 player.left = false;
