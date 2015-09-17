@@ -2,6 +2,12 @@
 
 $darkBlue: #34495E;
 $red: #E74C3C;
+
+body{
+  font-family: 'Abril Fatface', cursive;
+}
+
+
 $green: #1BBC9B;
 #main-container
 {
@@ -9,23 +15,24 @@ $green: #1BBC9B;
 }
 #canvasContainer
 {
+  position: relative;
   margin: 0 auto;
   width: 1000px;
   height: 100%;
 }
 #playField
 {
-  //background-color: #ff545d;
-  color: #79ff85;
-  // background:url("../images/pixelBG2.jpg")
 }
 #gameInfoContainer
 {
-
     margin: 0 auto;
     max-width: 1000px;
     width: 100%;
-   // background-color: blue;
+}
+.space
+{
+  width: 100%;
+  height: 20px;
 }
 .col_3
   {
@@ -54,14 +61,19 @@ $green: #1BBC9B;
 .button
 {
   transition: all 0.3s ease;
- // display: none;
-  justify-content: center;
+  display:flex;
+  justify-content:center;
   align-items:center;
   height: 50px;
   width: 200px;
   text-align: center;
   color: $darkBlue;
   border: 1px solid $darkBlue;
+  margin: 0 auto;
+}
+#buttonText{
+  color: #fff;
+
 }
 .button:hover
 {
@@ -78,19 +90,16 @@ $green: #1BBC9B;
   height: 25px;
 }
 #health-bar{
-//  transition: all  1s ease;
   background-color: $red;
   height: 25px;
   text-align: center;
-  display:flex;justify-content:center;align-items:center;
+  display:flex;
+  justify-content:center;
+  align-items:center;
 }
 .smoothTrans
 {
   transition: all  1s ease;
-}
-#health
-{
- // padding-top: 2px;
 }
 .left-corner{
   position: absolute;
@@ -99,10 +108,46 @@ $green: #1BBC9B;
 }
 .info{
   display: inline-block;
-  color: $green;
+  //color: $green;
   font-size: 30px;
   margin: 0;
 }
 #nextLevel{
   display: none;
+}
+#levelInfo{
+  position: absolute;
+  width: 800px;
+  height: 450px;
+  top: 30px;
+  left: 100px;
+  display: none;
+  border-radius: 10px;
+}
+p{
+  margin: 20px;
+  font-size: 22px;
+  color: #fff;
+  text-align: center; //
+  padding: 0;
+}
+.header
+{
+  font-size: 35px;
+}
+#shotImage{
+  display: none;
+}
+#specialAmmoSelectColor
+{
+  color: $green;
+}
+#specialAmmoSelect, #ammoSelect,#timerContainer
+{
+  height: 80px;
+}
+.greenText
+{
+  font-size: 30px;
+  color: $green;
 }
