@@ -438,7 +438,8 @@ body {
 .left-corner {
   position: absolute;
   top: 20px;
-  left: 160px; }
+  left: 160px;
+  display: none; }
 
 .info {
   display: inline-block;
