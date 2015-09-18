@@ -99,7 +99,7 @@ var frame = document.getElementById("frame");
 
 var gameTime = document.getElementById('gameTime');
 var player = new Image();
-player.src = "images/villeSprite2.png";  // WTF?! Varför utgår man från vart html-filen ligger och inte JS filen?
+player.src = "images/villeSprite4.png";  // WTF?! Varför utgår man från vart html-filen ligger och inte JS filen?
 player.left = false;
 player.right = false;
 player.health = 100;
@@ -136,9 +136,6 @@ playFieldBackground.style.background = 'url("images/' + backGrounds[level-1] + '
         return frameCount;
     }
 
-
-
-
     setInterval(function () {
         hit = false;
         player.color = "#fff";
@@ -163,15 +160,27 @@ playFieldBackground.style.background = 'url("images/' + backGrounds[level-1] + '
 
         }
         if (player.right === false && player.left === false) {
+
+            if(typeOfShot === "pistol")
+            {
              strafeX = 260;
+            }
+            else
+            {
+                strafeX = 845;
+            }
         }
-
-
         // Shoot spacebar
         if (keyPress.keyCode === 32 && lockPlayer === false) {
           shoot(typeOfShot);
-          player.left = false;
-          player.right = false;
+            if(typeOfShot === "pistol")
+            {
+                strafeX = 260;
+            }
+            else
+            {
+                strafeX = 845;
+            }
         }
         // Shoot selector uparrow
         if (keyPress.keyCode === 38) {
@@ -182,73 +191,87 @@ playFieldBackground.style.background = 'url("images/' + backGrounds[level-1] + '
            ammoSelect.style.backgroundColor = "#fff",
            ammoSelectColor.style.color =greenColor,
            specialAmmoSelect.style.backgroundColor = greenColor,
-           specialAmmoSelectColor.style.color = "#fff",
-
-           strafeX = 260+(65*6))
+           specialAmmoSelectColor.style.color = "#fff"
+          )
               :
            (typeOfShot = "pistol",
                ammoSelectColor.style.color = "#fff",
 
-               ammoSelect.style.backgroundColor = greenColor,
+            ammoSelect.style.backgroundColor = greenColor,
             specialAmmoSelect.style.backgroundColor = "#fff",
-               specialAmmoSelectColor.style.color = greenColor,
-
-               strafeX = 260+(65*5));
-
-
-
-
-
+            specialAmmoSelectColor.style.color = greenColor
+           );
         }
-
-
     };
-
     document.onkeyup = function (keyPress) {
         if (keyPress.keyCode === 37) {
             // Move left
             player.left = false;
-            strafeX = 260;
 
+            if(typeOfShot == "pistol")
+            {
+            strafeX = 260;
+            }
+            else
+            {
+                strafeX = 845;
+            }
         }
         if (keyPress.keyCode === 39) {
             // Move right
             player.right = false;
-            strafeX = 260;
-
+            if(typeOfShot == "pistol")
+            {
+                strafeX = 260;
+            }
+            else
+            {
+                strafeX = 845;
+            }
         }
     };
     function playerPosition() {
         if (player.left) {
             player.PositionValueX -= 10; //fart på spelaren
 
-            strafeX = 65*frameCount;
-
-            if(frameCount>=4)
+            if(typeOfShot == "shotgun")
             {
-                frameCount = 0;
-            }
+                strafeX = (65*frameCount)+585;
 
-            /*if(frameCount % 2 === 0) {
-                strafeX = 65*6;
+                if(frameCount>4)
+                {
+                    frameCount = 0;
+                }
             }
             else
             {
-                strafeX = 65*3;
+                strafeX = 65*frameCount;
 
-            }*/
-
-
-
+                if(frameCount>=4)
+                {
+                    frameCount = 0;
+                }
+            }
         }
         if (player.right) {
             player.PositionValueX += 10; //fart på spelaren
 
-            strafeX = (65*frameCount)+260;
-
-            if(frameCount>=4)
+            if(typeOfShot == "shotgun")
             {
-                frameCount = 0;
+                strafeX = (65*frameCount)+845;
+
+                if(frameCount>4)
+                {
+                    frameCount = 0;
+                }
+            }
+            else
+            {
+                strafeX = (65*frameCount)+260;
+                if(frameCount>=4)
+                {
+                    frameCount = 0;
+                }
             }
         }
         // Spelaren kan inte röra sig utanför spelplane
@@ -378,7 +401,6 @@ playFieldBackground.style.background = 'url("images/' + backGrounds[level-1] + '
             img: shotImage
         };
         shotList["shot" + shotNr] = shot;
-
         if(player.health>0)
         {
         shotNr++;
