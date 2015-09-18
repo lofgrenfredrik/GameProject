@@ -1,78 +1,194 @@
+//Plockar in canvas elementet
 var playField = document.getElementById("playField").getContext("2d");
-playField.font = '30px Arial';
+//playField.font = '30px Arial';
+var redColor = "#E74C3C";
+var greenColor = "#1BBC9B";
 
+var gameContainer = document.getElementById("game-container"); // Diven som hela spelet ligger i.
+gameContainer.style.display ="none";
+
+var introContainer = document.getElementById("intro-container");
+document.getElementById("startGame").addEventListener("click",startGame);
+
+/**
+ * Storleken på canvas
+ */
 var playfieldHeight = document.getElementById("playField").height;
 var playfieldWidth = document.getElementById("playField").width;
 
-var obstacleCount = 0;
+/**
+ * Alla element som har med spelinfo containern att göra
+ */
+var infoContainer = document.getElementById('infoContainer');
+var statusTetxt = document.getElementById('statusTetxt');
+var levelCounter = document.getElementById("level");
+var accuracy = document.getElementById("accuracy");
+var totalShotsFired = document.getElementById("totalShotsFired");
+var specialShotsFired = document.getElementById("specialShotsFired");
+var collisionCounter = document.getElementById("collisionCounter");
+var button = document.getElementById('buttonSelector');
+var buttonText = document.getElementById('buttonText');
 
+var levelInfo = document.getElementById("levelInfo");
+var highscoreSignUpContainer = document.getElementById("highscoreSignUpContainer");
+
+var totalShotsFiredHS = document.getElementById("totalShotsFiredHS");
+var shotsFiredHS = document.getElementById("shotsFiredHS");
+var specialShotsFiredHS = document.getElementById("specialShotsFiredHS");
+var collisionCounterHS = document.getElementById("collisionCounterHS");
+
+var hiddentotalShotsFiredHS = document.getElementById("hiddentotalShotsFiredHS");
+var hiddenshotsFiredHS = document.getElementById("hiddenshotsFiredHS");
+var hiddenspecialShotsFired = document.getElementById("hiddenspecialShotsFired");
+var hiddencollisionCounter = document.getElementById("hiddencollisionCounter");
+
+
+/**
+ * Alla element som visar statusen på tid / ammo och hälsa
+ */
+var healthBar = document.getElementById("health-bar");
+var healthCounter = document.getElementById("health");
+var timer = document.getElementById("timer");
+var ammoSelect = document.getElementById('ammoSelect');
+var ammoSelectColor = document.getElementById("ammoSelectColor");
+var displayAmmo = document.getElementById("ammo-info");
+var ammoImage = document.getElementById("ammoImage");
+var SpecialAmmoSelect = document.getElementById('SpecialAmmoSelect');
+var powerAmmoImage = document.getElementById("powerAmmoImage");
+var specialAmmoSelectColor = document.getElementById("specialAmmoSelectColor");
+var displayPowerAmmo = document.getElementById("power-ammo-info");
+
+/**
+ * Element för info under utveklingsfasen
+ */
+var ballCounter = document.getElementById("ballCounter");
+var ammoCounter = document.getElementById("ammoCounter");
+var powerShotsCounter = document.getElementById("powerShotsCounter");
+var swag = document.getElementById('swag');
+var frame = document.getElementById("frame");
+
+/**
+ * Variabler med bilder
+ */
+var backGrounds = ["pixelBG2.jpg", "fantasy.png", "forest.png", "desert.png"];
+var playFieldBackground = document.getElementById("playField");
+var shotsFired = document.getElementById("shotsFired");
+var healthImage = document.getElementById("healthImage");
+var shotImage = document.getElementById("shotImage");
+var specialShotImage = document.getElementById("specialShotImage");
+
+/**
+ * Skott Variabler
+ */
 var shotList = {};
 var powerShotList = {};
 var powerShotAvailabe = 0;
-// intervall som uppdateringsfunktionen körs
+var typeOfShot = "pistol";
+var ammoLeft = 10;
 
-var playerSafetyDistanceY = 300; // Marginalen på Y axeln som bollarna kommer generas ovanför.
-
-//console.log(playfieldHeight + " är Höjden");
-//console.log(playfieldWidth + " är Bredden");
-
+/**
+ * Boll variabler
+ */
 var bigBallRadius = 60;
 var mediumBallRadius = 40;
 var smallBallRadius = 20;
-//var firstBallSpeed = Math.floor((Math.random() * 6) + 1);
-var firstBallSpeed = 1;
+var bouncingBalls = {};
 
-var collisionCounter = document.getElementById("collisionCounter");
-var ammoCounter = document.getElementById("ammoCounter");
-var ammoLeft = 10;
+/**
+ * Boolean variabler
+ */
+var powerUp = false;
+var restart = false;
+var lockPlayer = false;
+var levelComplete = false;
+
+/**
+ * Variabler som ändras när man klarar en bana!
+ */
+var ballSpeed = 0.2;
+var healthGenerate = 12;
+var ammoGenerate = 11;
+var specialAmmoGenerate = 13;
+var ballSpawnInterval = 10;
+
+/**
+ * Variabler som kontrolerar timing / spawnfrekvens / level
+ */
+var hitPerLevel = 0;
 var time = 0;
-var healthCounter = document.getElementById("health");
 var frameCount = 0;
 var groundHeight = 32; // Höjden på marken i bilden.
-var ballCounter = document.getElementById("ballCounter");
-var accuracy = document.getElementById("accuracy");
+var level = 1;
+var j = 0; //variabel för att begränsa hur många bollar som genereras per bana
+var strafeX = 260;
 
-var shotsFired = document.getElementById("shotsFired");
+/**
+ * Sounds
+ */
+var pop = new Audio();
+pop.src = "sound/pop.wav";
+var shotSound = new Audio();
+shotSound.src = "sound/bang.wav";
+var specialShotSound = new Audio();
+specialShotSound.src = "sound/loudgun.wav";
+var reload = new Audio();
+reload.src = "sound/reload.wav";
+var healthSound = new Audio();
+healthSound.src = "sound/getHealth.wav";
+var damageSound = new Audio();
+damageSound.src = "sound/damageSound.wav";
+var shotgunAmmo = new Audio();
+shotgunAmmo.src = "sound/shotgunreload.wav";
 
-var ammoImage = document.getElementById("ammoImage");
-var healthImage = document.getElementById("healthImage");
+var levelCompleteSound = new Audio();
+levelCompleteSound.src = "sound/nicework.wav";
 
-ammoImage.style.display ="none";
+var gameOverSound = new Audio();
+gameOverSound.src = "sound/boo.mp3";
+
+var gameCompleteSound = new Audio();
+gameCompleteSound.src = "sound/gameComplete.mp3";
+
+/**
+ * Döljer element från DOM:et
+ */
+ammoSelect.style.backgroundColor = greenColor;
 healthImage.style.display ="none";
+shotImage.style.display ="none";
+specialShotImage.style.display ="none";
+
+/**
+ * Skapar spelaren med dess startvärden
+ */
+var player = new Image();
+player.src = "images/villeSprite4.png";  // WTF?! Varför utgår man från vart html-filen ligger och inte JS filen?
+player.left = false;
+player.right = false;
+player.health = 100;
+player.height = 75;
+player.width = 65; //
+player.PositionValueX = 100;
+player.PositionValueY = playfieldHeight - 75 - groundHeight;
+player.animateX = (player.width) - 25;
+player.animateY = player.height;
+
+
+function startGame() {
+    introContainer.style.display ="none";
+    gameContainer.style.display ="block";
 
 
 
-
-
-function startGame(level) {
-    /**
-     *
-     *<======= ALLTING SOM HAR MED SPELAREN ATT GÖRA =======>
-     *
-     */
-    var player = new Image();
-    player.src = "images/villeSprite.png";  // WTF?! Varför utgår man från vart html-filen ligger och inte JS filen?
-    player.left = false;
-    player.right = false;
-    player.health = 5;
-    player.height = 75;
-    player.width = 65; //
-    player.PositionValueX = 100;
-    player.PositionValueY = playfieldHeight - 75 - groundHeight;
-    player.animateX = (player.width) - 25;
-    player.animateY = player.height;
-    var strafeX = 0;
-
+playFieldBackground.style.background = 'url("images/' + backGrounds[level-1] + '")';
     /**
      *
      *<======= STARTA TIMERS! =======>
      *
      */
-
     function updateTime() {
         time++;
         document.getElementById("timer").innerHTML = time;
-        if (time % 10 == 0) {
+        if (time % 10 === 0) {
             ammoLeft += 2;
         }
         return time;
@@ -80,86 +196,145 @@ function startGame(level) {
 
     function updateFrameCount() {
         frameCount++;
+        frame.innerHTML = frameCount;
         return frameCount;
     }
 
-    // playField.drawImage(player,srcX,srcY,player.width,player.height,player.PositionValueX,player.PositionValueY,player.width,player.height);
-    // playField.drawImage(player,strafeX,0,player.width,player.height,player.PositionValueX,player.PositionValueY,player.width,player.height);
-    // ship_x = (width / 2) - 25, ship_y = height - 85, ship_w = 65, ship_h = 85,
-    /* KOLLAR OM SPELAREN BLIR TRÄFFAD */
-
     setInterval(function () {
         hit = false;
-        player.color = "#fff";
     }, 400);
     function playerHit(hit) {
         if (hit) {
-            player.color = "red";
+            damageSound.play();
+            healthBar.className = "";
             player.health--;
-            checkHealth(player.health)
+            checkHealth(player.health);
         }
     }
     /* FLYTTAR PÅ SPELAREN */
     document.onkeydown = function (keyPress) {
-        if (keyPress.keyCode === 37) {
+        if (keyPress.keyCode === 37 && lockPlayer === false) {
             // Move left
             player.left = true;
-
         }
-        if (keyPress.keyCode === 39) {
+        if (keyPress.keyCode === 39 && lockPlayer === false) {
             // Move right
             player.right = true;
 
         }
-        if (player.right == false && player.left == false) {
-            strafeX = 0;
-        }
-        // Shoot
-        if (keyPress.keyCode === 32) {
+        if (player.right === false && player.left === false) {
 
-            if (ammoLeft > 0) {
-                generateShot(player.PositionValueX);
-                ammoLeft--
+            if(typeOfShot === "pistol")
+            {
+             strafeX = 260;
             }
-            if (powerShotAvailabe > 0) {
-                generatePowerShot(player.PositionValueX);
-                powerShotAvailabe--
+            else
+            {
+                strafeX = 845;
             }
+        }
+        // Shoot spacebar
+        if (keyPress.keyCode === 32 && lockPlayer === false) {
+          shoot(typeOfShot);
+            if(typeOfShot === "pistol")
+            {
+                strafeX = 260;
+            }
+            else
+            {
+                strafeX = 845;
+            }
+        }
+        // Shoot selector uparrow
+        if (keyPress.keyCode === 38) {
+
+          typeOfShot === "pistol" ?
+
+          (typeOfShot = "shotgun",
+           ammoSelect.style.backgroundColor = "#fff",
+           ammoSelectColor.style.color =greenColor,
+           specialAmmoSelect.style.backgroundColor = greenColor,
+           specialAmmoSelectColor.style.color = "#fff"
+          )
+              :
+           (typeOfShot = "pistol",
+               ammoSelectColor.style.color = "#fff",
+
+            ammoSelect.style.backgroundColor = greenColor,
+            specialAmmoSelect.style.backgroundColor = "#fff",
+            specialAmmoSelectColor.style.color = greenColor
+           );
         }
     };
     document.onkeyup = function (keyPress) {
         if (keyPress.keyCode === 37) {
             // Move left
             player.left = false;
-            strafeX = 0;
 
+            if(typeOfShot == "pistol")
+            {
+            strafeX = 260;
+            }
+            else
+            {
+                strafeX = 845;
+            }
         }
         if (keyPress.keyCode === 39) {
             // Move right
             player.right = false;
-            strafeX = 0;
-
+            if(typeOfShot == "pistol")
+            {
+                strafeX = 260;
+            }
+            else
+            {
+                strafeX = 845;
+            }
         }
     };
     function playerPosition() {
         if (player.left) {
             player.PositionValueX -= 10; //fart på spelaren
 
-            if (frameCount % 2 == 0) {
-                strafeX = 65;
+            if(typeOfShot == "shotgun")
+            {
+                strafeX = (65*frameCount)+585;
+
+                if(frameCount>4)
+                {
+                    frameCount = 0;
+                }
             }
-            else {
-                strafeX = 65 * 2;
+            else
+            {
+                strafeX = 65*frameCount;
+
+                if(frameCount>=4)
+                {
+                    frameCount = 0;
+                }
             }
         }
         if (player.right) {
             player.PositionValueX += 10; //fart på spelaren
-            strafeX = 195;
-            if (frameCount % 2 == 0) {
-                strafeX = 65 * 3;
+
+            if(typeOfShot == "shotgun")
+            {
+                strafeX = (65*frameCount)+845;
+
+                if(frameCount>4)
+                {
+                    frameCount = 0;
+                }
             }
-            else {
-                strafeX = 65 * 4;
+            else
+            {
+                strafeX = (65*frameCount)+260;
+                if(frameCount>=4)
+                {
+                    frameCount = 0;
+                }
             }
         }
         // Spelaren kan inte röra sig utanför spelplane
@@ -177,79 +352,53 @@ function startGame(level) {
      *
      */
     var numberOfCollisions = 0;
-    var ballColors = ["#000", "#E4F1FE", "#336E7B", "#4ECDC4", "#3D4A5D", "#26A65B", "#79FF85"];
+    var ballColors = ["#3D4A5D","#1E824C","#D35400"];
     //document.getElementById("startGame").addEventListener("click", startGame);
-    var speed = 4;
 
-    function bouncingBall(ballSize, startX, startY, speedX) {
+    function bouncingBall(ballSize, startX, startY,speedX,color) {
 
         this.ballRadius = ballSize;
         this.PositionValueX = startX;
         this.PositionValueY = startY;
         this.speedXAxis = speedX;
-        this.speedYAxis = Math.floor((Math.random() * speed) + 1);
-        this.hexColorCode = ballColors[Math.floor((Math.random() * ballColors.length) + 1)];
+        this.speedYAxis = Math.round((Math.random() * ballSpeed) + 1);
+        this.hexColorCode = ballColors[color];
+
+      //  this.hexColorCode = ballColors[Math.floor((Math.random() * ballColors.length) + 1)];
        // this.hypo = Math.sqrt(Math.pow(ballSize,2)*2);
-        this.isStuck = false;
-        // this.ballRadius = Math.ceil((Math.random() * 50) + 10); //
-        /*  this.PositionValueX = Math.floor(Math.random() * ((playfieldWidth-this.ballRadius*2) - this.ballRadius*2 + 1)) + this.ballRadius*2;
-         this.PositionValueY = Math.floor(Math.random() * ((playfieldHeight-playerSafetyDistanceY-this.ballRadius*2) - this.ballRadius*2 + 1)) + this.ballRadius*2;
-         this.speedXAxis = Math.floor((Math.random() * 6) + 1);
-         this.speedYAxis =  Math.floor((Math.random() * 6) + 1);
-         this.hexColorCode = ballColors[ Math.floor((Math.random() * ballColors.length) + 1)];*/
+      //  this.img = image;
+       // this.isStuck = false;
     }
-    var bouncingBalls = {};
 
-    //document.getElementById("moreBalls").addEventListener("click", addBalls);
-
-    // console.log(bouncingBalls);
     var i = 0;
 
-    function addBalls(sizeofHitBall, startX, startY, speedX) {
-        bouncingBalls["ball" + i] = new bouncingBall(sizeofHitBall, startX, startY, speedX);
+    function addBalls(sizeofHitBall, startX, startY,speedX,color) {
+        bouncingBalls["ball" + i] = new bouncingBall(sizeofHitBall, startX, startY,speedX,color);
         i++;
     }
 
-    addBalls(bigBallRadius, 200, 100, firstBallSpeed); // Skapar den första bollen så att spelet kommer igång!
 
-    function updateEntity(ball,hinder) {
+    function updateEntity(ball) {
         ball.PositionValueX += ball.speedXAxis;
         ball.PositionValueY += ball.speedYAxis;
-        playField.beginPath();
-        playField.fillStyle = ball.hexColorCode;
-       // playField.arc(ball.PositionValueX, ball.PositionValueY, ball.ballRadius, 0, Math.PI * 2, true);
 
-        playField.arc(ball.PositionValueX, ball.PositionValueY, ball.ballRadius,0,2*Math.PI);
+        playField.beginPath();
+
+        playField.fillStyle = ball.hexColorCode;
+
+
+        playField.arc(ball.PositionValueX, ball.PositionValueY, ball.ballRadius, 0, Math.PI * 2, true);
+
+
         playField.closePath();
         playField.fill();
 
-        if(obstacleCount === 0){
-            hinder.PositionValueY += hinder.speedYAxis;
-            //console.log(hinder.speedXAxis
-        }
-        playField.fillStyle = hinder.color;
-        playField.fillRect(hinder.PositionValueX, hinder.PositionValueY, hinder.width, hinder.height);
-        obstacleCount++;
 
-        if(obstacleCount === (ballCounter.innerHTML = Object.keys(bouncingBalls).length))
-        {
-            obstacleCount = 0;
-        }
 
         var bounceBordersX = ball.PositionValueX < ball.ballRadius || ball.PositionValueX > playfieldWidth - ball.ballRadius;
         var bounceBordersY = ball.PositionValueY < ball.ballRadius || ball.PositionValueY > playfieldHeight - ball.ballRadius - groundHeight;
-        var playerGetsHit = (ball.PositionValueY > playfieldHeight - player.height - ball.ballRadius && ((player.PositionValueX + player.width / 2) > ball.PositionValueX - ball.ballRadius && (player.PositionValueX + player.width / 2) < ball.PositionValueX + ball.ballRadius))
-        var moveObstacle =  hinder.PositionValueY < 0 || hinder.PositionValueY > hinder.maxValue;
+        var playerGetsHit = (ball.PositionValueY > playfieldHeight - player.height - ball.ballRadius && ((player.PositionValueX + player.width / 2) > ball.PositionValueX - ball.ballRadius && (player.PositionValueX + player.width / 2) < ball.PositionValueX + ball.ballRadius));
 
-       // var collidewithObs = testCollisionEntityObstacle(hinders,ball);
-
-      //  var hypo = Math.sqrt(Math.pow(ball.ballRadius,2)*2);
-        //console.log(ball.ballRadius);
-       // console.log(hypo);
-
-            if(typeof hinder == "undefined")
-            {
-              //  console.log("DET STÄMMER");
             if (bounceBordersX) {
                 ball.speedXAxis = -ball.speedXAxis;
             }
@@ -263,68 +412,8 @@ function startGame(level) {
                     hit = true;
                     playerHit(hit);
                 }
-        }
-        else
-        {
 
-            if(moveObstacle)
-            {
-                console.log("DET STÄMMER!");
-                hinder.speedYAxis = -hinder.speedYAxis;
 
-            }
-            if (bounceBordersX)
-            {
-                ball.speedXAxis = -ball.speedXAxis;
-            }
-
-            if ((ball.PositionValueY > hinder.PositionValueY && ball.PositionValueY < hinder.PositionValueY+hinder.height))
-            {
-
-                // Studsa på vänster sida
-                if((ball.PositionValueX+ball.ballRadius>=hinder.PositionValueX) && (ball.PositionValueX<=hinder.PositionValueX ) )
-                {
-                    ball.speedXAxis = -ball.speedXAxis;
-                }
-                 //Studsa på höger sida
-                if((ball.PositionValueX-ball.ballRadius<=hinder.PositionValueX+hinders.width) && (ball.PositionValueX >= hinders.PositionValueX+hinder.width ) )
-                {
-                    ball.speedXAxis = -ball.speedXAxis;
-                }
-            }
-            if ((ball.PositionValueX+ball.ballRadius > hinder.PositionValueX && ball.PositionValueX-ball.ballRadius < hinder.PositionValueX+hinder.width))
-            {
-                if((ball.PositionValueY-ball.ballRadius+5 < hinder.PositionValueY+hinder.height) && (ball.PositionValueY-ball.ballRadius+5>hinder.PositionValueY))
-                {
-                    ball.isStuck = true;
-                  //  delete ball;
-                   // console.log("Boll fastnat!")
-                }
-                if((ball.PositionValueY+ball.ballRadius-5 > hinder.PositionValueY) && (ball.PositionValueY+ball.ballRadius-5<hinder.PositionValueY+hinder.height))
-                {
-                    ball.isStuck = true;
-                    console.log()
-                }
-                // console.log("innanför på X!");
-               if((ball.PositionValueY+ball.ballRadius>=hinder.PositionValueY) && (ball.PositionValueY<=hinder.PositionValueY ) )
-                {
-                    ball.speedYAxis = -ball.speedYAxis;
-                }
-                if((ball.PositionValueY-ball.ballRadius<=hinders.PositionValueY+hinder.height) && (ball.PositionValueY>=hinder.PositionValueY ) )
-                {
-                    ball.speedYAxis = -ball.speedYAxis;
-                }
-            }
-            if(bounceBordersY)
-            {
-                ball.speedYAxis = -ball.speedYAxis;
-            }
-            if(playerGetsHit)
-            {
-                hit = true;
-                playerHit(hit);
-            }
-        }
     }
     function getDistanceBetweenEntity(shot, ball) {     //return distance (number)
         var vx = shot.PositionValueX - ball.PositionValueX;
@@ -340,137 +429,135 @@ function startGame(level) {
 
     /**
      *
-     *<======= ALLTING SOM HAR MED HINDREN ATT GÖRA =======>
-     *
-     */
-
-    function createHinder(startX, startY, width, height, moving, speedY, max) {
-        this.PositionValueX = startX;
-        this.PositionValueY = startY;
-        this.width = width;
-        this.height = height;
-        this.speedYAxis = speedY;
-        this.moving = moving;
-        this.maxValue = max; // Max hur långt den kan gå ner på x-axeln
-        this.color = "#000";
-    }
-    var hinders = {};
-
-    //document.getElementById("moreBalls").addEventListener("click", addBalls);
-
-    // console.log(bouncingBalls);
-    var hinderCounter = 0;
-    function addHinder(startX, startY, width, height, moving, speedY, max) {
-        hinders["hinder" + hinderCounter] = new createHinder(startX, startY, width, height, moving, speedY, max);
-        hinderCounter++;
-    }
-
-    addHinder(0,0,0,0,true,0,playfieldHeight-200);
-   // addHinder(400,300,220,10,true,2,playfieldHeight-300);
-
-    console.log(hinders);
-
-    /**
-     *
      *<======= ALLTING SOM HAR MED SKOTTEN ATT GÖRA =======>
      *
      */
+     function shoot(type){
+       if(type === "pistol"){
+         if (ammoLeft > 0) {
+             generateShot(player.PositionValueX);
+             ammoLeft--;
+             shotSound.play();
+             shotSound.currentTime=0;
+             strafeX = 260+(65*5)
+         }
+       }
+       else if(type === "shotgun"){
+         if (powerShotAvailabe > 0) {
+             generatePowerShot(player.PositionValueX);
+             powerShotAvailabe--;
+             specialShotSound.play();
+             specialShotSound.currentTime=0;
+             strafeX = 260+(65*6)
+            // powerShotsCounter.innerHTML = powerShotAvailabe;
+         }
+       }
+     }
     var shotNr = 0;
-    // Skapar ett nytt skott och pushar in det i ett objekt
+
     function generateShot(playerX) {
         var shot =
         {
-            PositionValueX: playerX + 10,
-            PositionValueY: playfieldHeight - groundHeight-player.height,
-            width: 10,
-            height: 10,
+            PositionValueX: playerX + 11,
+            PositionValueY: playfieldHeight - groundHeight-player.height-10,
+            width: 12,
+            height: 20,
             color: "black",
-            img: ammoImage
+            img: shotImage
         };
         shotList["shot" + shotNr] = shot;
         if(player.health>0)
         {
         shotNr++;
-        }
         shotsFired.innerHTML = shotNr;
-
+        }
+        countTotal()
     }
 
     var PowershotNr = 0;
-    // Skapar ett nytt skott och pushar in det i ett objekt
     function generatePowerShot(playerX) {
         var powerShot1 = {
             id: 1,
-            PositionValueX: playerX,
+            PositionValueX: playerX+20,
             PositionValueY: playfieldHeight - groundHeight-player.height,
             width: 10,
             height: 10,
-            //color: "black"
-            img: ammoImage
+            img: specialShotImage
         };
         var powerShot2 = {
             id: 2,
-            PositionValueX: playerX + 40,
+            PositionValueX: playerX+10,
+            PositionValueY: playfieldHeight - groundHeight-player.height,
+            width: 10,
+            height: 10,
+            img: specialShotImage
+        };
+        var powerShot3 = {
+            id: 3,
+            PositionValueX: playerX+15,
             PositionValueY: playfieldHeight - groundHeight-player.height,
             width: 10,
             height: 10,
             //color: "black"
-            img: ammoImage
+            img: specialShotImage
 
         };
         powerShotList["PowerShot" + PowershotNr] = powerShot1;
         PowershotNr++;
+
         powerShotList["PowerShot" + PowershotNr] = powerShot2;
         PowershotNr++;
+        powerShotList["PowerShot" + PowershotNr] = powerShot3;
+        PowershotNr++;
+        specialShotsFired.innerHTML = (PowershotNr/3);
+
+        countTotal()
     }
+
+    function countTotal()
+    {
+        totalShotsFired.innerHTML = parseInt(specialShotsFired.innerHTML)+parseInt(shotsFired.innerHTML);
+    }
+
+
 
     // Förflyttar skotten i y-axeln och om det går utanför y axeln så tas de bort ur arrayen
     function animateShots(object) {
-        object.PositionValueY -= 15; //fart på skotten
+        object.PositionValueY -= 20; //fart på skotten
         if (object.id == 1) {
             object.PositionValueX -= 5;
         }
         if (object.id == 2) {
             object.PositionValueX += 5;
         }
-
     }
-
-    function TestShotHits(list, object, obstacles) {
+    function TestShotHits(list, object) {
         for (var key in object) {
 
-            for(var thing in obstacles)
-            {
-            updateEntity(object[key],obstacles[thing]);
-
-            if(object[key].isStuck == true)
-            {
-                //  delete object[key];
-               // object[key].PositionValueY = object[key].PositionValueY+100;
-              //  object[key].PositionValueY
-            }
+            updateEntity(object[key]);
 
             // KOLLAR OM SKOTTEN TRÄFFAR
             for (var k in list) {
                 var isColliding = testCollisionEntity(list[k], object[key]);
                 if (isColliding) {
+                  pop.play();
+                  pop.currentTime=0;
                     if (object[key].ballRadius == 60) {
-                        addBalls(mediumBallRadius, object[key].PositionValueX + 15, object[key].PositionValueY, object[key].speedXAxis);
-                        addBalls(mediumBallRadius, object[key].PositionValueX - 15, object[key].PositionValueY, (object[key].speedXAxis) * -1);
+                        addBalls(mediumBallRadius, object[key].PositionValueX + 20, object[key].PositionValueY, (Math.random() * object[key].speedXAxis) + 1, 1);
+                        addBalls(mediumBallRadius, object[key].PositionValueX - 20, object[key].PositionValueY, ((Math.random() * object[key].speedXAxis) + 1) * -1,1);
                     }
                     if (object[key].ballRadius == 40) {
-                        addBalls(smallBallRadius, object[key].PositionValueX + 10, object[key].PositionValueY, object[key].speedXAxis);
-                        addBalls(smallBallRadius, object[key].PositionValueX - 10, object[key].PositionValueY, (object[key].speedXAxis) * -1);
+                        addBalls(smallBallRadius, object[key].PositionValueX + 10, object[key].PositionValueY, (Math.random() * object[key].speedXAxis) + 1,2);
+                        addBalls(smallBallRadius, object[key].PositionValueX - 10, object[key].PositionValueY, ((Math.random() * object[key].speedXAxis) + 1)* -1,2);
                     }
                     delete object[key]; // Tar bort bollen som träffar texten!
-                    delete list[k]; // Tar bort bollen som träffar texten!
+                    delete list[k]; // Tar bort bollen som träffar texten!EB974E
                     numberOfCollisions++;
-
+                    hitPerLevel++;
                 }
                 else if (list[k].PositionValueY < 0) {
                     delete list[k]; // Tar bort bollen som träffas!
                 }
-            }
             }
         }
     }
@@ -483,24 +570,20 @@ function startGame(level) {
         this.width = width;
         this.height = height;
         this.type = type;
-        //this.color = color;
         this.img = img;
         this.PositionValueX = Math.floor(Math.random() * ((playfieldWidth - this.width) - this.width)) + this.width;
         this.PositionValueY = playfieldHeight - this.height - groundHeight;
     }
 
     var upgrades = {};
-
     var upgradeCounter = 0;
 
     function addUpgrades(width, height, type, img) {
         upgrades["upgrade" + upgradeCounter] = new upgrade(width, height, type, img);
         upgradeCounter++;
     }
-
     function deleteUpgrades() {
-        upgrades = {};
-        // console.log(upgrades)
+        upgrades = {};// console.log(upgrades)
     }
     /**
      *
@@ -511,14 +594,10 @@ function startGame(level) {
         playField.fillStyle = object.color;
         playField.fillRect(object.PositionValueX, object.PositionValueY, object.width, object.height);
     }
-
      function drawImages(item)
      {
      playField.drawImage(item.img, item.PositionValueX,item.PositionValueY);
      }
-
-
-
     /**
      *
      *<======= UPPDATERING SOM KÖRS VAR 20 millisekund =======>
@@ -528,36 +607,57 @@ function startGame(level) {
     function update() {
 
         ballCounter.innerHTML = Object.keys(bouncingBalls).length; // Kollar hur många bollar som är på planen för att avgöra när man klarat en bana!
-
         playField.clearRect(0, 0, playfieldWidth, playfieldHeight);
+        //Kontrolerar så att hälsan inte kan bli mer än 100
+        if(player.health > 100){
+          player.health = 100;
+        }
+        //Uppdaterar hälsan
 
 
-     /*   for (var hinder in hinders)
-        {
-        drawObject(hinders[hinder]);
-        }*/
+        healthBar.style.width = player.health + "%";
 
         collisionCounter.innerHTML = numberOfCollisions;
+        var accuracyCounter = ((collisionCounter.innerHTML)/(totalShotsFired.innerHTML)*100).toFixed(0);
 
-        if(shotNr == 0)
+        if(shotNr == 0 && PowershotNr == 0)
         {
             accuracy.innerHTML = 0;
         }
-        else
+        else if(accuracyCounter<=100)
         {
-        accuracy.innerHTML = ((collisionCounter.innerHTML)/(shotsFired.innerHTML)*100).toFixed(0);
+            accuracy.innerHTML = accuracyCounter
+        }
+        else if(accuracyCounter>100)
+        {
+            accuracy.innerHTML = 100;
+        }
+        var accuracyCounter = ((collisionCounter.innerHTML)/(totalShotsFired.innerHTML)*100).toFixed(0);
+
+        if(shotNr == 0 && PowershotNr == 0)
+        {
+            accuracy.innerHTML = 0;
+        }
+        else if(accuracyCounter<=100)
+        {
+        accuracy.innerHTML = accuracyCounter
+        }
+        else if(accuracyCounter>100)
+        {
+            accuracy.innerHTML = 100;
         }
         ammoCounter.innerHTML = ammoLeft;
+        powerShotsCounter.innerHTML = powerShotAvailabe;
+        displayAmmo.innerHTML = ammoLeft;
+        displayPowerAmmo.innerHTML = powerShotAvailabe;
         healthCounter.innerHTML = player.health;
-
+        levelCounter.innerHTML = level;
 
         for (var upgrade in upgrades)
         {
             drawImages(upgrades[upgrade]);
         }
-
        // drawImages(shot);
-
         playerPosition(); //updaterar spelaren
 
         playField.drawImage(player,strafeX,0,player.width,player.height,player.PositionValueX,player.PositionValueY,player.width,player.height);
@@ -570,84 +670,175 @@ function startGame(level) {
             {
                 console.log("AMMO!");
                 ammoLeft += 10;
-                delete upgrades[item]
+                reload.play();
+                reload.currentTime=0;
+                delete upgrades[item];
             }
             else if(distanceBetweenPlayerAndUpgrade>-marginal && distanceBetweenPlayerAndUpgrade<marginal && upgrades[item].type === "Health")
             {
+                healthBar.className = "smoothTrans";
                 console.log("Health!");
-                player.health += 20;
-                delete upgrades[item]
+                player.health += 30;
+                healthSound.play();
+                healthSound.currentTime=0;
+                delete upgrades[item];
             }
-            else if(distanceBetweenPlayerAndUpgrade>-marginal && distanceBetweenPlayerAndUpgrade<marginal && upgrades[item].type === "PowerSot")
+            else if(distanceBetweenPlayerAndUpgrade>-marginal && distanceBetweenPlayerAndUpgrade<marginal && upgrades[item].type === "PowerShot")
             {
                 console.log("PowerShot!");
                 powerShotAvailabe += 8; // HUR MÅNGA POWERSHOTS MAN FÅR VID UPPGRADERING!
-                delete upgrades[item]
+                delete upgrades[item];
+                hitPerLevel = 0;
+                shotgunAmmo.play();
+                shotgunAmmo.currentTime=0;
+
             }
         }
         //UPPDATERAR SKOTTPOSITIONEN FÖR VARJE SKOTT I OBJEKTET
         for(var shot in shotList){
-            animateShots(shotList[shot])
+            animateShots(shotList[shot]);
         }
+
+
+
         // RITA UT SKOTTEN
         for(var key in shotList){
-            drawObject(shotList[key])
+            drawImages(shotList[key]);
         }
+
+
         for(var power in powerShotList){
-            animateShots(powerShotList[power])
+            animateShots(powerShotList[power]);
         }
         // RITA UT SKOTTEN
         for(var powerS in powerShotList){
-            drawObject(powerShotList[powerS])
+            drawImages(powerShotList[powerS]);
         }
         // RITA UT BOLLARNA SAMT KOLLAR OM SKOTTEN TRÄFFAR
-        TestShotHits(shotList,bouncingBalls, hinders);
-        TestShotHits(powerShotList,bouncingBalls,hinders);
+        TestShotHits(shotList,bouncingBalls);
+        TestShotHits(powerShotList,bouncingBalls);
+
+          // Kontrolerar om banan är avklarad
+          if(Object.keys(bouncingBalls).length === 0 && levelComplete === true){
+
+
+
+
+
+            infoContainer.style.display = "block";
+
+            statusText.innerHTML = "Level complete!";
+            infoContainer.style.backgroundColor = greenColor;
+            buttonText.innerHTML = "Next Level";
+            lockPlayer = true;
+          }
+        TestShotHits(shotList,bouncingBalls);
+        TestShotHits(powerShotList,bouncingBalls);
+
+        /* KLARAT SPELET */
+
+        if(level > 4){
+
+            gameCompleteSound.play();
+            gameCompleteSound.currentTime = 0;
+
+          clearInterval(startUpdate);
+          clearInterval(startTime);
+
+            totalShotsFiredHS.innerHTML = totalShotsFired.innerHTML;
+            shotsFiredHS.innerHTML = shotsFired.innerHTML;
+            specialShotsFiredHS.innerHTML = specialShotsFired.innerHTML;
+            collisionCounterHS.innerHTML = collisionCounter.innerHTML;
+
+            hiddentotalShotsFiredHS.value=totalShotsFired.innerHTML;
+            hiddenshotsFiredHS.value = shotsFired.innerHTML;
+            hiddenspecialShotsFired.value=specialShotsFired.innerHTML;
+            hiddencollisionCounter.value=collisionCounter.innerHTML;
+
+            levelInfo.style.display="none";
+            infoContainer.style.display ="block";
+            highscoreSignUpContainer.style.display="block";
+
+
+          lockPlayer = true;
+          restart = true;
+        }
     }
     function checkHealth(health)
     {
-        if(health<0)
+        if(health <= 0)
         {
+            gameOverSound.play();
+            gameOverSound.currentTime = 0;
+
+
             clearInterval(startUpdate);
             clearInterval(startTime);
-            playField.fillStyle = "Red";
-            playField.font = "bold 56px Arial";
-            playField.textAlign = "center";
-            playField.fillText("Game Over :(", playfieldWidth/2, playfieldHeight/2);
+            infoContainer.style.display = "block";
+
+            button.className ="gameOverButton";
+            statusText.innerHTML = "You died!";
+            infoContainer.style.backgroundColor = redColor;
+            buttonText.innerHTML = "Restart";
+            restart = true;
+            lockPlayer = true;
         }
     }
     var startUpdate = setInterval(update, 20);
-
     var startTime = setInterval(function(){
-        if(updateTime() % 10 == 0)
+        if(updateTime() === 1)
         {
-            addBalls(bigBallRadius, 100, 100, firstBallSpeed);
-
+          for(var l = 0; l < level; l++){
+            addBalls(bigBallRadius, (Math.floor(Math.random() * 9) + 1) *100, 100, ballSpeed,0);
+          }
         }
-        else if(timer.innerHTML % 7 == 0)
+        if(timer.innerHTML % 10 === 0 && j <= level)
+        {
+            addBalls(bigBallRadius, (Math.floor(Math.random() * 9) + 1) *100, 100, ballSpeed,0);
+            j++;
+        }
+        else if(timer.innerHTML % ammoGenerate === 0 && levelComplete != true)
         {
             addUpgrades(50, 50, "Ammo", ammoImage);
         }
-        else if(timer.innerHTML % 13 == 0)
+        else if(timer.innerHTML % healthGenerate === 0 && player.health < 100 && levelComplete != true)
         {
             addUpgrades(50, 50, "Health", healthImage);
         }
-        else if(timer.innerHTML % 31 == 0)
+        if(timer.innerHTML % specialAmmoGenerate === 0 && levelComplete != true && hitPerLevel>10)
         {
-            addUpgrades(50, 50, "PowerSot", ammoImage);
+            addUpgrades(50, 50, "PowerShot", powerAmmoImage);
         }
-        else if(timer.innerHTML % 5 == 0)
+        else if(timer.innerHTML % 5 === 0)
         {
            deleteUpgrades();
         }
+        else if(j === level + 1 && Object.keys(bouncingBalls).length === 0){
+          levelComplete = true;
+        }
     },1000);
-
     setInterval(function(){
-        updateFrameCount()
-    },200);
+        updateFrameCount();
+    },100);
 }
-startGame(1);
-
-
-
-
+button.addEventListener("click", function(){
+  if(restart === true){
+    location.reload();
+  }
+  else{
+      levelCompleteSound.play();
+      levelCompleteSound.currentTime=0;
+    level++;
+    bouncingBalls = {};
+    time = 0;
+    j = 0;
+    levelComplete = false;
+    infoContainer.style.display = "none";
+    ballSpeed +=0.7;
+    healthGenerate +=6;
+    ammoGenerate +=10;
+    specialAmmoGenerate +=8;
+    lockPlayer = false;
+    playFieldBackground.style.background = 'url("images/' + backGrounds[level-1] + '")';
+  }
+});

@@ -1,59 +1,417 @@
 @import "normalize.scss";
-
 $darkBlue: #34495E;
+$red: #E74C3C;
+$offWhite: #f9f9f9;
+@font-face {
+  font-family: Abril Fatface;
+  src: url(AbrilFatface-Regular.otf);
+};
 
+body{
+  font-family: 'Abril Fatface', cursive;
+ // background-color: $offWhite;
+ // background-color: #E74C3C; //
+}
+.width90
+{
+  width: 90%;
+  margin: 0 auto;
+}
 
-
-#main-container
+$green: #1BBC9B;
+#game-container
 {
   width: 100%;
 }
 #canvasContainer
 {
-  margin: 0 auto;
-  width: 960px;
+  position: relative;
+  margin: 0 auto 0px auto;
+  width: 1000px;
   height: 100%;
 }
 #playField
 {
-  //background-color: #ff545d;
-  color: #79ff85;
-  background:url("../images/pixelBG2.jpg")
-
-
 }
 #gameInfoContainer
 {
     margin: 0 auto;
-    max-width: 960px;
-    width: 90%;
-   // background-color: blue;
+    max-width: 1000px;
+    width: 100%;
+}
+.space
+{
+  width: 100%;
+  height: 5px;
 }
 .col_3
   {
-    width: 32%;
+    width: 33%;
     margin: 0 auto;
     display: inline-block;
-
+    vertical-align: top;
+ // background-color: blue;
   }
+.center
+{
+  display:flex;justify-content:center;align-items:center;
+  width: 210px;
+  margin: 0 auto;
+  text-align: center;
+ // background-color: red;
+}
+
+
+.col_12
+{
+  width: 100%;
+  margin: 0 auto;
+  display: inline-block;
+}
 .button
 {
   transition: all 0.3s ease;
-  display: flex;
-  justify-content: center;
+  display:flex;
+  justify-content:center;
   align-items:center;
   height: 50px;
   width: 200px;
   text-align: center;
-  color: $darkBlue;
-  border: 1px solid $darkBlue;
-}
-.button:hover
-{
-  background-color: lighten($darkBlue,10%);
   color: white;
+  border: 1px solid white;
+  margin: 0 auto;
+}
+.gameOverButton
+{
+  transition: all 0.3s ease;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height: 50px;
+  width: 200px;
+  text-align: center;
+  color: white;
+  border: 1px solid white;
+  margin: 0 auto;
+}
+.gameOverButton:hover
+{
+  background-color: white; // gejh
+  color: $red;
   cursor: pointer;
 }
+
+
+.button:hover
+{
+  background-color: white; // gejh
+  color: $green;
+  cursor: pointer;
+}
+#startGame:hover
+{
+
+  color: $green;
+}
+.gameOver:hover
+{
+  color: $red;
+}
+
+
 .button:active{
-  background-color: $darkBlue;
+  background-color:darken(white,10%);
+}
+.health-bar-container{
+  width: 100%;
+  border: 1px solid $green;
+  height: 25px;
+}
+#health-bar{
+  background-color: $red;
+  height: 25px;
+  text-align: center;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+.smoothTrans
+{
+  transition: all  1s ease;
+}
+.left-corner{
+  position: absolute;
+  top: 20px;
+  left: 160px;
+  display: none;
+}
+.info{
+  display: inline-block;
+  //color: $green;
+  font-size: 30px;
+  margin: 0;
+}
+#nextLevel{
+  display: none;
+}
+#infoContainer{
+  position: absolute;
+  width: 800px;
+  height: 450px;
+  top: 30px;
+  left: 100px;
+  display: none;
+  border-radius: 10px;
+}
+
+p{
+  margin: 20px;
+  margin: 20px;
+  font-size: 22px;
+  color: #fff;
+  text-align: center; //
+  padding: 0;
+}
+.header
+{
+  font-size: 35px;
+}
+#shotImage{
+  display: none;
+}
+#specialAmmoSelectColor
+{
+  color: $green;
+}
+#specialAmmoSelect, #ammoSelect,#timerContainer
+{
+  height: 60px;
+}
+.greenText
+{
+  font-size: 30px;
+  color: $green;
+}
+
+/* ALLTING MED HIGHSCORE*/
+
+#highscoreSignUpContainer
+{
+  display: none;
+  position: absolute;
+  width: 800px;
+  height: 500px;
+  //top: 30px;
+ // left: 100px;
+  border-radius: 10px;
+  background-color: $green;
+
+}
+#submitButton
+{
+  position: absolute;
+  bottom: 15px;
+  left: 0;
+  right:0;
+  transition: all 0.3s ease;
+  height: 50px;
+  width: 300px;
+  text-align: center;
+  background-color: $green;
+  color: white;
+  border: 1px solid white;
+  margin: 0 auto;
+}
+#submitButton:hover
+{
+  background-color: white;
+  color: $green;
+}
+.input
+{
+  font-size: 20px;
+  outline: 0;
+  display:block;
+  margin: 5px auto 25px auto;
+  text-align: center;
+  width: 300px;
+  height: 40px;
+  left: 0;
+  right: 0;
+}
+.errorMessage
+{
+  color: $red;
+  font-size: 16px;
+  background-color: white;
+  width: 288px;
+  margin: 10px auto;
+  padding: 8px;
+}
+.successMessage
+{
+  color: $green;
+  font-size: 16px;
+  background-color: white;
+  width: 288px;
+  margin: 10px auto;
+  padding: 8px;
+}
+.link
+{
+  text-align: center;
+  margin: 0 auto;
+}
+.link a
+{
+  transition: all 0.3s ease;
+  font-size: 18px;
+  text-decoration: none;
+  color: white;
+}
+.link a:hover
+{
+  text-decoration: underline;
+  color: $red;
+}
+.highScoreBody
+{
+  background-color: $green;
+
+}
+
+#highScoreTable
+{
+ // margin-top: 30px;
+  width: 1160px;
+  margin: 30px auto 0 auto;
+}
+table
+{
+  background-color: $green;
+  color: white;
+  font-size: 20px;
+  width: 100%;
+}
+thead
+{
+  font-size: 28px;
+}
+th, td {
+  border-bottom: 1px solid white;
+  text-align: center;
+  width: 200px;
+}
+.align-left
+{
+  text-align: left;
+}
+tr
+{
+  height: 50px;
+}
+
+
+
+/* Allting med INTROT!!! */
+
+
+
+
+#intro-container
+{
+  width: 960px;
+  height: 640px;
+  margin: -10px auto;
+  background-color: $green;
+  color: $offWhite;
+  text-align: center;
+  position: relative;
+
+}
+#animate1, #animate2,#animate3
+{
+  display: none;
+}
+#startGame
+{
+  position: absolute;
+  bottom: 20px;
+  left: 0;
+  right: 0;
+}
+.portrait
+{
+  height: 150px;
+  width: 150px;
+  border-radius: 75px;
+  background-color: red;
+  display: inline-block;
+  margin: 0 40px;
+}
+.portfolioLink
+{
+  width: 170px;
+  display: inline-block;
+  margin: 0 30px;
+}
+.portfolioLink a{
+  text-decoration: none;
+  color:white;
+  transition: all 0.3s ease;
+}
+.portfolioLink a:hover
+{
+  color: $red;
+}
+#villeFace
+{
+  background: url("../images/ville.jpg")center center;
+  background-size: cover;
+}
+#fredrikFace
+{
+  background: url("../images/fredrik.jpg") center center;
+  background-size: cover;
+}
+#guyFace
+{
+  background: url("../images/guy.jpg") center center;
+  background-size: cover;
+}
+#linktoHighscore
+{
+  position: absolute;
+  bottom: 10px;
+  right: 20px;
+
+}
+
+#linktoHighscore a
+{
+  transition: all 0.3s ease;
+  font-size: 18px;
+  text-decoration: none;
+  color: white;
+}
+#linktoHighscore a:hover
+{
+  text-decoration: underline;
+  color: $red;
+}
+.introText
+{
+  letter-spacing: 1px;
+ // font-family: sans-serif;
+ text-align: left;
+  font-size: 15px;
+}
+.red
+{
+  font-size: 22px;
+  color: #363636;
+}
+#animate3
+{
+  margin-top: -35px;
 }
