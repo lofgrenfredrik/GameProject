@@ -375,7 +375,7 @@ body {
 
 .space {
   width: 100%;
-  height: 20px; }
+  height: 5px; }
 
 .col_3 {
   width: 33%;
@@ -438,8 +438,7 @@ body {
 .left-corner {
   position: absolute;
   top: 20px;
-  left: 160px;
-  display: none; }
+  left: 160px; }
 
 .info {
   display: inline-block;
@@ -459,6 +458,7 @@ body {
   border-radius: 10px; }
 
 p {
+  margin: 20px;
   margin: 20px;
   font-size: 22px;
   color: #fff;

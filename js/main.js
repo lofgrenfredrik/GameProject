@@ -1,67 +1,111 @@
+//Plockar in canvas elementet
 var playField = document.getElementById("playField").getContext("2d");
 playField.font = '30px Arial';
-
-var playfieldHeight = document.getElementById("playField").height;
-var playfieldWidth = document.getElementById("playField").width;
 
 var redColor = "#E74C3C";
 var greenColor = "#1BBC9B";
 
-var specialAmmoSelectColor = document.getElementById("specialAmmoSelectColor"); // Infon nedanför healthbar som säger hur mycket skott man har kvar
-var ammoSelectColor =   document.getElementById("ammoSelectColor"); // Infon nedanför healthbar som säger hur mycket skott man har kvar
+/**
+ * Storleken på canvas
+ */
+var playfieldHeight = document.getElementById("playField").height;
+var playfieldWidth = document.getElementById("playField").width;
 
+/**
+ * Alla element som har med spelinfo containern att göra
+ */
+var levelInfo = document.getElementById('levelInfo');
+var statusTetxt = document.getElementById('statusTetxt');
+var levelCounter = document.getElementById("level");
+var accuracy = document.getElementById("accuracy");
+var totalShotsFired = document.getElementById("totalShotsFired");
+var specialShotsFired = document.getElementById("specialShotsFired");
+var collisionCounter = document.getElementById("collisionCounter");
+var button = document.getElementById('buttonSelector');
+var buttonText = document.getElementById('buttonText');
 
+/**
+ * Alla element som visar statusen på tid / ammo och hälsa
+ */
+var healthBar = document.getElementById("health-bar");
+var healthCounter = document.getElementById("health");
+var timer = document.getElementById("timer");
+var ammoSelect = document.getElementById('ammoSelect');
+var ammoSelectColor = document.getElementById("ammoSelectColor");
+var displayAmmo = document.getElementById("ammo-info");
+var ammoImage = document.getElementById("ammoImage");
+var SpecialAmmoSelect = document.getElementById('SpecialAmmoSelect');
+var powerAmmoImage = document.getElementById("powerAmmoImage");
+var specialAmmoSelectColor = document.getElementById("specialAmmoSelectColor");
+var displayPowerAmmo = document.getElementById("power-ammo-info");
+
+/**
+ * Element för info under utveklingsfasen
+ */
+var ballCounter = document.getElementById("ballCounter");
+var ammoCounter = document.getElementById("ammoCounter");
+var powerShotsCounter = document.getElementById("powerShotsCounter");
+var swag = document.getElementById('swag');
+var frame = document.getElementById("frame");
+
+/**
+ * Variabler med bilder
+ */
+var backGrounds = ["pixelBG2.jpg", "fantasy.png", "forest.png", "desert.png"];
+var playFieldBackground = document.getElementById("playField");
+var shotsFired = document.getElementById("shotsFired");
+var healthImage = document.getElementById("healthImage");
+var shotImage = document.getElementById("shotImage");
+var specialShotImage = document.getElementById("specialShotImage");
+
+/**
+ * Skott Variabler
+ */
 var shotList = {};
 var powerShotList = {};
-var powerShotAvailabe = 600;
-var powerUp = false;
+var powerShotAvailabe = 20;
+var typeOfShot = "pistol";
+var ammoLeft = 10;
 
+/**
+ * Boll variabler
+ */
 var bigBallRadius = 60;
 var mediumBallRadius = 40;
 var smallBallRadius = 20;
-
-var typeOfShot = "pistol";
-var ammoSelect = document.getElementById('ammoSelect');
-var SpecialAmmoSelect = document.getElementById('SpecialAmmoSelect');
-var restart = false;
-var lockPlayer = false;
+var bouncingBalls = {};
 
 /**
- *
- *  Variabler som ändras när man klarar en bana!
- *
- **/
+ * Boolean variabler
+ */
+var powerUp = false;
+var restart = false;
+var lockPlayer = false;
+var levelComplete = false;
+
+/**
+ * Variabler som ändras när man klarar en bana!
+ */
 var ballSpeed = 0.2;
 var healthGenerate = 12;
 var ammoGenerate = 11;
 var specialAmmoGenerate = 13;
 var ballSpawnInterval = 10;
 
-
-
-var collisionCounter = document.getElementById("collisionCounter");
-var ammoCounter = document.getElementById("ammoCounter");
-var powerShotsCounter = document.getElementById("powerShotsCounter");
-var displayAmmo = document.getElementById("ammo-info");
-var displayPowerAmmo = document.getElementById("power-ammo-info");
-var ammoLeft = 10;
+/**
+ * Variabler som kontrolerar timing / spawnfrekvens / level
+ */
+var hitPerLevel = 0;
 var time = 0;
-var healthCounter = document.getElementById("health");
 var frameCount = 0;
 var groundHeight = 32; // Höjden på marken i bilden.
-var ballCounter = document.getElementById("ballCounter");
-var accuracy = document.getElementById("accuracy");
-var healthBar = document.getElementById("health-bar");
-var levelCounter = document.getElementById("level");
 var level = 1;
 var j = 0; //variabel för att begränsa hur många bollar som genereras per bana
-var levelInfo = document.getElementById('levelInfo');
-var statusTetxt = document.getElementById('statusTetxt');
-var button = document.getElementById('buttonSelector');
-var buttonText = document.getElementById('buttonText');
-var levelComplete = false;
-var backGrounds = ["pixelBG2.jpg", "fantasy.png", "forest.png", "desert.png"];
-// Sounds ********************
+var strafeX = 260;
+
+/**
+ * Sounds
+ */
 var pop = new Audio();
 //pop.src = "sound/pop.wav";
 var shotSound = new Audio();
@@ -75,29 +119,17 @@ var specialShotSound = new Audio();
 var backgroundSound = new Audio();
 //backgroundSound.src = "sound/retro.mp3";
 
-var playFieldBackground = document.getElementById("playField");
-var shotsFired = document.getElementById("shotsFired");
-var specialShotsFired = document.getElementById("specialShotsFired");
-var totalShotsFired = document.getElementById("totalShotsFired");
-
-var ammoImage = document.getElementById("ammoImage");
-var powerAmmoImage = document.getElementById("powerAmmoImage");
-var healthImage = document.getElementById("healthImage");
-var shotImage = document.getElementById("shotImage");
-var specialShotImage = document.getElementById("specialShotImage");
-
+/**
+ * Döljer element från DOM:et
+ */
 ammoSelect.style.backgroundColor = greenColor;
-// ammoImage.style.display ="none";
 healthImage.style.display ="none";
 shotImage.style.display ="none";
 specialShotImage.style.display ="none";
 
-var hitPerLevel = 0;
-var swag = document.getElementById("swag");
-
-var frame = document.getElementById("frame");
-
-var gameTime = document.getElementById('gameTime');
+/**
+ * Skapar spelaren med dess startvärden
+ */
 var player = new Image();
 player.src = "images/villeSprite4.png";  // WTF?! Varför utgår man från vart html-filen ligger och inte JS filen?
 player.left = false;
@@ -109,9 +141,6 @@ player.PositionValueX = 100;
 player.PositionValueY = playfieldHeight - 75 - groundHeight;
 player.animateX = (player.width) - 25;
 player.animateY = player.height;
-
-var strafeX = 260;
-var bouncingBalls = {};
 
 
 function startGame() {
