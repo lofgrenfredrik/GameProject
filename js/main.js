@@ -1,9 +1,14 @@
 //Plockar in canvas elementet
 var playField = document.getElementById("playField").getContext("2d");
-playField.font = '30px Arial';
-
+//playField.font = '30px Arial';
 var redColor = "#E74C3C";
 var greenColor = "#1BBC9B";
+
+var gameContainer = document.getElementById("game-container"); // Diven som hela spelet ligger i.
+gameContainer.style.display ="none";
+
+var introContainer = document.getElementById("intro-container");
+document.getElementById("startGame").addEventListener("click",startGame);
 
 /**
  * Storleken på canvas
@@ -14,7 +19,7 @@ var playfieldWidth = document.getElementById("playField").width;
 /**
  * Alla element som har med spelinfo containern att göra
  */
-var levelInfo = document.getElementById('levelInfo');
+var infoContainer = document.getElementById('infoContainer');
 var statusTetxt = document.getElementById('statusTetxt');
 var levelCounter = document.getElementById("level");
 var accuracy = document.getElementById("accuracy");
@@ -23,6 +28,20 @@ var specialShotsFired = document.getElementById("specialShotsFired");
 var collisionCounter = document.getElementById("collisionCounter");
 var button = document.getElementById('buttonSelector');
 var buttonText = document.getElementById('buttonText');
+
+var levelInfo = document.getElementById("levelInfo");
+var highscoreSignUpContainer = document.getElementById("highscoreSignUpContainer");
+
+var totalShotsFiredHS = document.getElementById("totalShotsFiredHS");
+var shotsFiredHS = document.getElementById("shotsFiredHS");
+var specialShotsFiredHS = document.getElementById("specialShotsFiredHS");
+var collisionCounterHS = document.getElementById("collisionCounterHS");
+
+var hiddentotalShotsFiredHS = document.getElementById("hiddentotalShotsFiredHS");
+var hiddenshotsFiredHS = document.getElementById("hiddenshotsFiredHS");
+var hiddenspecialShotsFired = document.getElementById("hiddenspecialShotsFired");
+var hiddencollisionCounter = document.getElementById("hiddencollisionCounter");
+
 
 /**
  * Alla element som visar statusen på tid / ammo och hälsa
@@ -63,7 +82,7 @@ var specialShotImage = document.getElementById("specialShotImage");
  */
 var shotList = {};
 var powerShotList = {};
-var powerShotAvailabe = 20;
+var powerShotAvailabe = 0;
 var typeOfShot = "pistol";
 var ammoLeft = 10;
 
@@ -107,17 +126,28 @@ var strafeX = 260;
  * Sounds
  */
 var pop = new Audio();
-//pop.src = "sound/pop.wav";
+pop.src = "sound/pop.wav";
 var shotSound = new Audio();
-//shotSound.src = "sound/bang.wav";
+shotSound.src = "sound/bang.wav";
 var specialShotSound = new Audio();
-//specialShotSound.src = "sound/loudgun.wav";
-//var reload = new Audio();
-//reload.src = "sound/reload.wav";
-//var healthSound = new Audio();
-//healthSound.src = "sound/yes.wav";
-var backgroundSound = new Audio();
-//backgroundSound.src = "sound/retro.mp3";
+specialShotSound.src = "sound/loudgun.wav";
+var reload = new Audio();
+reload.src = "sound/reload.wav";
+var healthSound = new Audio();
+healthSound.src = "sound/getHealth.wav";
+var damageSound = new Audio();
+damageSound.src = "sound/damageSound.wav";
+var shotgunAmmo = new Audio();
+shotgunAmmo.src = "sound/shotgunreload.wav";
+
+var levelCompleteSound = new Audio();
+levelCompleteSound.src = "sound/nicework.wav";
+
+var gameOverSound = new Audio();
+gameOverSound.src = "sound/boo.mp3";
+
+var gameCompleteSound = new Audio();
+gameCompleteSound.src = "sound/gameComplete.mp3";
 
 /**
  * Döljer element från DOM:et
@@ -144,6 +174,11 @@ player.animateY = player.height;
 
 
 function startGame() {
+    introContainer.style.display ="none";
+    gameContainer.style.display ="block";
+
+
+
 playFieldBackground.style.background = 'url("images/' + backGrounds[level-1] + '")';
     /**
      *
@@ -167,12 +202,11 @@ playFieldBackground.style.background = 'url("images/' + backGrounds[level-1] + '
 
     setInterval(function () {
         hit = false;
-        player.color = "#fff";
     }, 400);
     function playerHit(hit) {
         if (hit) {
+            damageSound.play();
             healthBar.className = "";
-            player.color = "red";
             player.health--;
             checkHealth(player.health);
         }
@@ -318,17 +352,19 @@ playFieldBackground.style.background = 'url("images/' + backGrounds[level-1] + '
      *
      */
     var numberOfCollisions = 0;
-    var ballColors = ["#000", "#E4F1FE", "#336E7B", "#4ECDC4", "#3D4A5D", "#26A65B", "#79FF85"];
+    var ballColors = ["#3D4A5D","#1E824C","#D35400"];
     //document.getElementById("startGame").addEventListener("click", startGame);
 
-    function bouncingBall(ballSize, startX, startY,speedX) {
+    function bouncingBall(ballSize, startX, startY,speedX,color) {
 
         this.ballRadius = ballSize;
         this.PositionValueX = startX;
         this.PositionValueY = startY;
         this.speedXAxis = speedX;
         this.speedYAxis = Math.round((Math.random() * ballSpeed) + 1);
-        this.hexColorCode = ballColors[Math.floor((Math.random() * ballColors.length) + 1)];
+        this.hexColorCode = ballColors[color];
+
+      //  this.hexColorCode = ballColors[Math.floor((Math.random() * ballColors.length) + 1)];
        // this.hypo = Math.sqrt(Math.pow(ballSize,2)*2);
       //  this.img = image;
        // this.isStuck = false;
@@ -336,8 +372,8 @@ playFieldBackground.style.background = 'url("images/' + backGrounds[level-1] + '
 
     var i = 0;
 
-    function addBalls(sizeofHitBall, startX, startY,speedX) {
-        bouncingBalls["ball" + i] = new bouncingBall(sizeofHitBall, startX, startY,speedX);
+    function addBalls(sizeofHitBall, startX, startY,speedX,color) {
+        bouncingBalls["ball" + i] = new bouncingBall(sizeofHitBall, startX, startY,speedX,color);
         i++;
     }
 
@@ -487,7 +523,7 @@ playFieldBackground.style.background = 'url("images/' + backGrounds[level-1] + '
 
     // Förflyttar skotten i y-axeln och om det går utanför y axeln så tas de bort ur arrayen
     function animateShots(object) {
-        object.PositionValueY -= 15; //fart på skotten
+        object.PositionValueY -= 20; //fart på skotten
         if (object.id == 1) {
             object.PositionValueX -= 5;
         }
@@ -507,15 +543,15 @@ playFieldBackground.style.background = 'url("images/' + backGrounds[level-1] + '
                   pop.play();
                   pop.currentTime=0;
                     if (object[key].ballRadius == 60) {
-                        addBalls(mediumBallRadius, object[key].PositionValueX + 20, object[key].PositionValueY, (Math.random() * object[key].speedXAxis) + 1);
-                        addBalls(mediumBallRadius, object[key].PositionValueX - 20, object[key].PositionValueY, ((Math.random() * object[key].speedXAxis) + 1) * -1);
+                        addBalls(mediumBallRadius, object[key].PositionValueX + 20, object[key].PositionValueY, (Math.random() * object[key].speedXAxis) + 1, 1);
+                        addBalls(mediumBallRadius, object[key].PositionValueX - 20, object[key].PositionValueY, ((Math.random() * object[key].speedXAxis) + 1) * -1,1);
                     }
                     if (object[key].ballRadius == 40) {
-                        addBalls(smallBallRadius, object[key].PositionValueX + 10, object[key].PositionValueY, (Math.random() * object[key].speedXAxis) + 1);
-                        addBalls(smallBallRadius, object[key].PositionValueX - 10, object[key].PositionValueY, ((Math.random() * object[key].speedXAxis) + 1)* -1);
+                        addBalls(smallBallRadius, object[key].PositionValueX + 10, object[key].PositionValueY, (Math.random() * object[key].speedXAxis) + 1,2);
+                        addBalls(smallBallRadius, object[key].PositionValueX - 10, object[key].PositionValueY, ((Math.random() * object[key].speedXAxis) + 1)* -1,2);
                     }
                     delete object[key]; // Tar bort bollen som träffar texten!
-                    delete list[k]; // Tar bort bollen som träffar texten!
+                    delete list[k]; // Tar bort bollen som träffar texten!EB974E
                     numberOfCollisions++;
                     hitPerLevel++;
                 }
@@ -562,18 +598,11 @@ playFieldBackground.style.background = 'url("images/' + backGrounds[level-1] + '
      {
      playField.drawImage(item.img, item.PositionValueX,item.PositionValueY);
      }
-
-  /* function drawBalls(ball)
-    {
-        playField.drawImage(ball.img,ball.PositionValueX,ball.PositionValueY);
-    }*/
-
     /**
      *
      *<======= UPPDATERING SOM KÖRS VAR 20 millisekund =======>
      *
      */
-
 
     function update() {
 
@@ -587,9 +616,6 @@ playFieldBackground.style.background = 'url("images/' + backGrounds[level-1] + '
 
 
         healthBar.style.width = player.health + "%";
-
-       // console.log(player.health);
-
 
         collisionCounter.innerHTML = numberOfCollisions;
         var accuracyCounter = ((collisionCounter.innerHTML)/(totalShotsFired.innerHTML)*100).toFixed(0);
@@ -606,10 +632,6 @@ playFieldBackground.style.background = 'url("images/' + backGrounds[level-1] + '
         {
             accuracy.innerHTML = 100;
         }
-
-        swag.innerHTML = hitPerLevel;
-
-
         var accuracyCounter = ((collisionCounter.innerHTML)/(totalShotsFired.innerHTML)*100).toFixed(0);
 
         if(shotNr == 0 && PowershotNr == 0)
@@ -624,12 +646,10 @@ playFieldBackground.style.background = 'url("images/' + backGrounds[level-1] + '
         {
             accuracy.innerHTML = 100;
         }
-
         ammoCounter.innerHTML = ammoLeft;
         powerShotsCounter.innerHTML = powerShotAvailabe;
         displayAmmo.innerHTML = ammoLeft;
         displayPowerAmmo.innerHTML = powerShotAvailabe;
-
         healthCounter.innerHTML = player.health;
         levelCounter.innerHTML = level;
 
@@ -650,17 +670,17 @@ playFieldBackground.style.background = 'url("images/' + backGrounds[level-1] + '
             {
                 console.log("AMMO!");
                 ammoLeft += 10;
-              //  reload.play();
-               // reload.currentTime=0;
+                reload.play();
+                reload.currentTime=0;
                 delete upgrades[item];
             }
             else if(distanceBetweenPlayerAndUpgrade>-marginal && distanceBetweenPlayerAndUpgrade<marginal && upgrades[item].type === "Health")
             {
                 healthBar.className = "smoothTrans";
                 console.log("Health!");
-                player.health += 20;
-                //healthSound.play();
-                //healthSound.currentTime=0;
+                player.health += 30;
+                healthSound.play();
+                healthSound.currentTime=0;
                 delete upgrades[item];
             }
             else if(distanceBetweenPlayerAndUpgrade>-marginal && distanceBetweenPlayerAndUpgrade<marginal && upgrades[item].type === "PowerShot")
@@ -669,6 +689,9 @@ playFieldBackground.style.background = 'url("images/' + backGrounds[level-1] + '
                 powerShotAvailabe += 8; // HUR MÅNGA POWERSHOTS MAN FÅR VID UPPGRADERING!
                 delete upgrades[item];
                 hitPerLevel = 0;
+                shotgunAmmo.play();
+                shotgunAmmo.currentTime=0;
+
             }
         }
         //UPPDATERAR SKOTTPOSITIONEN FÖR VARJE SKOTT I OBJEKTET
@@ -697,37 +720,65 @@ playFieldBackground.style.background = 'url("images/' + backGrounds[level-1] + '
 
           // Kontrolerar om banan är avklarad
           if(Object.keys(bouncingBalls).length === 0 && levelComplete === true){
-            levelInfo.style.display = "block";
+
+
+
+
+
+            infoContainer.style.display = "block";
 
             statusText.innerHTML = "Level complete!";
-            levelInfo.style.backgroundColor = greenColor;
+            infoContainer.style.backgroundColor = greenColor;
             buttonText.innerHTML = "Next Level";
             lockPlayer = true;
           }
-
         TestShotHits(shotList,bouncingBalls);
         TestShotHits(powerShotList,bouncingBalls);
+
+        /* KLARAT SPELET */
+
         if(level > 4){
+
+            gameCompleteSound.play();
+            gameCompleteSound.currentTime = 0;
+
           clearInterval(startUpdate);
           clearInterval(startTime);
-          levelInfo.style.display = "block";
-          statusText.innerHTML = "Game completed!"
-          levelInfo.style.backgroundColor = "#93ee53";
-          buttonText.innerHTML = "Play again";
+
+            totalShotsFiredHS.innerHTML = totalShotsFired.innerHTML;
+            shotsFiredHS.innerHTML = shotsFired.innerHTML;
+            specialShotsFiredHS.innerHTML = specialShotsFired.innerHTML;
+            collisionCounterHS.innerHTML = collisionCounter.innerHTML;
+
+            hiddentotalShotsFiredHS.value=totalShotsFired.innerHTML;
+            hiddenshotsFiredHS.value = shotsFired.innerHTML;
+            hiddenspecialShotsFired.value=specialShotsFired.innerHTML;
+            hiddencollisionCounter.value=collisionCounter.innerHTML;
+
+            levelInfo.style.display="none";
+            infoContainer.style.display ="block";
+            highscoreSignUpContainer.style.display="block";
+
+
           lockPlayer = true;
           restart = true;
         }
     }
     function checkHealth(health)
     {
-        if(health < 0)
+        if(health <= 0)
         {
+            gameOverSound.play();
+            gameOverSound.currentTime = 0;
+
+
             clearInterval(startUpdate);
             clearInterval(startTime);
-            levelInfo.style.display = "block";
+            infoContainer.style.display = "block";
 
+            button.className ="gameOverButton";
             statusText.innerHTML = "You died!";
-            levelInfo.style.backgroundColor = redColor;
+            infoContainer.style.backgroundColor = redColor;
             buttonText.innerHTML = "Restart";
             restart = true;
             lockPlayer = true;
@@ -738,12 +789,12 @@ playFieldBackground.style.background = 'url("images/' + backGrounds[level-1] + '
         if(updateTime() === 1)
         {
           for(var l = 0; l < level; l++){
-            addBalls(bigBallRadius, (Math.floor(Math.random() * 9) + 1) *100, 100, ballSpeed);
+            addBalls(bigBallRadius, (Math.floor(Math.random() * 9) + 1) *100, 100, ballSpeed,0);
           }
         }
         if(timer.innerHTML % 10 === 0 && j <= level)
         {
-            addBalls(bigBallRadius, (Math.floor(Math.random() * 9) + 1) *100, 100, ballSpeed);
+            addBalls(bigBallRadius, (Math.floor(Math.random() * 9) + 1) *100, 100, ballSpeed,0);
             j++;
         }
         else if(timer.innerHTML % ammoGenerate === 0 && levelComplete != true)
@@ -765,33 +816,29 @@ playFieldBackground.style.background = 'url("images/' + backGrounds[level-1] + '
         else if(j === level + 1 && Object.keys(bouncingBalls).length === 0){
           levelComplete = true;
         }
-
     },1000);
-
     setInterval(function(){
         updateFrameCount();
     },100);
 }
-startGame(1);
 button.addEventListener("click", function(){
   if(restart === true){
     location.reload();
   }
   else{
+      levelCompleteSound.play();
+      levelCompleteSound.currentTime=0;
     level++;
     bouncingBalls = {};
     time = 0;
     j = 0;
     levelComplete = false;
-    levelInfo.style.display = "none";
-    ballSpeed +=1;
-    healthGenerate +=10;
+    infoContainer.style.display = "none";
+    ballSpeed +=0.7;
+    healthGenerate +=6;
     ammoGenerate +=10;
-    specialAmmoGenerate +=10;
+    specialAmmoGenerate +=8;
     lockPlayer = false;
     playFieldBackground.style.background = 'url("images/' + backGrounds[level-1] + '")';
   }
-
-
-
 });
