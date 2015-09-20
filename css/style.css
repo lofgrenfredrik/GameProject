@@ -362,29 +362,26 @@ th {
 body {
   font-family: 'Abril Fatface', cursive; }
 
-.width90 {
-  width: 90%;
-  margin: 0 auto; }
-
-#game-container {
-  width: 100%; }
-
-#canvasContainer {
-  position: relative;
-  margin: 0 auto 0px auto;
-  width: 1000px;
-  height: 100%; }
-
-#gameInfoContainer {
-  margin: 0 auto;
-  max-width: 1000px;
-  width: 100%; }
+.red {
+  font-size: 22px;
+  color: #363636; }
 
 .space {
   width: 100%;
   height: 5px; }
 
+.space40 {
+  width: 100%;
+  height: 40px; }
+
 .col_3 {
+  padding: 0;
+  width: 24.78%;
+  margin: 0;
+  display: inline-block;
+  vertical-align: top; }
+
+.col_4 {
   width: 33%;
   margin: 0 auto;
   display: inline-block;
@@ -394,120 +391,18 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 210px;
   margin: 0 auto;
   text-align: center; }
+
+.col_8 {
+  width: 62%;
+  margin: 0 auto;
+  display: inline-block; }
 
 .col_12 {
   width: 100%;
   margin: 0 auto;
   display: inline-block; }
-
-.button {
-  transition: all 0.3s ease;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 50px;
-  width: 200px;
-  text-align: center;
-  color: white;
-  border: 1px solid white;
-  margin: 0 auto; }
-
-.gameOverButton {
-  transition: all 0.3s ease;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 50px;
-  width: 200px;
-  text-align: center;
-  color: white;
-  border: 1px solid white;
-  margin: 0 auto; }
-
-.gameOverButton:hover {
-  background-color: white;
-  color: #E74C3C;
-  cursor: pointer; }
-
-.button:hover {
-  background-color: white;
-  color: #1BBC9B;
-  cursor: pointer; }
-
-#startGame:hover {
-  color: #1BBC9B; }
-
-.gameOver:hover {
-  color: #E74C3C; }
-
-.button:active {
-  background-color: #e6e6e6; }
-
-.health-bar-container {
-  width: 100%;
-  border: 1px solid #1BBC9B;
-  height: 25px; }
-
-#health-bar {
-  background-color: #E74C3C;
-  height: 25px;
-  text-align: center;
-  display: flex;
-  justify-content: center;
-  align-items: center; }
-
-.smoothTrans {
-  transition: all  1s ease; }
-
-.left-corner {
-  position: absolute;
-  top: 20px;
-  left: 160px;
-  display: none; }
-
-.info {
-  display: inline-block;
-  font-size: 30px;
-  margin: 0; }
-
-#nextLevel {
-  display: none; }
-
-#infoContainer {
-  position: absolute;
-  width: 800px;
-  height: 450px;
-  top: 30px;
-  left: 100px;
-  display: none;
-  border-radius: 10px; }
-
-p {
-  margin: 20px;
-  margin: 20px;
-  font-size: 22px;
-  color: #fff;
-  text-align: center;
-  padding: 0; }
-
-.header {
-  font-size: 35px; }
-
-#shotImage {
-  display: none; }
-
-#specialAmmoSelectColor {
-  color: #1BBC9B; }
-
-#specialAmmoSelect, #ammoSelect, #timerContainer {
-  height: 60px; }
-
-.greenText {
-  font-size: 30px;
-  color: #1BBC9B; }
 
 /* ALLTING MED HIGHSCORE*/
 #highscoreSignUpContainer {
@@ -540,7 +435,7 @@ p {
   font-size: 20px;
   outline: 0;
   display: block;
-  margin: 5px auto 25px auto;
+  margin: 5px auto 15px auto;
   text-align: center;
   width: 300px;
   height: 40px;
@@ -580,6 +475,29 @@ p {
 .highScoreBody {
   background-color: #1BBC9B; }
 
+#highscoreHeader {
+  color: #363636 !important;
+  margin-left: 60px; }
+  #highscoreHeader h1 {
+    font-size: 40px;
+    text-align: center; }
+  #highscoreHeader p {
+    color: #363636 !important; }
+  #highscoreHeader a {
+    color: white;
+    transition: all 0.2s ease; }
+  #highscoreHeader a:hover {
+    color: #E74C3C; }
+
+#guySmile {
+  height: 195px;
+  width: 150px;
+  background: url("../images/guySmile.png") center center;
+  background-size: cover; }
+
+.inline {
+  display: inline-block; }
+
 #highScoreTable {
   width: 1160px;
   margin: 30px auto 0 auto; }
@@ -595,8 +513,7 @@ thead {
 
 th, td {
   border-bottom: 1px solid white;
-  text-align: center;
-  width: 200px; }
+  text-align: center; }
 
 .align-left {
   text-align: left; }
@@ -604,83 +521,261 @@ th, td {
 tr {
   height: 50px; }
 
-/* Allting med INTROT!!! */
-#intro-container {
-  width: 960px;
-  height: 640px;
-  margin: -10px auto;
-  background-color: #1BBC9B;
-  color: #f9f9f9;
-  text-align: center;
-  position: relative; }
+@media (min-width: 1px) and (max-width: 961px) {
+  #phoneContainer {
+    display: block; }
 
-#animate1, #animate2, #animate3 {
-  display: none; }
+  body {
+    background-color: #1BBC9B; }
 
-#startGame {
-  position: absolute;
-  bottom: 20px;
-  left: 0;
-  right: 0; }
+  #sorry {
+    width: 90%;
+    margin: 0 auto; }
 
-.portrait {
-  height: 150px;
-  width: 150px;
-  border-radius: 75px;
-  background-color: red;
-  display: inline-block;
-  margin: 0 40px; }
+  p {
+    color: white;
+    font-size: 28px;
+    text-align: left; }
 
-.portfolioLink {
-  width: 170px;
-  display: inline-block;
-  margin: 0 30px; }
+  #mainContainer {
+    display: none; }
 
-.portfolioLink a {
-  text-decoration: none;
-  color: white;
-  transition: all 0.3s ease; }
+  .phoneRecipeCard p {
+    padding: 10px 0 10px 0;
+    width: 90%;
+    margin: 0 auto;
+    text-align: left; } }
+@media (min-width: 961px) {
+  #phoneContainer {
+    display: none; }
 
-.portfolioLink a:hover {
-  color: #E74C3C; }
+  #mainContainer {
+    display: block; }
 
-#villeFace {
-  background: url("../images/ville.jpg") center center;
-  background-size: cover; }
+  .width90 {
+    width: 90%;
+    margin: 0 auto; }
 
-#fredrikFace {
-  background: url("../images/fredrik.jpg") center center;
-  background-size: cover; }
+  #game-container {
+    width: 100%; }
 
-#guyFace {
-  background: url("../images/guy.jpg") center center;
-  background-size: cover; }
+  #canvasContainer {
+    position: relative;
+    margin: 0 auto 0px auto;
+    width: 1000px;
+    height: 100%; }
 
-#linktoHighscore {
-  position: absolute;
-  bottom: 10px;
-  right: 20px; }
+  #gameInfoContainer {
+    margin: 0 auto;
+    max-width: 1000px;
+    width: 100%; }
 
-#linktoHighscore a {
-  transition: all 0.3s ease;
-  font-size: 18px;
-  text-decoration: none;
-  color: white; }
+  .button {
+    transition: all 0.3s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50px;
+    width: 200px;
+    text-align: center;
+    color: white;
+    border: 1px solid white;
+    margin: 0 auto; }
 
-#linktoHighscore a:hover {
-  text-decoration: underline;
-  color: #E74C3C; }
+  .gameOverButton {
+    transition: all 0.3s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50px;
+    width: 200px;
+    text-align: center;
+    color: white;
+    border: 1px solid white;
+    margin: 0 auto; }
 
-.introText {
-  letter-spacing: 1px;
-  text-align: left;
-  font-size: 15px; }
+  .gameOverButton:hover {
+    background-color: white;
+    color: #E74C3C;
+    cursor: pointer; }
 
-.red {
-  font-size: 22px;
-  color: #363636; }
+  .button:hover {
+    background-color: white;
+    color: #1BBC9B;
+    cursor: pointer; }
 
-#animate3 {
-  margin-top: -35px; }
+  #startGame:hover {
+    color: #1BBC9B; }
+
+  .gameOver:hover {
+    color: #E74C3C; }
+
+  .button:active {
+    background-color: #e6e6e6; }
+
+  .health-bar-container {
+    width: 100%;
+    height: 25px; }
+
+  #health-bar {
+    background-color: #E74C3C;
+    height: 25px;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #363636; }
+
+  #soundController {
+    transition: all 0.3s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 60px;
+    text-align: center;
+    margin: 0 auto; }
+
+  #soundController:hover {
+    cursor: pointer; }
+
+  .soundOnButton {
+    color: white;
+    background-color: #1BBC9B; }
+
+  .soundOnButton:hover {
+    color: white; }
+
+  .soundOffButton {
+    color: white;
+    background-color: #E74C3C; }
+
+  .soundOffButton:hover {
+    color: white; }
+
+  .smoothTrans {
+    transition: all 1s ease; }
+
+  .left-corner {
+    position: absolute;
+    top: 20px;
+    left: 160px;
+    display: none; }
+
+  .info {
+    display: inline-block;
+    font-size: 30px;
+    margin: 0; }
+
+  #nextLevel {
+    display: none; }
+
+  #infoContainer {
+    position: absolute;
+    width: 800px;
+    height: 450px;
+    top: 30px;
+    left: 100px;
+    display: none;
+    border-radius: 10px; }
+
+  p {
+    margin: 20px;
+    font-size: 22px;
+    color: #fff;
+    text-align: center;
+    padding: 0; }
+
+  .header {
+    font-size: 35px; }
+
+  #shotImage {
+    display: none; }
+
+  #specialAmmoSelectColor {
+    color: #1BBC9B; }
+
+  #specialAmmoSelect, #ammoSelect, #timerContainer {
+    height: 60px; }
+
+  .greenText {
+    font-size: 30px;
+    color: #1BBC9B; }
+
+  /* Allting med INTROT!!! */
+  #intro-container {
+    width: 960px;
+    height: 660px;
+    margin: -25px auto;
+    background-color: #1BBC9B;
+    color: #f9f9f9;
+    text-align: center;
+    position: relative; }
+    #intro-container h1 {
+      padding-top: 20px; }
+
+  #animate1, #animate2, #animate3 {
+    display: none; }
+
+  #startGame {
+    position: absolute;
+    bottom: 20px;
+    left: 0;
+    right: 0; }
+
+  .portrait {
+    height: 150px;
+    width: 150px;
+    border-radius: 75px;
+    background-color: red;
+    display: inline-block;
+    margin: 0 40px; }
+
+  .portfolioLink {
+    width: 170px;
+    display: inline-block;
+    margin: 0 30px; }
+
+  .portfolioLink a {
+    text-decoration: none;
+    color: white;
+    transition: all 0.3s ease; }
+
+  .portfolioLink a:hover {
+    color: #E74C3C; }
+
+  #villeFace {
+    background: url("../images/ville.jpg") center center;
+    background-size: cover; }
+
+  #fredrikFace {
+    background: url("../images/fredrik.jpg") center center;
+    background-size: cover; }
+
+  #guyFace {
+    background: url("../images/guy.jpg") center center;
+    background-size: cover; }
+
+  #linktoHighscore {
+    position: absolute;
+    bottom: 15px;
+    right: 20px; }
+
+  #linktoHighscore a {
+    transition: all 0.3s ease;
+    font-size: 18px;
+    text-decoration: none;
+    color: white; }
+
+  #linktoHighscore a:hover {
+    text-decoration: underline;
+    color: #E74C3C; }
+
+  .introText {
+    letter-spacing: 1px;
+    text-align: left;
+    font-size: 15px; }
+
+  #animate3 {
+    margin-top: -10px; } }
 
 /*# sourceMappingURL=style.css.map */

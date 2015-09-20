@@ -1,5 +1,4 @@
-<?php require_once('dbconnect.php');?>
-    <?php
+<?php require_once('dbconnect.php');
 
 function get_all_from_highscores()
 {
@@ -22,15 +21,38 @@ function get_all_from_highscores()
 <head>
     <meta charset="UTF-8">
     <title>Ballbusters - Highscore</title>
-    <link href='https://fonts.googleapis.com/css?family=Abril+Fatface' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="css/style.css" charset="utf-8">
+    <link rel="shortcut icon" href="images/guySmile.ico" />
+    <!--Start Google Analytics!-->
+    <script>
+        (function (i, s, o, g, r, a, m) {
+            i['GoogleAnalyticsObject'] = r;
+            i[r] = i[r] || function () {
+                    (i[r].q = i[r].q || []).push(arguments)
+                }, i[r].l = 1 * new Date();
+            a = s.createElement(o),
+                m = s.getElementsByTagName(o)[0];
+            a.async = 1;
+            a.src = g;
+            m.parentNode.insertBefore(a, m)
+        })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+        ga('create', 'UA-49166471-3', 'auto');
+        ga('send', 'pageview');
+    </script>
+    <!--End Google Analytics!-->
 </head>
 <body class="highScoreBody">
 
-
 <div id="highScoreTable">
+    <div id="guySmile" class="col_4"></div>
+    <div id="highscoreHeader" class="col_8">
+    <h1>Ballbusters High Scores</h1>
+    <p>A Javascript Game by <a href="http://lofgrenfredrik.github.io/"target="_blank">Fredrik Löfgren</a> & <a href="http://vilhelmfalkenmark.se/"target="_blank">Vilhelm Falkenmark</a></p>
+    <div class="link"><a href="index.php">Play the game</a></div>
+</div>
+    <div class="space40"></div>
 
-<table>
+    <table>
     <thead><td class="align-left">Placement</td><td class="align-left">Player Name</td><td>Accuracy</td><td>Shots fired</td><td>Shotgun</td><td>Pistol</td><td>Date</td></thead>
 <?php
 $highscores = get_all_from_highscores();
@@ -38,8 +60,6 @@ $highscores = get_all_from_highscores();
     usort($highscores, function($a, $b) {
         return $b['accuracy'] - $a['accuracy'];
     });
-
-
 $rowCounter = 1;
 
 foreach($highscores as $highscore)
